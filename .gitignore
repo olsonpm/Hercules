@@ -29,6 +29,7 @@ Thumbs.db
 /config.log
 /config.status
 /core
+/data
 /ipch
 /login-server
 /Makefile
@@ -66,6 +67,7 @@ Thumbs.db
 # /conf/
 /conf/import/*.conf
 /conf/import/msg_conf.txt
+/conf/server-specific/
 
 # /log/
 /log/*.log

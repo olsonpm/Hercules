@@ -1544,9 +1544,6 @@ static int pc_reg_received(struct map_session_data *sd)
 		clif->changeoption(&sd->bl);
 	}
 
-	if( npc->motd ) /* [Ind/Hercules] */
-		script->run(npc->motd->u.scr.script, 0, sd->bl.id, npc->fake_nd->bl.id);
-
 	// Achievements [Smokexyz/Hercules]
 	intif->achievements_request(sd);
 
