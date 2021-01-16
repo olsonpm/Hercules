@@ -15,7 +15,7 @@
 -	script	Healer	FAKE_NPC,{
 
 	.@price = 0;	// Zeny required for heal
-	.@Buffs = 0;	// Also buff players? (1: yes / 0: no)
+	.@Buffs = 1;	// Also buff players? (1: yes / 0: no)
 	.@Delay = 0;	// Heal delay, in seconds
 
 	if (@HD > gettimetick(2)) end;
@@ -27,8 +27,8 @@
 	}
 	specialeffect(EF_HEAL2, AREA, playerattached()); percentheal 100,100;
 	if (.@Buffs) {
-		specialeffect(EF_INCAGILITY, AREA, playerattached()); sc_start SC_INC_AGI,240000,10;
-		specialeffect(EF_BLESSING, AREA, playerattached()); sc_start SC_BLESSING,240000,10;
+		specialeffect(EF_INCAGILITY, AREA, playerattached()); sc_start SC_INC_AGI,140000,5;
+		specialeffect(EF_BLESSING, AREA, playerattached()); sc_start SC_BLESSING,140000,5;
 	}
 	if (.@Delay) @HD = gettimetick(2)+.@Delay;
 	end;
