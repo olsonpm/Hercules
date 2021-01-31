@@ -103,6 +103,9 @@ Thumbs.db
 # /src/plugins/
 /src/plugins/Makefile
 
+# /sql-files/tools
+/sql-files/tools/server-specific
+
 # /tools/
 /tools/convert
 /tools/adduser
