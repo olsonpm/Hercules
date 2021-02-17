@@ -30,7 +30,6 @@ menu	"Last Warp ^777777["+lastwarp$+"]^000000",-,
 		" ~ Fields",Fields,
 		" ~ Dungeons",Dungeons,
 		" ~ Guild Castles",Castles,
-		" ~ Guild Dungeons",Guild_Dungeons,
 		" ~ Instances",Instances,
 		" ~ Special Areas",Special;
 
@@ -262,14 +261,6 @@ C5: setarray @c[2],158,272,83,47,68,155,299,345,292,107;
 C6: setarray @c[2],293,100,288,252,97,196,137,90,71,315;
 	Disp("Himinn:Andlangr:Viblainn:Hljod:Skidbladnir");
 	Pick("","sch_gld","sch_gld","sch_gld","sch_gld","sch_gld");
-
-// --------------------------------------------------
-	Guild_Dungeons:
-// --------------------------------------------------
-menu	"Arunafeltz",G5, "Schwaltzvalt",G6;
-
-G1: Go("arug_dun01",199,195);
-G2: Go("schg_dun01",200,124);
 
 // --------------------------------------------------
 	Instances:
