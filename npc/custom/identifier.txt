@@ -1,0 +1,86 @@
+//=============================
+//
+// Identifier
+// Version 1.0
+// Author: Fire685
+//
+//=============================
+
+prontera,146,196,5	script	Identifier	986,{
+  if(Zeny < 100) goto no_zeny;
+
+  mes "[Identifier]";
+  mes "Hello, would you like to identify all your unidentified items for 100 zeny each?";
+  next;
+
+  menu "Yes, please!",yes1,"No, thanks.",no1;
+
+  yes1:
+    getinventorylist;
+    set @identify, 0;
+    for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+      if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+    }
+
+    if (@identify == 0) goto no_unid;
+
+    mes "[Identifier]";
+    if (@identify < 2) {
+      mes "Are you sure you want to identify the "+@identify+" unidentified item in your inventory for "+(@identify * 100)+" zeny?";
+    } else {
+      mes "Are you sure you want to identify the "+@identify+" unidentified items in your inventory for "+(@identify * 100)+" zeny?";
+    }
+    next;
+
+    menu "Yes, identify my items!",yes2,"No, thanks.",no2;
+
+  yes2:
+    if(Zeny < 100) goto no_zeny;
+    getinventorylist;
+    set @identify, 0;
+    for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+      if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+    }
+    if (@identify == 0) goto no_unid;
+
+    getinventorylist;
+    set @identified, 0;
+    for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+      if (@inventorylist_identify[@i] == 0) {
+        if (Zeny < 100) goto no_zeny;
+        else set Zeny, Zeny - 100;
+
+        delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+        getitem @inventorylist_id[@i],1;
+        set @identified, @identified + 1;
+      }
+    }
+    mes "[Identifier]";
+    mes "All your items have been identified!";
+    close;
+
+  no1:
+    mes "[Identifier]";
+    mes "Please come again soon!";
+    close;
+
+  no2:
+    mes "[Identifier]";
+    mes "Please come again soon!";
+    close;
+
+  no_zeny:
+    mes "[Identifier]";
+    mes "You don't have enough zeny!";
+    close;
+
+  no_unid:
+    mes "[Indentifier]";
+    mes "You don't have any unidentified items!";
+    close;
+
+  no:
+    mes "[Identifier]";
+    mes "Please come again soon!";
+    close;
+}
