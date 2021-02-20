@@ -120,8 +120,8 @@ menu	"Prontera",T1, "Alberta",T2, "Aldebaran",T3, "Amatsu",T4, "Ayothaya",T5,
 		"Comodo",T6, "Einbech",T7, "Einbroch",T8, "Geffen",T9, "Gonryun",T10,
 		"Hugel",T11, "Izlude",T12, "Jawaii",T13, "Lighthalzen",T14, "Louyang",T15,
 		"Lutie",T16, "Manuk",T17, "Midgarts Expedition Camp",T18, "Morroc",T19,
-		"Moscovia",T20, "Nameless Island",T21, "Niflheim",T22, "Payon",T23, "Rachel",T24,
-		"Splendide",T25, "Thor Camp",T26, "Umbala",T27, "Veins",T28, "Yuno",T29;
+		"Moscovia",T20, "Niflheim",T21, "Payon",T22, "Rachel",T23,
+		"Splendide",T24, "Thor Camp",T25, "Umbala",T26, "Veins",T27, "Yuno",T28;
 
 T1: Go("prontera",155,183);
 T2: Go("alberta",28,234);
@@ -143,15 +143,14 @@ T17: Go("manuk",282,138);
 T18: Go("mid_camp",210,288);
 T19: Go("morocc",156,93);
 T20: Go("moscovia",223,184);
-T21: Go("nameless_n",256,215);
-T22: Go("niflheim",202,174);
-T23: Go("payon",179,100);
-T24: Go("rachel",130,110);
-T25: Go("splendide",201,147);
-T26: Go("thor_camp",246,68);
-T27: Go("umbala",97,153);
-T28: Go("veins",216,123);
-T29: Go("yuno",157,51);
+T21: Go("niflheim",202,174);
+T22: Go("payon",179,100);
+T23: Go("rachel",130,110);
+T24: Go("splendide",201,147);
+T25: Go("thor_camp",246,68);
+T26: Go("umbala",97,153);
+T27: Go("veins",216,123);
+T28: Go("yuno",157,51);
 
 // --------------------------------------------------
 	Fields:
@@ -313,7 +312,6 @@ mjolnir_02,85,364,4	duplicate(Warper)	Warper#mjo	4_F_VALKYRIE
 moc_ruins,64,164,4	duplicate(Warper)	Warper#moc	4_F_VALKYRIE
 morocc,159,97,4	duplicate(Warper)	Warper#mor	4_F_VALKYRIE
 moscovia,229,191,4	duplicate(Warper)	Warper#mos	4_F_VALKYRIE
-nameless_n,259,213,4	duplicate(Warper)	Warper#nam	4_F_VALKYRIE
 niflheim,205,179,4	duplicate(Warper)	Warper#nif	4_F_VALKYRIE
 pay_arche,42,134,4	duplicate(Warper)	Warper#arc	4_F_VALKYRIE
 payon,182,108,4	duplicate(Warper)	Warper#pay	4_F_VALKYRIE

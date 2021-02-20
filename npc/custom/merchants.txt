@@ -1,4 +1,4 @@
-prontera,134,202,5	trader	Pot Dealer#buzzyro_prt_potdealer	4_M_HUBOY,{
+prontera,134,202,5	trader	Pot Dealer::bro_prt_potdealer	4_M_HUBOY,{
 OnInit:
 	sellitem Red_Potion;
 	sellitem Orange_Potion;
@@ -11,7 +11,7 @@ OnInit:
 	sellitem Empty_Potion;
 }
 
-prontera,136,205,4	trader	Montgomery Flea Market#buzzyro_prt_misctrader	4_M_DEWOLDMAN,{
+prontera,136,205,4	trader	Montgomery Flea Market::bro_prt_misctrader	4_M_DEWOLDMAN,{
 OnInit:
 	sellitem Spectacles;
 	sellitem Wing_Of_Fly;
@@ -20,7 +20,7 @@ OnInit:
 	sellitem Yellow_Gemstone;
 }
 
-prontera,140,205,3	trader	Arrow Zealot#buzzyro_prt_arrowzealot	4_M_ARCHER,{
+prontera,140,205,3	trader	Arrow Zealot::bro_prt_arrowzealot	4_M_ARCHER,{
 OnInit:
 	sellitem Arrow;
 	sellitem Fire_Arrow;
