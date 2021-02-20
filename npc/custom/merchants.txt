@@ -19,3 +19,15 @@ OnInit:
 	sellitem Red_Gemstone;
 	sellitem Yellow_Gemstone;
 }
+
+prontera,140,205,3	trader	Arrow Zealot#buzzyro_prt_arrowzealot	4_M_ARCHER,{
+OnInit:
+	sellitem Arrow;
+	sellitem Fire_Arrow;
+	sellitem Iron_Arrow;
+	sellitem Silver_Arrow;
+	sellitem Arrow_Container;
+	sellitem Fire_Arrow_Container;
+	sellitem Iron_Arrow_Container;
+	sellitem Silver_Arrow_Container;
+}
