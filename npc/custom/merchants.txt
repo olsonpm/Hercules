@@ -1,0 +1,12 @@
+prontera,134,202,5	trader	Pot Dealer#buzzyro_prt1	4_M_HUBOY,{
+OnInit:
+	sellitem Red_Potion;
+	sellitem Orange_Potion;
+	sellitem Yellow_Potion;
+	sellitem White_Potion;
+	sellitem Green_Potion;
+	sellitem Center_Potion;
+	sellitem Awakening_Potion;
+	sellitem Berserk_Potion;
+	sellitem Empty_Potion;
+}
