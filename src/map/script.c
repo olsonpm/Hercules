@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -8801,10 +8801,10 @@ static BUILDIN(makeitem2)
 		if ((x < 0 || y < 0) && sd == NULL) {
 			x = 0;
 			y = 0;
-			map->search_freecell(NULL, m, &x, &y, -1, -1, 1);
+			map->search_free_cell(NULL, m, &x, &y, -1, -1, SFC_XY_CENTER);
 		} else {
 			range = (script_hasdata(st, 14) ? cap_value(script_getnum(st, 14), 1, battle_config.area_size) : 3);
-			map->search_freecell(&sd->bl, sd->bl.m, &x, &y, range, range, 0); // Locate spot next to player.
+			map->search_free_cell(&sd->bl, sd->bl.m, &x, &y, range, range, SFC_DEFAULT); // Locate spot next to player.
 		}
 	}
 
@@ -11501,9 +11501,9 @@ static BUILDIN(makepet)
 
 	pet_id = pet->search_petDB_index(id, PET_CLASS);
 
-	if (pet_id < 0)
+	if (pet_id == INDEX_NOT_FOUND)
 		pet_id = pet->search_petDB_index(id, PET_EGG);
-	if (pet_id >= 0 && sd) {
+	if (pet_id != INDEX_NOT_FOUND && sd != NULL) {
 		sd->catch_target_class = pet->db[pet_id].class_;
 		intif->create_pet(sd->status.account_id, sd->status.char_id,
 		                  pet->db[pet_id].class_, mob->db(pet->db[pet_id].class_)->lv,
@@ -13646,7 +13646,7 @@ static BUILDIN(waitingroom)
 ///
 /// delwaitingroom "<npc_name>";
 /// delwaitingroom;
-static BUILDIN(delwaitingroom) 
+static BUILDIN(delwaitingroom)
 {
 	struct npc_data *nd;
 	if (script_hasdata(st, 2))
@@ -13660,7 +13660,7 @@ static BUILDIN(delwaitingroom)
 		else
 			ShowWarning("buildin_delwaitingroom: NPC not found.\n");
 		return false;
-	} 
+	}
 
 	chat->delete_npc_chat(nd);
 	return true;
@@ -13701,7 +13701,7 @@ static BUILDIN(waitingroomkickall)
 ///
 /// kickwaitingroom "<npc_name>"{,"<name>"|<account id>};
 /// kickwaitingroom;
-static BUILDIN(waitingroomkick) 
+static BUILDIN(waitingroomkick)
 {
 	struct npc_data *nd;
 	struct chat_data *cd;
@@ -13865,7 +13865,7 @@ static BUILDIN(getwaitingroomstate)
 	case 34: script_pushint(st, cd->min_level); break;
 	case 35: script_pushint(st, cd->max_level); break;
 	case 36: script_pushint(st, cd->zeny); break;
-	default: 
+	default:
 		script_pushint(st, -1);
 		ShowWarning("buildin_getwaitingroomstate: invalid type '%d'.\n", type);
 		return false;
@@ -22497,11 +22497,21 @@ static BUILDIN(mercenary_create)
 
 /*==========================================
  * Remove character's mercenary and update loyalty
- * mercenary_delete({<char_id>, <update>});
+ * mercenary_delete({<char_id>, <type>});
  *------------------------------------------*/
 static BUILDIN(mercenary_delete)
 {
-	struct map_session_data* sd = NULL;
+	struct map_session_data *sd = NULL;
+
+	int type = MERC_DELETE_REMOVED;
+	if (script_hasdata(st, 3)) {
+		type = script_getnum(st, 3);
+
+		if (type < MERC_DELETE_EXPIRED || type >= MERC_DELETE_MAX) {
+			ShowWarning("buildin_mercenary_delete: Invalid type %d.\n", type);
+			return false;
+		}
+	}
 
 	if (script_hasdata(st, 2))
 		sd = script->charid2sd(st, script_getnum(st, 2));
@@ -22509,15 +22519,10 @@ static BUILDIN(mercenary_delete)
 		sd = script->rid2sd(st);
 
 	if (sd != NULL) {
-		struct mercenary_data* md = (sd->status.mer_id && sd->md != NULL) ? sd->md : NULL;
+		struct mercenary_data *md = (sd->status.mer_id && sd->md != NULL) ? sd->md : NULL;
 
-		if (md != NULL) {
-			int update_faith = 0;
-			if (script_hasdata(st, 3))
-				update_faith = cap_value(script_getnum(st, 3), 0, 1);
-
-			mercenary->delete(md, update_faith);
-		}
+		if (md != NULL)
+			mercenary->delete(md, type);
 	}
 
 	return true;
@@ -28455,6 +28460,12 @@ static void script_hardcoded_constants(void)
 	script->set_constant("MERCINFO_LIFETIME", MERCINFO_LIFETIME, false, false);
 	script->set_constant("MERCINFO_LEVEL", MERCINFO_LEVEL, false, false);
 	script->set_constant("MERCINFO_GID", MERCINFO_GID, false, false);
+
+	script->constdb_comment("Mercenary Delete Type");
+	script->set_constant("MERC_DELETE_EXPIRED", MERC_DELETE_EXPIRED, false, false);
+	script->set_constant("MERC_DELETE_KILLED", MERC_DELETE_KILLED, false, false);
+	script->set_constant("MERC_DELETE_REMOVED", MERC_DELETE_REMOVED, false, false);
+	script->set_constant("MERC_DELETE_RANAWAY", MERC_DELETE_RANAWAY, false, false);
 
 	script->constdb_comment("getpetinfo options");
 	script->set_constant("PETINFO_ID", PETINFO_ID, false, false);

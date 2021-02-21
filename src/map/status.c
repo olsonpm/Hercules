@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -9303,8 +9303,8 @@ static int status_change_start_sub(struct block_list *src, struct block_list *bl
 						pet->menu(sd, 3);
 					if (homun_alive(sd->hd))
 						homun->vaporize(sd, HOM_ST_REST, true);
-					if (sd->md)
-						mercenary->delete(sd->md,3);
+					if (sd->md != NULL)
+						mercenary->delete(sd->md, MERC_DELETE_RANAWAY);
 				}
 				break;
 			case SC__LAZINESS:

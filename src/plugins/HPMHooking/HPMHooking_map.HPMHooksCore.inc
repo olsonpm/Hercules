@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2013-2020 Hercules Dev Team
+ * Copyright (C) 2013-2021 Hercules Dev Team
  *
  * Hercules is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3570,8 +3570,8 @@ struct {
 	struct HPMHookPoint *HP_map_find_skill_unit_oncell_post;
 	struct HPMHookPoint *HP_map_get_new_object_id_pre;
 	struct HPMHookPoint *HP_map_get_new_object_id_post;
-	struct HPMHookPoint *HP_map_search_freecell_pre;
-	struct HPMHookPoint *HP_map_search_freecell_post;
+	struct HPMHookPoint *HP_map_search_free_cell_pre;
+	struct HPMHookPoint *HP_map_search_free_cell_post;
 	struct HPMHookPoint *HP_map_closest_freecell_pre;
 	struct HPMHookPoint *HP_map_closest_freecell_post;
 	struct HPMHookPoint *HP_map_quit_pre;
@@ -5244,6 +5244,8 @@ struct {
 	struct HPMHookPoint *HP_quest_read_db_post;
 	struct HPMHookPoint *HP_quest_read_db_sub_pre;
 	struct HPMHookPoint *HP_quest_read_db_sub_post;
+	struct HPMHookPoint *HP_quest_setting_lookup_const_pre;
+	struct HPMHookPoint *HP_quest_setting_lookup_const_post;
 	struct HPMHookPoint *HP_quest_questinfo_validate_icon_pre;
 	struct HPMHookPoint *HP_quest_questinfo_validate_icon_post;
 	struct HPMHookPoint *HP_quest_questinfo_refresh_pre;
@@ -5268,6 +5270,10 @@ struct {
 	struct HPMHookPoint *HP_quest_questinfo_validate_quests_post;
 	struct HPMHookPoint *HP_quest_questinfo_validate_mercenary_class_pre;
 	struct HPMHookPoint *HP_quest_questinfo_validate_mercenary_class_post;
+	struct HPMHookPoint *HP_quest_mobele2client_pre;
+	struct HPMHookPoint *HP_quest_mobele2client_post;
+	struct HPMHookPoint *HP_quest_mobrace2client_pre;
+	struct HPMHookPoint *HP_quest_mobrace2client_post;
 	struct HPMHookPoint *HP_refine_init_pre;
 	struct HPMHookPoint *HP_refine_init_post;
 	struct HPMHookPoint *HP_refine_final_pre;
@@ -10639,8 +10645,8 @@ struct {
 	int HP_map_find_skill_unit_oncell_post;
 	int HP_map_get_new_object_id_pre;
 	int HP_map_get_new_object_id_post;
-	int HP_map_search_freecell_pre;
-	int HP_map_search_freecell_post;
+	int HP_map_search_free_cell_pre;
+	int HP_map_search_free_cell_post;
 	int HP_map_closest_freecell_pre;
 	int HP_map_closest_freecell_post;
 	int HP_map_quit_pre;
@@ -12313,6 +12319,8 @@ struct {
 	int HP_quest_read_db_post;
 	int HP_quest_read_db_sub_pre;
 	int HP_quest_read_db_sub_post;
+	int HP_quest_setting_lookup_const_pre;
+	int HP_quest_setting_lookup_const_post;
 	int HP_quest_questinfo_validate_icon_pre;
 	int HP_quest_questinfo_validate_icon_post;
 	int HP_quest_questinfo_refresh_pre;
@@ -12337,6 +12345,10 @@ struct {
 	int HP_quest_questinfo_validate_quests_post;
 	int HP_quest_questinfo_validate_mercenary_class_pre;
 	int HP_quest_questinfo_validate_mercenary_class_post;
+	int HP_quest_mobele2client_pre;
+	int HP_quest_mobele2client_post;
+	int HP_quest_mobrace2client_pre;
+	int HP_quest_mobrace2client_post;
 	int HP_refine_init_pre;
 	int HP_refine_init_post;
 	int HP_refine_final_pre;

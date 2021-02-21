@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -11791,7 +11791,7 @@ static void clif_parse_HowManyConnections(int fd, struct map_session_data *sd)
 	clif->user_count(sd, map->getusers());
 }
 
-static void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action_type, int target_id, int64 tick)
+static void clif_parse_ActionRequest_sub(struct map_session_data *sd, enum action_type action_type, int target_id, int64 tick)
 {
 	nullpo_retv(sd);
 	if (pc_isdead(sd)) {
@@ -11803,14 +11803,14 @@ static void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action
 	// (not all are included in pc_can_attack)
 	if( sd->sc.count && (
 			sd->sc.data[SC_TRICKDEAD] ||
-			(sd->sc.data[SC_AUTOCOUNTER] && action_type != 0x07) ||
+			(sd->sc.data[SC_AUTOCOUNTER] && action_type != ACT_ATTACK_REPEAT) ||
 			 sd->sc.data[SC_BLADESTOP] ||
 			 sd->sc.data[SC_DEEP_SLEEP] ||
 			 sd->sc.data[SC_SUHIDE] )
 			 )
 		return;
 
-	if(action_type != 0x00 && action_type != 0x07)
+	if (action_type != ACT_ATTACK && action_type != ACT_ATTACK_REPEAT)
 		pc_stop_walking(sd, STOPWALKING_FLAG_FIXPOS);
 	pc_stop_attack(sd);
 
@@ -11818,8 +11818,8 @@ static void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action
 		target_id = sd->bl.id;
 
 	switch(action_type) {
-		case 0x00: // once attack
-		case 0x07: // continuous attack
+		case ACT_ATTACK: // once attack
+		case ACT_ATTACK_REPEAT: // continuous attack
 		{
 			struct npc_data *nd = map->id2nd(target_id);
 			if (nd != NULL) {
@@ -11846,10 +11846,10 @@ static void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action
 
 			pc->delinvincibletimer(sd);
 			pc->update_idle_time(sd, BCIDLE_ATTACK);
-			unit->attack(&sd->bl, target_id, action_type != 0);
+			unit->attack(&sd->bl, target_id, action_type != ACT_ATTACK);
 		}
 		break;
-		case 0x02: // sitdown
+		case ACT_SIT: // sitdown
 			if (battle_config.basic_skill_check && !pc->check_basicskill(sd, 3)) {
 				clif->skill_fail(sd, 1, USESKILL_FAIL_LEVEL, 2, 0);
 				break;
@@ -11883,7 +11883,7 @@ static void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action
 			skill->sit(sd,1);
 			clif->sitting(&sd->bl);
 		break;
-		case 0x03: // standup
+		case ACT_STAND: // standup
 
 			if (sd->sc.data[SC_SITDOWN_FORCE] || sd->sc.data[SC_BANANA_BOMB_SITDOWN_POSTDELAY])
 				return;
@@ -11921,7 +11921,7 @@ static void clif_parse_ActionRequest(int fd, struct map_session_data *sd) __attr
 static void clif_parse_ActionRequest(int fd, struct map_session_data *sd)
 {
 	clif->pActionRequest_sub(sd,
-		RFIFOB(fd,packet_db[RFIFOW(fd,0)].pos[1]),
+		(enum action_type)RFIFOB(fd,packet_db[RFIFOW(fd,0)].pos[1]),
 		RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]),
 		timer->gettick()
 	);
@@ -12317,7 +12317,7 @@ static void clif_parse_NpcClicked(int fd, struct map_session_data *sd)
 	switch (bl->type) {
 		case BL_MOB:
 		case BL_PC:
-			clif->pActionRequest_sub(sd, 0x07, bl->id, timer->gettick());
+			clif->pActionRequest_sub(sd, ACT_ATTACK_REPEAT, bl->id, timer->gettick());
 			break;
 		case BL_NPC:
 			if (sd->ud.skill_id < RK_ENCHANTBLADE && sd->ud.skilltimer != INVALID_TIMER) { // TODO: should only work with none 3rd job skills
@@ -15603,7 +15603,7 @@ static void clif_parse_pet_evolution(int fd, struct map_session_data *sd)
 
 			int pet_id = pet->search_petDB_index(ped->petEggId, PET_EGG);
 
-			if (pet_id >= 0) {
+			if (pet_id != INDEX_NOT_FOUND) {
 				sd->catch_target_class = pet->db[pet_id].class_;
 				intif->create_pet(sd->status.account_id, sd->status.char_id, pet->db[pet_id].class_,
 						  mob->db(pet->db[pet_id].class_)->lv, pet->db[pet_id].EggID,
@@ -16894,18 +16894,17 @@ static void clif_parse_HomAttack(int fd, struct map_session_data *sd)
 		return;
 
 	struct block_list *bl = NULL;
-	int id = RFIFOL(fd,2),
-		target_id = RFIFOL(fd,6),
-		action_type = RFIFOB(fd,10);
+	const struct PACKET_CZ_REQUEST_ACTNPC *p = RP2PTR(fd);
 
-	if( homun_alive(sd->hd) && sd->hd->bl.id == id )
+	if (homun_alive(sd->hd) && sd->hd->bl.id == p->GID)
 		bl = &sd->hd->bl;
-	else if( sd->md && sd->md->bl.id == id )
+	else if (sd->md && sd->md->bl.id == p->GID)
 		bl = &sd->md->bl;
-	else return;
+	else
+		return;
 
 	unit->stop_attack(bl);
-	unit->attack(bl, target_id, action_type != 0);
+	unit->attack(bl, p->targetGID, p->action != ACT_ATTACK);
 }
 
 static void clif_parse_HomMenu(int fd, struct map_session_data *sd) __attribute__((nonnull (2)));
@@ -18324,28 +18323,41 @@ static void clif_quest_send_list(struct map_session_data *sd)
 		info->hunting_count = qi->objectives_count;
 
 		for (j = 0; j < qi->objectives_count; j++) {
-			struct mob_db *mob_data;
 			Assert_retb(j < MAX_QUEST_OBJECTIVES);
+
+			int mob_id = qi->objectives[j].mob;
+			if (mob_id == 0) {
+				if (quest_mobtypeisenabled(qi->objectives[j].mobtype)) {
+					mob_id = QUEST_MOBTYPE_ID;
+				} else if (qi->objectives[j].mapid >= 0) {
+					mob_id = QUEST_MAPWIDE_ID;
+				}
+			}
 			real_len += sizeof(info->objectives[j]);
 
-			mob_data = mob->db(qi->objectives[j].mob);
 #if PACKETVER_ZERO_NUM >= 20181010 || PACKETVER >= 20181017
 			info->objectives[j].huntIdent = sd->quest_log[i].quest_id;
 			info->objectives[j].huntIdent2 = j;
-			info->objectives[j].mobType = 0; // Info Needed
+			info->objectives[j].mobType = quest_mobtype2client(qi->objectives[j].mobtype);
 #elif PACKETVER >= 20150513
 			info->objectives[j].huntIdent = (sd->quest_log[i].quest_id * 1000) + j;
-			info->objectives[j].mobType = 0; // Info Needed
+			info->objectives[j].mobType = quest_mobtype2client(qi->objectives[j].mobtype);
 #endif
-			info->objectives[j].mob_id = qi->objectives[j].mob;
+			info->objectives[j].mob_id = mob_id;
 #if PACKETVER >= 20150513
-			// Info Needed
-			info->objectives[j].levelMin = 0;
-			info->objectives[j].levelMax = 0;
+			info->objectives[j].levelMin = qi->objectives[j].level.min;
+			info->objectives[j].levelMax = qi->objectives[j].level.max;
 #endif
 			info->objectives[j].huntCount = sd->quest_log[i].count[j];
 			info->objectives[j].maxCount = qi->objectives[j].count;
-			safestrncpy(info->objectives[j].mobName, mob_data->jname, sizeof(info->objectives[j].mobName));
+			if (mob_id == QUEST_MAPWIDE_ID) {
+				safestrncpy(info->objectives[j].mobName, map->list[qi->objectives[j].mapid].name, NAME_LENGTH);
+			} else if (mob_id == QUEST_MOBTYPE_ID) {
+				safestrncpy(info->objectives[j].mobName, "", NAME_LENGTH);
+			} else {
+				const struct mob_db *monster = mob->db(qi->objectives[j].mob);
+				safestrncpy(info->objectives[j].mobName, monster->jname, NAME_LENGTH);
+			}
 		}
 #endif // PACKETVER >= 20141022
 	}
@@ -18418,26 +18430,38 @@ static void clif_quest_add(struct map_session_data *sd, struct quest *qd)
 	packet->count = qi->objectives_count;
 
 	for (i = 0; i < qi->objectives_count; i++) {
-		struct mob_db *monster;
-
-		monster = mob->db(qi->objectives[i].mob);
+		int mob_id = qi->objectives[i].mob;
+		if (mob_id == 0) {
+			if (quest_mobtypeisenabled(qi->objectives[i].mobtype)) {
+				mob_id = QUEST_MOBTYPE_ID;
+			} else if (qi->objectives[i].mapid >= 0) {
+				mob_id = QUEST_MAPWIDE_ID;
+			}
+		}
 
 #if PACKETVER_ZERO_NUM >= 20181010 || PACKETVER >= 20181017
 		packet->objectives[i].huntIdent = qd->quest_id;
 		packet->objectives[i].huntIdent2 = i;
-		packet->objectives[i].mobType = 0; // Info Needed
+		packet->objectives[i].mobType = quest_mobtype2client(qi->objectives[i].mobtype);
 #elif PACKETVER >= 20150513
 		packet->objectives[i].huntIdent = (qd->quest_id * 1000) + i;
-		packet->objectives[i].mobType = 0; // Info Needed
+		packet->objectives[i].mobType = quest_mobtype2client(qi->objectives[i].mobtype);
 #endif
-		packet->objectives[i].mob_id = qi->objectives[i].mob;
+		packet->objectives[i].mob_id = mob_id;
 #if PACKETVER >= 20150513
-		// Info Needed
-		packet->objectives[i].levelMin = 0;
-		packet->objectives[i].levelMax = 0;
+		packet->objectives[i].levelMin = qi->objectives[i].level.min;
+		packet->objectives[i].levelMax = qi->objectives[i].level.max;
 #endif
 		packet->objectives[i].huntCount = qd->count[i];
-		memcpy(packet->objectives[i].mobName, monster->jname, NAME_LENGTH);
+
+		if (mob_id == QUEST_MAPWIDE_ID) {
+			safestrncpy(packet->objectives[i].mobName, map->list[qi->objectives[i].mapid].name, NAME_LENGTH);
+		} else if (mob_id == QUEST_MOBTYPE_ID) {
+			safestrncpy(packet->objectives[i].mobName, "", NAME_LENGTH);
+		} else {
+			const struct mob_db *monster = mob->db(qi->objectives[i].mob);
+			safestrncpy(packet->objectives[i].mobName, monster->jname, NAME_LENGTH);
+		}
 	}
 	clif->send(buf, len, &sd->bl, SELF);
 	aFree(buf);
@@ -18777,7 +18801,7 @@ static void clif_parse_mercenary_action(int fd, struct map_session_data *sd)
 		return;
 
 	if (option == 2)
-		mercenary->delete(sd->md, 2);
+		mercenary->delete(sd->md, MERC_DELETE_REMOVED);
 }
 
 /// Mercenary Message

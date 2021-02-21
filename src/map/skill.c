@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -4239,7 +4239,7 @@ static int skill_timerskill(int tid, int64 tick, int id, intptr_t data)
 				case RG_INTIMIDATE:
 					if (unit->warp(src,-1,-1,-1,CLR_TELEPORT) == 0) {
 						short x,y;
-						map->search_freecell(src, 0, &x, &y, 1, 1, 0);
+						map->search_free_cell(src, 0, &x, &y, 1, 1, SFC_DEFAULT);
 						if (target != src && !status->isdead(target))
 							unit->warp(target, -1, x, y, CLR_TELEPORT);
 					}
@@ -4310,7 +4310,7 @@ static int skill_timerskill(int tid, int64 tick, int id, intptr_t data)
 						unit->warp(src, -1, skl->x, skl->y, CLR_TELEPORT);
 					else { // Target's Part
 						short x = skl->x, y = skl->y;
-						map->search_freecell(NULL, target->m, &x, &y, 2, 2, 1);
+						map->search_free_cell(NULL, target->m, &x, &y, 2, 2, SFC_XY_CENTER);
 						unit->warp(target,-1,x,y,CLR_TELEPORT);
 					}
 					break;
@@ -5379,7 +5379,7 @@ static int skill_castend_damage_id(struct block_list *src, struct block_list *bl
 			if( !map_flag_gvg2(src->m) && !map->list[src->m].flag.battleground ) {
 				//You don't move on GVG grounds.
 				short x, y;
-				map->search_freecell(bl, 0, &x, &y, 1, 1, 0);
+				map->search_free_cell(bl, 0, &x, &y, 1, 1, SFC_DEFAULT);
 				if (unit->move_pos(src, x, y, 0, false) == 0)
 					clif->slide(src,src->x,src->y);
 			}
@@ -5646,7 +5646,7 @@ static int skill_castend_damage_id(struct block_list *src, struct block_list *bl
 				skill->attack(BF_WEAPON,src,src,bl,skill_id,skill_lv,tick,flag);
 			else {
 				short x, y;
-				map->search_freecell(src, 0, &x, &y, -1, -1, 0);
+				map->search_free_cell(src, 0, &x, &y, -1, -1, SFC_DEFAULT);
 				// Destination area
 				skill->area_temp[4] = x;
 				skill->area_temp[5] = y;
@@ -10992,7 +10992,7 @@ static int skill_castend_nodamage_id(struct block_list *src, struct block_list *
 				{ MOBID_LUCIOLA_VESPA, 5 },
 			};
 			int i, dummy = 0;
-			Assert_retb(skill_lv < ARRAYLENGTH(summons));
+			Assert_retb(skill_lv <= ARRAYLENGTH(summons));
 
 			i = map->foreachinmap(skill->check_condition_mob_master_sub, src->m, BL_MOB, src->id, summons[skill_lv-1].mob_id, skill_id, &dummy);
 			if(i >= summons[skill_lv-1].quantity)

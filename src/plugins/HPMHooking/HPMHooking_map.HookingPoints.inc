@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2013-2020 Hercules Dev Team
+ * Copyright (C) 2013-2021 Hercules Dev Team
  *
  * Hercules is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1828,7 +1828,7 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(map->count_oncell, HP_map_count_oncell) },
 	{ HP_POP(map->find_skill_unit_oncell, HP_map_find_skill_unit_oncell) },
 	{ HP_POP(map->get_new_object_id, HP_map_get_new_object_id) },
-	{ HP_POP(map->search_freecell, HP_map_search_freecell) },
+	{ HP_POP(map->search_free_cell, HP_map_search_free_cell) },
 	{ HP_POP(map->closest_freecell, HP_map_closest_freecell) },
 	{ HP_POP(map->quit, HP_map_quit) },
 	{ HP_POP(map->addnpc, HP_map_addnpc) },
@@ -2683,6 +2683,7 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(quest->clear, HP_quest_clear) },
 	{ HP_POP(quest->read_db, HP_quest_read_db) },
 	{ HP_POP(quest->read_db_sub, HP_quest_read_db_sub) },
+	{ HP_POP(quest->setting_lookup_const, HP_quest_setting_lookup_const) },
 	{ HP_POP(quest->questinfo_validate_icon, HP_quest_questinfo_validate_icon) },
 	{ HP_POP(quest->questinfo_refresh, HP_quest_questinfo_refresh) },
 	{ HP_POP(quest->questinfo_validate, HP_quest_questinfo_validate) },
@@ -2695,6 +2696,8 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(quest->questinfo_validate_homunculus_type, HP_quest_questinfo_validate_homunculus_type) },
 	{ HP_POP(quest->questinfo_validate_quests, HP_quest_questinfo_validate_quests) },
 	{ HP_POP(quest->questinfo_validate_mercenary_class, HP_quest_questinfo_validate_mercenary_class) },
+	{ HP_POP(quest->mobele2client, HP_quest_mobele2client) },
+	{ HP_POP(quest->mobrace2client, HP_quest_mobrace2client) },
 /* refine_interface */
 	{ HP_POP(refine->init, HP_refine_init) },
 	{ HP_POP(refine->final, HP_refine_final) },

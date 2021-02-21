@@ -4,7 +4,7 @@
 # This file is part of Hercules.
 # http://herc.ws - http://github.com/HerculesWS/Hercules
 #
-# Copyright (C) 2012-2020 Hercules Dev Team
+# Copyright (C) 2012-2021 Hercules Dev Team
 # Copyright (C) Athena Dev Teams
 #
 # Hercules is free software: you can redistribute it and/or modify
@@ -1096,6 +1096,7 @@ AC_DEFUN([AC_CHECK_COMPILER_WNOFLAG],
 )
 
 AC_CHECK_FLAG(-fsigned-char)
+AC_CHECK_FLAG(-fcf-protection=none)
 
 AC_CHECK_COMPILER_WNOFLAG(unused-parameter, [int foo(int bar) { return 0; }])
 AC_CHECK_COMPILER_WNOFLAG(clobbered)

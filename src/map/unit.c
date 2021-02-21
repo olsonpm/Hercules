@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -782,9 +782,9 @@ static void unit_run_hit(struct block_list *bl, struct status_change *sc, struct
 	nullpo_retv(ud);
 	//Set running to 0 beforehand so status_change_end knows not to enable spurt [Kevin]
 	ud->state.running = 0;
+	int lv = sc->data[type]->val1;
 	status_change_end(bl, type, INVALID_TIMER);
 
-	int lv = sc->data[type]->val1;
 	if (type == SC_RUN) {
 		if (lv > 0)
 			skill->blown(bl, bl, skill->get_blewcount(TK_RUN, lv), unit->getdir(bl), 0);
@@ -1078,7 +1078,7 @@ static int unit_warp(struct block_list *bl, short m, short x, short y, enum clr_
 
 	if (x<0 || y<0) {
 		//Random map position.
-		if (!map->search_freecell(NULL, m, &x, &y, -1, -1, 1)) {
+		if (map->search_free_cell(NULL, m, &x, &y, -1, -1, SFC_XY_CENTER) != 0) {
 			ShowWarning("unit_warp failed. Unit Id:%d/Type:%u, target position map %d (%s) at [%d,%d]\n", bl->id, bl->type, m, map->list[m].name, x, y);
 			return 2;
 
@@ -1087,7 +1087,7 @@ static int unit_warp(struct block_list *bl, short m, short x, short y, enum clr_
 		//Invalid target cell
 		ShowWarning("unit_warp: Specified non-walkable target cell: %d (%s) at [%d,%d]\n", m, map->list[m].name, x,y);
 
-		if (!map->search_freecell(NULL, m, &x, &y, 4, 4, 1)) {
+		if (map->search_free_cell(NULL, m, &x, &y, 4, 4, SFC_XY_CENTER) != 0) {
 			//Can't find a nearby cell
 			ShowWarning("unit_warp failed. Unit Id:%d/Type:%u, target position map %d (%s) at [%d,%d]\n", bl->id, bl->type, m, map->list[m].name, x, y);
 			return 2;
@@ -2708,6 +2708,7 @@ static int unit_remove_map(struct block_list *bl, enum clr_type clrtype, const c
 					sd->state.active, sd->state.connect_new, sd->state.rewarp, sd->state.changemap, sd->state.debug_remove_map,
 					map->list[bl->m].name, map->list[bl->m].users,
 					sd->debug_file, sd->debug_line, sd->debug_func, file, line, func);
+					Assert_report(0);
 			} else if (--map->list[bl->m].users == 0 && battle_config.dynamic_mobs) //[Skotlex]
 				map->removemobs(bl->m);
 			if (!(pc_isinvisible(sd))) {

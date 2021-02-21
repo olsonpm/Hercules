@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -1907,7 +1907,7 @@ static void send_shortlist_add_fd(int fd)
 	}
 
 	// set the bit
-	send_shortlist_set[i] |= 1<<bit;
+	send_shortlist_set[i] |= 1U << bit;
 	// Add to the end of the shortlist array.
 	send_shortlist_array[send_shortlist_count++] = fd;
 }
@@ -1938,7 +1938,7 @@ static void send_shortlist_do_sends(void)
 			ShowDebug("send_shortlist_do_sends: fd is not set, why is it in the shortlist? (fd=%d)\n", fd);
 			continue;
 		}
-		send_shortlist_set[idx]&=~(1<<bit);// unset fd
+		send_shortlist_set[idx] &=~ (1U << bit);// unset fd
 		// If this session still exists, perform send operations on it and
 		// check for the eof state.
 		if( sockt->session[fd] )

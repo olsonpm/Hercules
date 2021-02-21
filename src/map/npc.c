@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -2899,7 +2899,7 @@ static int npc_selllist(struct map_session_data *sd, struct itemlist *item_list)
 		int idx = entry->id;
 
 		if (sd->inventory_data[idx]->type == IT_PETEGG && sd->status.inventory[idx].card[0] == CARD0_PET) {
-			if (pet->search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) >= 0)
+			if (pet->search_petDB_index(sd->status.inventory[idx].nameid, PET_EGG) != INDEX_NOT_FOUND)
 				intif->delete_petdata(MakeDWord(sd->status.inventory[idx].card[1], sd->status.inventory[idx].card[2]));
 		}
 

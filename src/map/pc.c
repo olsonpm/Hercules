@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -8187,7 +8187,7 @@ static int pc_dead(struct map_session_data *sd, struct block_list *src)
 		homun->vaporize(sd, HOM_ST_REST, true);
 
 	if (sd->md != NULL)
-		mercenary->delete(sd->md, 3); // Your mercenary soldier ran away.
+		mercenary->delete(sd->md, MERC_DELETE_RANAWAY); // Your mercenary soldier ran away.
 
 	if (sd->ed != NULL)
 		elemental->delete(sd->ed, 0);

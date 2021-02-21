@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2012-2020 Hercules Dev Team
+ * Copyright (C) 2012-2021 Hercules Dev Team
  * Copyright (C) Athena Dev Teams
  *
  * Hercules is free software: you can redistribute it and/or modify
@@ -446,6 +446,16 @@ enum auto_trigger_flag {
 	ATF_WEAPON=0x10,
 	ATF_MAGIC=0x20,
 	ATF_MISC=0x40,
+};
+
+/**
+ * used for map->search_free_cell parameter flag
+ */
+enum search_freecell {
+	SFC_DEFAULT = 0,
+	SFC_XY_CENTER = 1,
+	SFC_REACHABLE = 2,
+	SFC_AVOIDPLAYER = 4,
 };
 
 struct block_list {
@@ -1151,7 +1161,7 @@ END_ZEROED_BLOCK;
 	struct skill_unit * (*find_skill_unit_oncell) (struct block_list* target,int16 x,int16 y,uint16 skill_id,struct skill_unit* out_unit, int flag);
 	// search and creation
 	int (*get_new_object_id) (void);
-	int (*search_freecell) (struct block_list *src, int16 m, int16 *x, int16 *y, int16 rx, int16 ry, int flag);
+	int (*search_free_cell) (struct block_list *src, int16 m, int16 *x, int16 *y, int16 range_x, int16 range_y, int flag);
 	bool (*closest_freecell) (int16 m, const struct block_list *bl, int16 *x, int16 *y, int type, int flag);
 	//
 	int (*quit) (struct map_session_data *sd);

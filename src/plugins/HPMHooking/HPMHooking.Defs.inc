@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2013-2020 Hercules Dev Team
+ * Copyright (C) 2013-2021 Hercules Dev Team
  *
  * Hercules is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2134,8 +2134,8 @@ typedef void (*HPMHOOK_pre_clif_pHowManyConnections) (int *fd, struct map_sessio
 typedef void (*HPMHOOK_post_clif_pHowManyConnections) (int fd, struct map_session_data *sd);
 typedef void (*HPMHOOK_pre_clif_pActionRequest) (int *fd, struct map_session_data **sd);
 typedef void (*HPMHOOK_post_clif_pActionRequest) (int fd, struct map_session_data *sd);
-typedef void (*HPMHOOK_pre_clif_pActionRequest_sub) (struct map_session_data **sd, int *action_type, int *target_id, int64 *tick);
-typedef void (*HPMHOOK_post_clif_pActionRequest_sub) (struct map_session_data *sd, int action_type, int target_id, int64 tick);
+typedef void (*HPMHOOK_pre_clif_pActionRequest_sub) (struct map_session_data **sd, enum action_type *action_type, int *target_id, int64 *tick);
+typedef void (*HPMHOOK_post_clif_pActionRequest_sub) (struct map_session_data *sd, enum action_type action_type, int target_id, int64 tick);
 typedef void (*HPMHOOK_pre_clif_pRestart) (int *fd, struct map_session_data **sd);
 typedef void (*HPMHOOK_post_clif_pRestart) (int fd, struct map_session_data *sd);
 typedef void (*HPMHOOK_pre_clif_pWisMessage) (int *fd, struct map_session_data **sd);
@@ -4646,8 +4646,8 @@ typedef struct skill_unit* (*HPMHOOK_pre_map_find_skill_unit_oncell) (struct blo
 typedef struct skill_unit* (*HPMHOOK_post_map_find_skill_unit_oncell) (struct skill_unit* retVal___, struct block_list *target, int16 x, int16 y, uint16 skill_id, struct skill_unit *out_unit, int flag);
 typedef int (*HPMHOOK_pre_map_get_new_object_id) (void);
 typedef int (*HPMHOOK_post_map_get_new_object_id) (int retVal___);
-typedef int (*HPMHOOK_pre_map_search_freecell) (struct block_list **src, int16 *m, int16 **x, int16 **y, int16 *rx, int16 *ry, int *flag);
-typedef int (*HPMHOOK_post_map_search_freecell) (int retVal___, struct block_list *src, int16 m, int16 *x, int16 *y, int16 rx, int16 ry, int flag);
+typedef int (*HPMHOOK_pre_map_search_free_cell) (struct block_list **src, int16 *m, int16 **x, int16 **y, int16 *range_x, int16 *range_y, int *flag);
+typedef int (*HPMHOOK_post_map_search_free_cell) (int retVal___, struct block_list *src, int16 m, int16 *x, int16 *y, int16 range_x, int16 range_y, int flag);
 typedef bool (*HPMHOOK_pre_map_closest_freecell) (int16 *m, const struct block_list **bl, int16 **x, int16 **y, int *type, int *flag);
 typedef bool (*HPMHOOK_post_map_closest_freecell) (bool retVal___, int16 m, const struct block_list *bl, int16 *x, int16 *y, int type, int flag);
 typedef int (*HPMHOOK_pre_map_quit) (struct map_session_data **sd);
@@ -5300,8 +5300,8 @@ typedef void (*HPMHOOK_pre_mercenary_heal) (struct mercenary_data **md, int *hp,
 typedef void (*HPMHOOK_post_mercenary_heal) (struct mercenary_data *md, int hp, int sp);
 typedef int (*HPMHOOK_pre_mercenary_dead) (struct mercenary_data **md);
 typedef int (*HPMHOOK_post_mercenary_dead) (int retVal___, struct mercenary_data *md);
-typedef int (*HPMHOOK_pre_mercenary_delete) (struct mercenary_data **md, int *reply);
-typedef int (*HPMHOOK_post_mercenary_delete) (int retVal___, struct mercenary_data *md, int reply);
+typedef void (*HPMHOOK_pre_mercenary_delete) (struct mercenary_data **md, int *reply);
+typedef void (*HPMHOOK_post_mercenary_delete) (struct mercenary_data *md, int reply);
 typedef void (*HPMHOOK_pre_mercenary_contract_stop) (struct mercenary_data **md);
 typedef void (*HPMHOOK_post_mercenary_contract_stop) (struct mercenary_data *md);
 typedef int (*HPMHOOK_pre_mercenary_get_lifetime) (struct mercenary_data **md);
@@ -6570,8 +6570,8 @@ typedef int (*HPMHOOK_pre_pet_sc_check) (struct map_session_data **sd, int *type
 typedef int (*HPMHOOK_post_pet_sc_check) (int retVal___, struct map_session_data *sd, int type);
 typedef int (*HPMHOOK_pre_pet_hungry) (int *tid, int64 *tick, int *id, intptr_t *data);
 typedef int (*HPMHOOK_post_pet_hungry) (int retVal___, int tid, int64 tick, int id, intptr_t data);
-typedef int (*HPMHOOK_pre_pet_search_petDB_index) (int *key, int *type);
-typedef int (*HPMHOOK_post_pet_search_petDB_index) (int retVal___, int key, int type);
+typedef int (*HPMHOOK_pre_pet_search_petDB_index) (int *key, enum petdb_key_type *p1);
+typedef int (*HPMHOOK_post_pet_search_petDB_index) (int retVal___, int key, enum petdb_key_type p1);
 typedef int (*HPMHOOK_pre_pet_hungry_timer_delete) (struct pet_data **pd);
 typedef int (*HPMHOOK_post_pet_hungry_timer_delete) (int retVal___, struct pet_data *pd);
 typedef int (*HPMHOOK_pre_pet_performance) (struct map_session_data **sd, struct pet_data **pd);
@@ -6632,12 +6632,12 @@ typedef int (*HPMHOOK_pre_pet_read_db_libconfig) (const char **filename, bool *i
 typedef int (*HPMHOOK_post_pet_read_db_libconfig) (int retVal___, const char *filename, bool ignore_missing);
 typedef int (*HPMHOOK_pre_pet_read_db_sub) (struct config_setting_t **it, int *n, const char **source);
 typedef int (*HPMHOOK_post_pet_read_db_sub) (int retVal___, struct config_setting_t *it, int n, const char *source);
-typedef bool (*HPMHOOK_pre_pet_read_db_sub_intimacy) (int *idx, struct config_setting_t **t);
-typedef bool (*HPMHOOK_post_pet_read_db_sub_intimacy) (bool retVal___, int idx, struct config_setting_t *t);
+typedef bool (*HPMHOOK_pre_pet_read_db_sub_intimacy) (struct s_pet_db **entry, struct config_setting_t **t);
+typedef bool (*HPMHOOK_post_pet_read_db_sub_intimacy) (bool retVal___, struct s_pet_db *entry, struct config_setting_t *t);
 typedef void (*HPMHOOK_pre_pet_read_db_clear) (void);
 typedef void (*HPMHOOK_post_pet_read_db_clear) (void);
-typedef void (*HPMHOOK_pre_pet_read_db_sub_evolution) (struct config_setting_t **t, int *n);
-typedef void (*HPMHOOK_post_pet_read_db_sub_evolution) (struct config_setting_t *t, int n);
+typedef bool (*HPMHOOK_pre_pet_read_db_sub_evolution) (struct s_pet_db **entry, struct config_setting_t **t);
+typedef bool (*HPMHOOK_post_pet_read_db_sub_evolution) (bool retVal___, struct s_pet_db *entry, struct config_setting_t *t);
 #endif // MAP_PET_H
 #ifdef CHAR_PINCODE_H /* pincode */
 typedef void (*HPMHOOK_pre_pincode_handle) (int *fd, struct char_session_data **sd);
@@ -6692,8 +6692,8 @@ typedef int (*HPMHOOK_pre_quest_delete) (struct map_session_data **sd, int *ques
 typedef int (*HPMHOOK_post_quest_delete) (int retVal___, struct map_session_data *sd, int quest_id);
 typedef int (*HPMHOOK_pre_quest_update_objective_sub) (struct block_list **bl, va_list ap);
 typedef int (*HPMHOOK_post_quest_update_objective_sub) (int retVal___, struct block_list *bl, va_list ap);
-typedef void (*HPMHOOK_pre_quest_update_objective) (struct map_session_data **sd, int *mob_id);
-typedef void (*HPMHOOK_post_quest_update_objective) (struct map_session_data *sd, int mob_id);
+typedef void (*HPMHOOK_pre_quest_update_objective) (struct map_session_data **sd, const struct mob_data **md);
+typedef void (*HPMHOOK_post_quest_update_objective) (struct map_session_data *sd, const struct mob_data *md);
 typedef int (*HPMHOOK_pre_quest_update_status) (struct map_session_data **sd, int *quest_id, enum quest_state *qs);
 typedef int (*HPMHOOK_post_quest_update_status) (int retVal___, struct map_session_data *sd, int quest_id, enum quest_state qs);
 typedef int (*HPMHOOK_pre_quest_check) (struct map_session_data **sd, int *quest_id, enum quest_check_type *type);
@@ -6704,6 +6704,8 @@ typedef int (*HPMHOOK_pre_quest_read_db) (void);
 typedef int (*HPMHOOK_post_quest_read_db) (int retVal___);
 typedef struct quest_db* (*HPMHOOK_pre_quest_read_db_sub) (struct config_setting_t **cs, int *n, const char **source);
 typedef struct quest_db* (*HPMHOOK_post_quest_read_db_sub) (struct quest_db* retVal___, struct config_setting_t *cs, int n, const char *source);
+typedef int (*HPMHOOK_pre_quest_setting_lookup_const) (struct config_setting_t **tt, const char **name, int **value, int *quest_id, int *idx, const char **kind, const char **source);
+typedef int (*HPMHOOK_post_quest_setting_lookup_const) (int retVal___, struct config_setting_t *tt, const char *name, int *value, int quest_id, int idx, const char *kind, const char *source);
 typedef int (*HPMHOOK_pre_quest_questinfo_validate_icon) (int *icon);
 typedef int (*HPMHOOK_post_quest_questinfo_validate_icon) (int retVal___, int icon);
 typedef void (*HPMHOOK_pre_quest_questinfo_refresh) (struct map_session_data **sd);
@@ -6728,6 +6730,10 @@ typedef bool (*HPMHOOK_pre_quest_questinfo_validate_quests) (struct map_session_
 typedef bool (*HPMHOOK_post_quest_questinfo_validate_quests) (bool retVal___, struct map_session_data *sd, struct questinfo *qi);
 typedef bool (*HPMHOOK_pre_quest_questinfo_validate_mercenary_class) (struct map_session_data **sd, struct questinfo **qi);
 typedef bool (*HPMHOOK_post_quest_questinfo_validate_mercenary_class) (bool retVal___, struct map_session_data *sd, struct questinfo *qi);
+typedef enum quest_mobtype (*HPMHOOK_pre_quest_mobele2client) (uint8 *type);
+typedef enum quest_mobtype (*HPMHOOK_post_quest_mobele2client) (enum quest_mobtype retVal___, uint8 type);
+typedef enum quest_mobtype (*HPMHOOK_pre_quest_mobrace2client) (uint8 *type);
+typedef enum quest_mobtype (*HPMHOOK_post_quest_mobrace2client) (enum quest_mobtype retVal___, uint8 type);
 #endif // MAP_QUEST_H
 #ifdef MAP_REFINE_H /* refine */
 typedef int (*HPMHOOK_pre_refine_init) (bool *minimal);

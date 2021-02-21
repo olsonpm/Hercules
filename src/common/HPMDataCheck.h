@@ -2,7 +2,7 @@
  * This file is part of Hercules.
  * http://herc.ws - http://github.com/HerculesWS/Hercules
  *
- * Copyright (C) 2014-2020 Hercules Dev Team
+ * Copyright (C) 2014-2021 Hercules Dev Team
  *
  * Hercules is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -652,6 +652,7 @@ HPExport const struct s_HPMDataCheck HPMDataCheck[] = {
 		{ "PACKET_CZ_REQ_TRADE_BUYING_STORE_sub", sizeof(struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub), SERVER_TYPE_MAP },
 		{ "PACKET_CZ_REQ_ZENY_FROM_MAIL", sizeof(struct PACKET_CZ_REQ_ZENY_FROM_MAIL), SERVER_TYPE_MAP },
 		{ "PACKET_CZ_REQMAKINGITEM", sizeof(struct PACKET_CZ_REQMAKINGITEM), SERVER_TYPE_MAP },
+		{ "PACKET_CZ_REQUEST_ACTNPC", sizeof(struct PACKET_CZ_REQUEST_ACTNPC), SERVER_TYPE_MAP },
 		{ "PACKET_CZ_SEARCH_STORE_INFO", sizeof(struct PACKET_CZ_SEARCH_STORE_INFO), SERVER_TYPE_MAP },
 		{ "PACKET_CZ_SEARCH_STORE_INFO_item", sizeof(struct PACKET_CZ_SEARCH_STORE_INFO_item), SERVER_TYPE_MAP },
 		{ "PACKET_CZ_SEND_MAIL", sizeof(struct PACKET_CZ_SEND_MAIL), SERVER_TYPE_MAP },

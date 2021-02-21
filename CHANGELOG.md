@@ -22,6 +22,67 @@ If you are reading this in a text editor, simply ignore this section
 ### Removed
 -->
 
+
+## [v2021.02.08] `February 08 2021`
+
+### Added
+
+- Extended the quest database with new options. (#2874)
+  - Mob ID can be set to 0 to allow any monster ID.
+  - A monster level range can now be specified.
+  - A target monster's map can now be specified.
+  - A target monster's type (size, race and/or element) can now be specified.
+- Added new quest database entries using the new options. (part of #2874)
+- Added a failed assertion backtrace report in the removing player error in `unit->remove_map()`. (part of #2938)
+- Added support for constants and improved error messages in the quest DB. This affects the `Mob_ID`, `Drops/ItemId` and `Drops/MobId` fields. (#2886)
+- Added inheritance mechanism for the pet DB. Inheritance works in the same way as the mob and item databases, allowing to specify the `Inherit: true` flag in order to inherit (rather than overriding) an existing entry with the same Id. (#2206, issue #2181)
+- Updated the map database, NPC and Hateffect constants with new data. (#2936)
+
+### Changed
+
+- Changed the free cell search (as used by random mob spawns or teleport) to ignore the map margins, as in official servers. The margin size defaults to the official value of 15 and can be changed by editing the `search_freecell_map_margin` setting in `misc.conf`. (#2911)
+- Refactored and sanitized `map->search_freecell()`. The function has been renamed to `map->search_free_cell()` since the meaning of its return values has changed. (part of #2911)
+- Refactored and documented some pet database functions and added validation of the pet DB entries before they're inserted into the database. The new constant `ITEID_PET_FOOD` has been added. (part of #2206)
+
+### Fixed
+
+- Fixed a signed left shift overflow in socket.c. (part of #2938)
+- Fixed failing github workflows builds, switching from clang-10 to clang-11 since the former is no longer available in the Debian repositories. (part of #2938)
+- Forcefully disabled the compiler flag `-fcf-protection` to avoid issues in the `setjmp()` calls. (#2938)
+- Fixed some missing item IDs referenced by the quest DB in pre-re mode. (part of #2886)
+- Fixed grfio issues with large grf files. (#2937)
+
+## [v2021.01.11] `January 11 2021`
+
+### Added
+
+- Integrated the Renewal mob database with the correct `DamageTakenRate` value for MVPs that require it. Those MVPs have a green aura and only receive 10% of the damage dealt to them. (#2875)
+- Added an enum for client action types. See `enum action_type`. (#2930)
+- Added skill prerequisite checks before leveling up homunculus skills, allowing the definition of prerequisites for non-evolved or non-loyal homunculi, as it was previously limited to those. The check is disabled when the `player_skillfree` setting is enabled in the battle config. (#2807)
+- Added constants for the `mercenary_delete()` script command as well as the `mercenary->delete()` function and documentation for the formerly undocumented values. See `enum merc_delete_type` and the script constants `MERC_DELETE_*`. (part of #2858, issue #2843)
+
+### Changed
+
+- Cleaned up mob database from redundant `MVPExp: 0` fields. (part of #2875)
+- Updated packet `CZ_REQUEST_ACTNPC` to use a struct. (part of #2930)
+- Changed the default mercenary delete type of the `mercenary_delete()` script command to be fired by the user (not updating loyalty). (#2843)
+
+### Fixed
+
+- Fixed an issue that caused the Sign quest to lock up and become unfinishable for everyone when a player times out or logs out under certain conditions. (#2921)
+- Fixed an exploit that allowed multiple people into the solo room of the Sign quest. (part of #2921)
+- Fixed a failed assertion when using the `MH_SUMMON_LEGION` skill. (#2929)
+
+### Removed
+
+- Removed the undocumented and meaningless return value of `mercenary->delete()`, now returning void. It was previously relying on the return value of two other functions, and ultimately always returning zero. (part of #2843)
+
+## [v2020.12.14+1] `December 14 2020` `PATCH 1`
+
+### Fixed
+
+- Fixed a crash in `unit->run_hit()` caused by a regression in the last update. (#2924)
+
 ## [v2020.12.14] `December 14 2020`
 
 ### Added
@@ -1738,6 +1799,7 @@ If you are reading this in a text editor, simply ignore this section
 - New versioning scheme and project changelogs/release notes (#1853)
 
 [Unreleased]: https://github.com/HerculesWS/Hercules/compare/stable...master
+[v2020.12.14+1]: https://github.com/HerculesWS/Hercules/compare/v2020.12.14...v2020.12.14+1
 [v2020.12.14]: https://github.com/HerculesWS/Hercules/compare/v2020.11.16...v2020.12.14
 [v2020.11.16]: https://github.com/HerculesWS/Hercules/compare/v2020.10.19...v2020.11.16
 [v2020.10.19]: https://github.com/HerculesWS/Hercules/compare/v2020.09.20...v2020.10.19
