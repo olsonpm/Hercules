@@ -158,7 +158,7 @@ int_land,58,69,5	script	Sailor#int_land	4W_SAILOR,{
 			next();
 			mes("[Sailor]");
 			mes("If you want to sail with us to Izlude, jump on board!");
-			getexp(600, 0);
+			getexp(15, 2);
 			specialeffect(EF_HEAL2, AREA, playerattached());
 			heal(9999, 0);
 			specialeffect(EF_INCAGILITY, AREA, playerattached());
@@ -239,7 +239,7 @@ int_land,78,103,5	script	Captain Carocc#int_land	4_M_REINDEER,{
 		sc_start(SC_INC_AGI, 240000, 10);
 		specialeffect(EF_BLESSING, AREA, playerattached());
 		sc_start(SC_BLESSING, 240000, 10);
-		getexp(15, 0);
+		getexp(1, 1);
 		setquest(21002);
 		next();
 		mes("[Captain Carocc]");
