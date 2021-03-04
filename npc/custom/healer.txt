@@ -47,7 +47,7 @@ einbroch,57,202,6	duplicate(Healer)	Healer#einbr	4_M_DOGTRAVELER
 geffen,115,72,6	duplicate(Healer)	Healer#gef	4_M_DOGTRAVELER
 gonryun,156,122,6	duplicate(Healer)	Healer#gon	4_M_DOGTRAVELER
 hugel,89,150,6	duplicate(Healer)	Healer#hug	4_M_DOGTRAVELER
-izlude,125,118,5	duplicate(Healer)	Healer#izl	4_M_DOGTRAVELER
+izlude,125,148,5	duplicate(Healer)	Healer#izl	4_M_DOGTRAVELER
 jawaii,250,139,4	duplicate(Healer)	Healer#jaw	4_M_DOGTRAVELER
 lighthalzen,152,100,6	duplicate(Healer)	Healer#lhz	4_M_DOGTRAVELER
 louyang,226,103,4	duplicate(Healer)	Healer#lou	4_M_DOGTRAVELER
