@@ -3,7 +3,10 @@
 //
 // scripts grabbed from
 //   npc\re\jobs\novice\academy.txt
+//   npc\re\mobs\int_land.txt
 //   npc\re\warps\cities\izlude.txt
+
+int_land,0,0,0,0	monster	Poring	1002,25,0,0,0
 
 //= iz_int(Intro) & int_land(Secluded Island) ================
 iz_int,27,30,0	script	noviship#room1-1	WARPNPC,2,2,{
@@ -236,7 +239,7 @@ int_land,78,103,5	script	Captain Carocc#int_land	4_M_REINDEER,{
 		sc_start(SC_INC_AGI, 240000, 10);
 		specialeffect(EF_BLESSING, AREA, playerattached());
 		sc_start(SC_BLESSING, 240000, 10);
-		getexp(600, 0);
+		getexp(15, 0);
 		setquest(21002);
 		next();
 		mes("[Captain Carocc]");
