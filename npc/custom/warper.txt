@@ -134,7 +134,7 @@ T8: Go("einbroch",64,200);
 T9: Go("geffen",119,59);
 T10: Go("gonryun",160,120);
 T11: Go("hugel",96,145);
-T12: Go("izlude",128,(RENEWAL?146:114));
+T12: Go("izlude",128,143);
 T13: Go("jawaii",251,132);
 T14: Go("lighthalzen",158,92);
 T15: Go("louyang",217,100);
