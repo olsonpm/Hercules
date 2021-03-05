@@ -2,7 +2,8 @@
 // an npc to provide a starter pack for new users.  For some reason players have
 //   referred to this as "freebies"
 //
-iz_int,21,33,3  script  Alfred#bro_freebies     1_M_LIBRARYMASTER,{
+
+iz_int,21,33,3  script  Alfred#bro_freebies 1_M_LIBRARYMASTER,{
   switch(bro_talkedToAlfred) {
     case 1:
       mes("Best of luck to you, and thanks for trying out our server.");
