@@ -1,0 +1,15 @@
+//
+// an npc to provide a starter pack for new users.  For some reason players have
+//   referred to this as "freebies"
+//
+iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,{
+  switch(bro_talkedToAlfred) {
+    1:
+      mes("You've already talked to me'");
+      break;
+    default:
+      mes("You haven't talked to me before");
+      bro_talkedToAlfred=1
+      break;
+  }
+}
