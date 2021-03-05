@@ -3205,7 +3205,7 @@ recreate these items perfectly if they are destroyed. Here's what you get:
 @inventorylist_attribute[]     - whether it is broken.
 @inventorylist_card1[]         - These four arrays contain card data for the items.
 @inventorylist_card2[]           These data slots are also used to store names inscribed
-@inventorylist_card3[]           on the items, so you can explicitly check if the character 
+@inventorylist_card3[]           on the items, so you can explicitly check if the character
 @inventorylist_card4[]           owns an item made by a specific craftsman.
 @inventorylist_expire[]        - expire time (Unix time stamp). 0 means never expires.
 @inventorylist_bound[]         - whether it is an account bounded item or not.
@@ -7659,7 +7659,7 @@ In the OnBuyItem, two arrays are filled (@bought_nameid and
 and the amount sold of it. Same goes for the OnSellItem label, only the
 variables are named different (@sold_nameid, @sold_quantity, @sold_refine,
 @sold_attribute, @sold_identify, @sold_card1, @sold_card2, @sold_card3,
-@sold_card4, @sold_opt_id1~5, @sold_opt_val1~5, @sold_opt_param1~5). 
+@sold_card4, @sold_opt_id1~5, @sold_opt_val1~5, @sold_opt_param1~5).
 An example on a shop comes with Hercules, and can be found
 in the doc/sample/npc_dynamic_shop.txt file.
 
@@ -7877,7 +7877,7 @@ Example 2:
 	// Kick the last player enter the waitingroom
 	.@num = getwaitingroomstate(0);
 	waitingroomkick(strnpcinfo(NPC_NAME), $@chatmembers[.@num - 1]);
-	
+
 ---------------------------------------
 
 *setmapflagnosave("<map name>", "<alternate map name>", <x>, <y>)

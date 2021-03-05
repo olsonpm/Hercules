@@ -6365,11 +6365,7 @@ int do_init(int argc, char **argv)
 	mapindex->init();
 	pincode->init();
 
-	#ifdef RENEWAL
-		start_point.map = mapindex->name2id("iz_int");
-	#else
-		start_point.map = mapindex->name2id("new_1-1");
-	#endif
+	start_point.map = mapindex->name2id("iz_int");
 
 	safestrncpy(chr->userid, "s1", sizeof(chr->userid));
 	safestrncpy(chr->passwd, "p1", sizeof(chr->passwd));

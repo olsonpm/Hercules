@@ -134,7 +134,7 @@ T8: Go("einbroch",64,200);
 T9: Go("geffen",119,59);
 T10: Go("gonryun",160,120);
 T11: Go("hugel",96,145);
-T12: Go("izlude",128,(RENEWAL?146:114));
+T12: Go("izlude",128,143);
 T13: Go("jawaii",251,132);
 T14: Go("lighthalzen",158,92);
 T15: Go("louyang",217,100);
@@ -302,7 +302,7 @@ glast_01,372,308,4	duplicate(Warper)	Warper#glh	4_F_VALKYRIE
 gonryun,162,122,4	duplicate(Warper)	Warper#gon	4_F_VALKYRIE
 hugel,101,151,4	duplicate(Warper)	Warper#hug	4_F_VALKYRIE
 izlu2dun,110,92,4	duplicate(Warper)	Warper#izd	4_F_VALKYRIE
-izlude,132,120,4	duplicate(Warper)	Warper#izl	4_F_VALKYRIE
+izlude,132,148,4	duplicate(Warper)	Warper#izl	4_F_VALKYRIE
 jawaii,253,138,4	duplicate(Warper)	Warper#jaw	4_F_VALKYRIE
 lighthalzen,162,102,4	duplicate(Warper)	Warper#lhz	4_F_VALKYRIE
 louyang,208,103,6	duplicate(Warper)	Warper#lou	4_F_VALKYRIE

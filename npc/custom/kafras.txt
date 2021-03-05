@@ -50,7 +50,7 @@ hugel,92,157,5	script	Kafra Employee::buzzyro_kaf_hugel	4_F_KAFRA6,{
   callfunc "F_KafEnd",0,1,"in the city of Hugel";
 }
 
-izlude,137,117,3	script	Kafra Employee::buzzyro_kaf_izlude	4_F_KAFRA6,{
+izlude,122,146,5	script	Kafra Employee::buzzyro_kaf_izlude	4_F_KAFRA6,{
   cutin "kafra_06",2;
   callfunc "F_KafSet";
   mes "[Kafra Employee]";

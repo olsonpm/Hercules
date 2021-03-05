@@ -1,0 +1,27 @@
+//
+// an npc to provide a starter pack for new users.  For some reason players have
+//   referred to this as "freebies"
+//
+
+iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,{
+  switch(bro_talkedToAlfred) {
+    case 1:
+      mes("Best of luck to you, and thanks for trying out our server :)");
+      break;
+    default:
+      bro_talkedToAlfred = 1;
+      mes("[Alfred]");
+      mes("Hello there and welcome to BuzzyRO :)");
+      mes("");
+      mes("I've been told new players enjoy zeny and an exp boost to get them started.");
+      next();
+      mes("So here you are.  20k zeny and double exp for your first hour.");
+      mes("Be aware you only get this once !");
+      mes("Oh, and make sure to use your first few stat points.  Otherwise those cute pink porings outside might getcha.");
+      getexp(1, 1);
+      Zeny += 20000;
+      sc_start(SC_CASH_PLUSEXP,3600000,100);
+      break;
+  }
+  close();
+}
