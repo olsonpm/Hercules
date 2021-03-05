@@ -33,4 +33,5 @@
 //=========================================================================
 
 //== Izlude ================================================
-izlude,134,87,3	duplicate(kaf_izlude)	Kafra Employee#iz	4_F_KAFRA1
+// izlude's map is out of date.  We'll rely on the custom kafra by the warper
+// izlude,134,87,3	duplicate(kaf_izlude)	Kafra Employee#iz	4_F_KAFRA1

@@ -89,6 +89,7 @@ OnInit:
 }
 
 //== Izlude ================================================
+/*
 izlude,105,99,0	trader	Butcher#iz	1_M_JOBGUIDER,{
 OnInit:
 	sellitem Meat;
@@ -148,6 +149,7 @@ OnInit:
 	sellitem Jungle_Carbine;
 	sellitem Thunder_P;
 }
+*/
 
 //== Morroc ================================================
 moc_ruins,91,128,4	trader	Tool Dealer#moc1	4_F_04,{

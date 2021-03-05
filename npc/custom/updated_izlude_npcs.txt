@@ -1,4 +1,17 @@
-// all of these are picked from npc\re\cities\izlude.txt
+// all of these are picked from
+//   npc/re/cities/izlude.txt
+//   npc/re/airports/izlude.txt
+//   npc/re/guides/guides_izlude.txt
+//   npc/re/merchants/ammo_boxes.txt
+//   npc/re/merchants/ammo_dealer.txt
+//   npc/pre-re/other/bulletin_boards.txt
+//   npc/re/other/mercenary_rent.txt
+//   npc/re/merchants/shops.txt
+//   npc/re/quests/mrsmile.txt
+//   npc/re/quests/quests_13_1.txt
+//   npc/re/quests/quests_izlude.txt
+//   npc/re/quests/quests_lighthalzen.txt
+
 
 
 //== Izlude ================================================
@@ -267,3 +280,386 @@ prt_fild08a,338,217,7	duplicate(Resting Adventurer#iz)	Resting Adventurer#iza	4_
 prt_fild08b,338,217,7	duplicate(Resting Adventurer#iz)	Resting Adventurer#izb	4_F_SITDOWN
 prt_fild08c,338,217,7	duplicate(Resting Adventurer#iz)	Resting Adventurer#izc	4_F_SITDOWN
 prt_fild08d,338,217,7	duplicate(Resting Adventurer#iz)	Resting Adventurer#izd	4_F_SITDOWN
+
+izlude,202,75,3	duplicate(Airship_Staff_izlude)	Airship Staff#izlude	4_F_01
+izlude_a,202,75,3	duplicate(Airship_Staff_izlude)	Airship Staff#izlude_a	4_F_01
+izlude_b,202,75,3	duplicate(Airship_Staff_izlude)	Airship Staff#izlude_b	4_F_01
+izlude_c,202,75,3	duplicate(Airship_Staff_izlude)	Airship Staff#izlude_c	4_F_01
+izlude_d,202,75,3	duplicate(Airship_Staff_izlude)	Airship Staff#izlude_d	4_F_01
+
+-	script	::GuideIzlude	FAKE_NPC,{
+	cutin "prt_soldier",2;
+	mes "[Izlude Guide]";
+	mes "Welcome to ^8B4513Izlude^000000,";
+	mes "Prontera's satellite town.";
+	mes "Do you need help navigating the town?";
+	F_Navi("[Izlude Guide]");
+	next;
+	.@map$ = strnpcinfo(NPC_MAP);
+	while (1) {
+		switch(select("[ Main Facilities ]", "[ Merchants & Helpers ]", "Remove Marks from Mini-Map", "Cancel")) {
+		case 1:
+			.@loop = 1;
+			while (.@loop) {
+				switch(select("[ Cryptura Academy ]", "[ Marina ]", "[ International Airship ]", "[ Arena ]", "[ Kit Shop ]", "[ Swordsman Guild ]", "[ Enchant Association ]", "[ Forge ]", "Previous Menu")) {
+				case 1:
+					mes "[Izlude Guide]";
+					mes "Novice adventurers should go to "+F_Navi("Cryptura Academy","iz_ac01,100,39")+" to receive more information and training!";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,128,260,0,0xD2691E;
+					next;
+					break;
+				case 2:
+					mes "[Izlude Guide]";
+					mes "You can use the "+F_Navi("Marina",.@map$+",197,205","^B9062F");
+					mes "to go to ^8B4513Alberta^000000 or ^8B4513Byalan Island^000000.";
+					mes "Beware of ^8B4513Izlude Dungeon^000000";
+					mes "on Byalan Island since it is";
+					mes "filled with dreadful monsters.";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,197,205,1,0xFF0000;
+					next;
+					break;
+				case 3:
+					mes "[Izlude Guide]";
+					mes "The "+F_Navi("International Airship",.@map$+",202,75","^0000FF");
+					mes "goes to ^8B4513Juno^000000 and ^8B4513Rachel^000000.";
+					mes "Let me mark its location";
+					mes "on your mini-map.";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,210,73,2,0x0A82FF;
+					next;
+					break;
+				case 4:
+					mes "[Izlude Guide]";
+					mes "The "+F_Navi("Arena",.@map$+",213,161","^FF5400");
+					mes "is a perfect place to";
+					mes "test your combat capabilities.";
+					mes "Let me mark its location";
+					mes "on your mini-map.";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,213,161,3,0xFF5400;
+					next;
+					break;
+				case 5:
+					callsub L_Mark, F_Navi("Kit Shop",.@map$+",110,182","^006400");
+					viewpoint 1,108,179,4,0xAAFF00;
+					next;
+					break;
+				case 6:
+					mes "[Izlude Guide]";
+					mes "The "+F_Navi("Swordsman Guild",.@map$+",51,172")+" is where you can ^800080change your job to Swordsman.^000000";
+					mes "Let me mark its location";
+					mes "on your mini-map.";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,52,172,5,0xDA70D6;
+					next;
+					break;
+				case 7:
+					callsub L_Mark, F_Navi("Enchant Association",.@map$+",97,125","^B9062F");
+					viewpoint 1,97,125,6,0xDA70D6;
+					next;
+					break;
+				case 8:
+					callsub L_Mark, F_Navi("Forge",.@map$+",153,126");
+					viewpoint 1,153,126,7,0xAAFF00;
+					next;
+					break;
+				case 9:
+					.@loop = 0;
+					break;
+				}
+			}
+			break;
+		case 2:
+			.@loop = 1;
+			while (.@loop) {
+				switch(select("[ Eden Teleport Officer ]", "[ Kafra Employee ]", "[ Hypnotist ]", "[ Newlywed Helper ]", "[ Mercenary Guildsman ]", "[ Pet Groomer ]", "Previous Menu")) {
+				case 1:
+					mes "[Izlude Guide]";
+					mes "The "+F_Navi("Eden Teleport Officer",.@map$+",131,148","^0000FF");
+					mes "is currently staying inside";
+					mes "the Swordsman Guild building.";
+					mes "Let me mark his location on your mini-map.";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,131,148,8,0x0A82FF;
+					next;
+					break;
+				case 2:
+					callsub L_Mark, F_Navi("Kafra Employee",.@map$+",128,148","^FF5400"),1;
+					viewpoint 1,128,148,9,0xFF5400;
+					next;
+					break;
+				case 3:
+					callsub L_Mark, F_Navi("Hypnotist",.@map$+",127,175"),1;
+					viewpoint 1,127,175,10,0x006400;
+					next;
+					break;
+				case 4:
+					mes "[Izlude Guide]";
+					mes "If you'd like to go on a honeymoon to";
+					mes "^8B4513Jawaii^000000, the paradise of newlyweds,";
+					mes "please speak to the ";
+					mes F_Navi("Newlywed Helper",.@map$+",180,224","^B9062F")+".";
+					mes "Would you like to check any other locations?";
+					viewpoint 1,180,224,11,0xFF0000;
+					next;
+					break;
+				case 5:
+					callsub L_Mark, F_Navi("Mercenary Guildsman",.@map$+",47,170","^0000FF");
+					viewpoint 1,47,170,12,0xDA70D6;
+					next;
+					break;
+				case 6:
+					callsub L_Mark, F_Navi("Pet Groomer","izlude_in,72,98"),1;
+					viewpoint 1,108,179,13,0x006400;
+					next;
+					break;
+				case 7:
+					.@loop = 0;
+					break;
+				}
+			}
+			break;
+		case 3:
+			mes "[Izlude Guide]";
+			mes "Sure, I'll remove all marks from your mini-map.";
+			mes "Is there anything else I can do for you?";
+			viewpoint 2,1,1,0,0xFFFF00;
+			viewpoint 2,1,1,1,0x000000;
+			viewpoint 2,1,1,2,0xFF0000;
+			viewpoint 2,1,1,3,0xFFFF00;
+			viewpoint 2,1,1,4,0xFFFF00;
+			viewpoint 2,1,1,5,0xFFFF00;
+			viewpoint 2,1,1,6,0xFFFF00;
+			viewpoint 2,1,1,7,0xFFFF00;
+			viewpoint 2,1,1,8,0xFFFF00;
+			viewpoint 2,1,1,9,0xFFFF00;
+			viewpoint 2,1,1,10,0xFFFF00;
+			viewpoint 2,1,1,11,0xFFFF00;
+			viewpoint 2,1,1,12,0xFFFF00;
+			viewpoint 2,1,1,13,0xFFFF00;
+			next;
+			break;
+		case 4:
+			mes "[Izlude Guide]";
+			mes "Enjoy your stay.";
+			mes "Bye~!";
+			close2;
+			cutin "prt_soldier",255;
+			end;
+		}
+	}
+	end;
+L_Mark:
+	mes "[Izlude Guide]";
+	if (getarg(1,0)) {
+		mes "Let me mark the location of the";
+		mes getarg(0);
+	} else
+		mes "Let me mark the location of the "+getarg(0);
+	mes "on your mini-map.";
+	mes "Would you like to check any other locations?";
+	return;
+}
+
+izlude,129,175,4	duplicate(GuideIzlude)	Guide#01izlude	8W_SOLDIER
+izlude_a,129,175,4	duplicate(GuideIzlude)	Guide#01izlude_a	8W_SOLDIER
+izlude_b,129,175,4	duplicate(GuideIzlude)	Guide#01izlude_b	8W_SOLDIER
+izlude_c,129,175,4	duplicate(GuideIzlude)	Guide#01izlude_c	8W_SOLDIER
+izlude_d,129,175,4	duplicate(GuideIzlude)	Guide#01izlude_d	8W_SOLDIER
+
+izlude,133,113,4	duplicate(GuideIzlude)	Guide#02izlude	8W_SOLDIER
+izlude_a,133,113,4	duplicate(GuideIzlude)	Guide#02izlude_a	8W_SOLDIER
+izlude_b,133,113,4	duplicate(GuideIzlude)	Guide#02izlude_b	8W_SOLDIER
+izlude_c,133,113,4	duplicate(GuideIzlude)	Guide#02izlude_c	8W_SOLDIER
+izlude_d,133,113,4	duplicate(GuideIzlude)	Guide#02izlude_d	8W_SOLDIER
+
+//izlude,120,206,4	duplicate(GuideIzlude)	Guide#03izlude	8W_SOLDIER
+
+//
+//---------------------------------//
+// npc/re/merchants/ammo_boxes.txt //
+//---------------------------------//
+//
+
+izlude_in,74,104,3	duplicate(mdk)	Magazine Dealer Kenny#iz	4_M_01
+
+//
+//----------------------------------//
+// npc/re/merchants/ammo_dealer.txt //
+//----------------------------------//
+//
+
+izlude_in,74,106,3	duplicate(bdt)	Bullet Dealer Tony#iz	4_M_04
+
+//
+//--------------------------------------//
+// npc/pre-re/other/bulletin_boards.txt //
+//--------------------------------------//
+//
+// note: this is the same bulletin board as pre-re just moved location
+//
+
+izlude,135,146,4	script	Bulletin Board#5	2_BULLETIN_BOARD,{
+	mes "[Izlude: The Satellite City]";
+	mes "Welcome to Izlude, the satellite of Prontera. Izlude was built to support Prontera's defense and to accommodate its burgeoning population.";
+	next;
+	mes "[Izlude: The Satellite City]";
+	mes "Points of interest include the Swordsman Association building which allows adventurers to change their job to Swordsman, and the Battle Area that is North of Izlude.";
+	next;
+	mes "[Izlude: The Satellite City]";
+	mes "At the docks, you may take a ship and travel to ^123972Alberta^000000 or ^2F0400Byalan Island^000000.";
+	next;
+	mes "[Izlude: The Satellite City]";
+	mes "From Izlude, ^6D6FE0Prontera^000000 is located to the Northwest, and ^1F3A11Payon^000000 is located to the South.";
+	mes "Enjoy your travels in the Rune-Midgarts Kingdom.";
+	close;
+}
+
+//
+//---------------------------------//
+// npc/re/other/mercenary_rent.txt //
+//---------------------------------//
+//
+
+izlude,47,170,4	duplicate(Mercenary Manager#main)	Mercenary Manager#Sword	4_M_JOB_KNIGHT2
+izlude_a,47,170,4	duplicate(Mercenary Manager#main)	Mercenary Manager#Swo_a	4_M_JOB_KNIGHT2
+izlude_b,47,170,4	duplicate(Mercenary Manager#main)	Mercenary Manager#Swo_b	4_M_JOB_KNIGHT2
+izlude_c,47,170,4	duplicate(Mercenary Manager#main)	Mercenary Manager#Swo_c	4_M_JOB_KNIGHT2
+izlude_d,47,170,4	duplicate(Mercenary Manager#main)	Mercenary Manager#Swo_d	4_M_JOB_KNIGHT2
+
+izlude,55,170,4	duplicate(MercMerchant)	Mercenary Merchant#Sword	4_F_HUWOMAN
+izlude_a,55,170,4	duplicate(MercMerchant)	Mercenary Merchant#Swo_a	4_F_HUWOMAN
+izlude_b,55,170,4	duplicate(MercMerchant)	Mercenary Merchant#Swo_b	4_F_HUWOMAN
+izlude_c,55,170,4	duplicate(MercMerchant)	Mercenary Merchant#Swo_c	4_F_HUWOMAN
+izlude_d,55,170,4	duplicate(MercMerchant)	Mercenary Merchant#Swo_d	4_F_HUWOMAN
+
+//
+//----------------------------//
+// npc/re/merchants/shops.txt //
+//----------------------------//
+//
+
+izlude,124,165,4	trader	Fruit Gardener#iz	1_M_INNKEEPER,{
+OnInit:
+	sellitem Apple;
+	sellitem Banana;
+	sellitem Carrot;
+	sellitem Sweet_Potato;
+}
+
+izlude_a,124,165,4	duplicate(Fruit Gardener#iz)	Fruit Gardener#iz_a	1_M_INNKEEPER
+izlude_b,124,165,4	duplicate(Fruit Gardener#iz)	Fruit Gardener#iz_b	1_M_INNKEEPER
+izlude_c,124,165,4	duplicate(Fruit Gardener#iz)	Fruit Gardener#iz_c	1_M_INNKEEPER
+izlude_d,124,165,4	duplicate(Fruit Gardener#iz)	Fruit Gardener#iz_d	1_M_INNKEEPER
+
+izlude,160,186,0	trader	Butcher#iz	1_M_JOBGUIDER,{
+OnInit:
+	sellitem Meat;
+}
+
+izlude_a,160,186,0	duplicate(Butcher#iz)	Butcher#iz_a	1_M_JOBGUIDER
+izlude_b,160,186,0	duplicate(Butcher#iz)	Butcher#iz_b	1_M_JOBGUIDER
+izlude_c,160,186,0	duplicate(Butcher#iz)	Butcher#iz_c	1_M_JOBGUIDER
+izlude_d,160,186,0	duplicate(Butcher#iz)	Butcher#iz_d	1_M_JOBGUIDER
+
+izlude,128,158,7	trader	Vendor from Milk Ranch#i	4_F_01,{
+OnInit:
+	sellitem Milk;
+}
+
+izlude_a,128,158,7	duplicate(Vendor from Milk Ranch#i)	Vendor from Milk Ranch#a	4_F_01
+izlude_b,128,158,7	duplicate(Vendor from Milk Ranch#i)	Vendor from Milk Ranch#b	4_F_01
+izlude_c,128,158,7	duplicate(Vendor from Milk Ranch#i)	Vendor from Milk Ranch#c	4_F_01
+izlude_d,128,158,7	duplicate(Vendor from Milk Ranch#i)	Vendor from Milk Ranch#d	4_F_01
+
+izlude_in,72,98,3	trader	Pet Groomer#iz	4_F_TELEPORTER,{
+OnInit:
+	sellitem Pet_Food;
+	sellitem Pet_Incubator;
+	sellitem Backpack;
+	sellitem Rocker_Glasses;
+	sellitem Mojji;
+	sellitem Vital_Flower_;
+	sellitem Flame_Gemstone;
+	sellitem Bun_;
+}
+
+izlude_in,57,110,0	trader	Tool Dealer#iz	1_M_01,{
+OnInit:
+	sellitem Spectacles;
+	sellitem Red_Potion;
+	sellitem Orange_Potion;
+	sellitem Yellow_Potion;
+	sellitem Green_Potion;
+	sellitem Center_Potion;
+	sellitem Awakening_Potion;
+	sellitem Wing_Of_Fly;
+	sellitem Wing_Of_Butterfly;
+	sellitem Booby_Trap;
+	sellitem Arrow;
+}
+
+izlude_in,72,110,3	trader	Trading Merchant#iz	4_M_HUMERCHANT,{
+OnInit:
+	sellitem Bullet;
+	sellitem Silver_Bullet;
+	sellitem Shell_Of_Blood;
+	sellitem Branch;
+	sellitem Crimson_Bolt;
+	sellitem The_Cyclone;
+	sellitem Rolling_Stone;
+	sellitem Black_Rose;
+	sellitem Long_Barrel;
+	sellitem Jungle_Carbine;
+	sellitem Thunder_P;
+}
+
+//
+//---------------------------//
+// npc/re/quests/mrsmile.txt //
+//---------------------------//
+//
+
+izlude,125,175,4	duplicate(SmileHelper)	Smile Assistance#iz	4_F_03
+izlude_a,125,175,4	duplicate(SmileHelper)	Smile Assistance#iz_a	4_F_03
+izlude_b,125,175,4	duplicate(SmileHelper)	Smile Assistance#iz_b	4_F_03
+izlude_c,125,175,4	duplicate(SmileHelper)	Smile Assistance#iz_c	4_F_03
+izlude_d,125,175,4	duplicate(SmileHelper)	Smile Assistance#iz_d	4_F_03
+
+//
+//-------------------------------//
+// npc/re/quests/quests_13_1.txt //
+//-------------------------------//
+//
+
+izlude,102,171,6	duplicate(PromotionalStaff_izlude)	Promotional Staff#iz	4W_SAILOR
+izlude_a,102,171,6	duplicate(PromotionalStaff_izlude)	Promotional Staff#iz_a	4W_SAILOR
+izlude_b,102,171,6	duplicate(PromotionalStaff_izlude)	Promotional Staff#iz_b	4W_SAILOR
+izlude_c,102,171,6	duplicate(PromotionalStaff_izlude)	Promotional Staff#iz_c	4W_SAILOR
+izlude_d,102,171,6	duplicate(PromotionalStaff_izlude)	Promotional Staff#iz_d	4W_SAILOR
+
+//
+//---------------------------------//
+// npc/re/quests/quests_izlude.txt //
+//---------------------------------//
+//
+
+izlude,179,219,2	duplicate(Edgar_izlude)	Edgar#izlude	1_M_03
+izlude_a,179,219,2	duplicate(Edgar_izlude)	Edgar#izlude_a	1_M_03
+izlude_b,179,219,2	duplicate(Edgar_izlude)	Edgar#izlude_b	1_M_03
+izlude_c,179,219,2	duplicate(Edgar_izlude)	Edgar#izlude_c	1_M_03
+izlude_d,179,219,2	duplicate(Edgar_izlude)	Edgar#izlude_d	1_M_03
+
+//
+//--------------------------------------//
+// npc/re/quests/quests_lighthalzen.txt //
+//--------------------------------------//
+//
+
+izlude,172,73,5	duplicate(Scamp)	Scamp#iz	4_M_YURI
+izlude_a,172,73,5	duplicate(Scamp)	Scamp#iz_a	4_M_YURI
+izlude_b,172,73,5	duplicate(Scamp)	Scamp#iz_b	4_M_YURI
+izlude_c,172,73,5	duplicate(Scamp)	Scamp#iz_c	4_M_YURI
+izlude_d,172,73,5	duplicate(Scamp)	Scamp#iz_d	4_M_YURI
