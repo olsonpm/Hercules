@@ -45,11 +45,10 @@ izlude_d,52,172,0	warp	iz04_d	2,2,izlude_in,74,161
 izlude,213,161,0	warp	iz03	3,2,izlude_in,151,127
 izlude_in,148,127,0	warp	iz03-1	2,5,izlude,209,161
 
-/*
-izlude,213,161,0	warp	welcome_arena	1,1,arena_room,100,30
-izlude_a,213,161,0	warp	welcome_arena_a	1,1,arena_room,100,30
-izlude_b,213,161,0	warp	welcome_arena_b	1,1,arena_room,100,30
-izlude_c,213,161,0	warp	welcome_arena_c	1,1,arena_room,100,30
-izlude_d,213,161,0	warp	welcome_arena_d	1,1,arena_room,100,30
-arena_room,99,24,0	warp	bye_arena	2,2,izlude,209,161
-*/
+
+izlude,70,250,0	warp	welcome_arena	1,1,arena_room,100,30
+izlude_a,70,250,0	warp	welcome_arena_a	1,1,arena_room,100,30
+izlude_b,70,250,0	warp	welcome_arena_b	1,1,arena_room,100,30
+izlude_c,70,250,0	warp	welcome_arena_c	1,1,arena_room,100,30
+izlude_d,70,250,0	warp	welcome_arena_d	1,1,arena_room,100,30
+arena_room,99,24,0	warp	bye_arena	2,2,izlude,75,250
