@@ -135,8 +135,6 @@ OnTouch_:
 		end;
 	@cd = gettimetick(2);
 	npctalk(_("Urgh... please... help me..."));
-	sleep(7000);
-	npctalk(_("In order to talk with me.. click my body.."));
 	end;
 }
 

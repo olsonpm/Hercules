@@ -3,7 +3,7 @@
 //   referred to this as "freebies"
 //
 
-iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,{
+iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,10,10,{
   switch(bro_talkedToAlfred) {
     case 1:
       mes("Best of luck to you, and thanks for trying out our server :)");
@@ -13,15 +13,27 @@ iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,{
       mes("[Alfred]");
       mes("Hello there and welcome to BuzzyRO :)");
       mes("");
-      mes("I've been told new players enjoy zeny and an exp boost to get them started.");
+      mes("I've been told new players enjoy a boost to get them started.");
       next();
-      mes("So here you are.  20k zeny and double exp for your first hour.");
-      mes("Be aware you only get this once !");
-      mes("Oh, and make sure to use your first few stat points.  Otherwise those cute pink porings outside might getcha.");
+      mes("So here you are.  20k zeny, some items and double exp for your first hour.");
+			getitem Novice_Potion,350;
+			getitem Wing_Of_Fly,20;
+			getitem Novice_Hood,1;
+			getitem Novice_Egg_Cap,1;
+			getitem Novice_Guard,1;
+			getitem Novice_Knife,1;
+			getitem Novice_Boots,1;
+			getitem N_Adventurers_Suit,1;
+
+      mes("Make sure to use your first few stat points.  Otherwise those cute pink porings outside might getcha.");
       getexp(1, 1);
       Zeny += 20000;
       sc_start(SC_CASH_PLUSEXP,3600000,100);
       break;
   }
   close();
+
+OnTouch_:
+	npctalk "Click me - I have something for you" ;
+	end;
 }
