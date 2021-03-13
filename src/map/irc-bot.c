@@ -311,7 +311,7 @@ static void irc_privmsg_ctcp(int fd, char *cmd, char *source, char *target, char
 
 	if( strcmpi(cmd,"ACTION") == 0 ) {
 		if( ircbot->channel ) {
-			snprintf(send_string, 150, "[ #%s ] * IRC.%s %s *",ircbot->channel->name,source_nick,msg);
+			snprintf(send_string, 234, "[ #%s ] * %s *",ircbot->channel->name,msg);
 			clif->channel_msg2(ircbot->channel,send_string);
 		}
 	} else if( strcmpi(cmd,"ERRMSG") == 0 ) {
@@ -371,15 +371,8 @@ static void irc_privmsg(int fd, char *cmd, char *source, char *target, char *msg
 			ircbot->parse_source(source,source_nick,source_ident,source_host);
 
 		if( ircbot->channel ) {
-			size_t padding_len = strlen(ircbot->channel->name) + strlen(source_nick) + 13;
-			while (1) {
-				snprintf(send_string, 150, "[ #%s ] IRC.%s : %s",ircbot->channel->name,source_nick,msg);
-				clif->channel_msg2(ircbot->channel,send_string);
-				//break; // Uncomment this line to truncate long messages instead of posting them as multiple lines
-				if (strlen(msg) <= 149 - padding_len)
-					break;
-				msg += 149 - padding_len;
-			}
+			snprintf(send_string, 234, "[ #%s ] %s",ircbot->channel->name,msg);
+			clif->channel_msg2(ircbot->channel,send_string);
 		}
 	}
 }
@@ -396,7 +389,7 @@ static void irc_userjoin(int fd, char *cmd, char *source, char *target, char *ms
 		ircbot->parse_source(source,source_nick,source_ident,source_host);
 
 	if( ircbot->channel ) {
-		snprintf(send_string, 150, msg_txt(468), ircbot->channel->name, source_nick); // [ #%s ] User IRC.%s joined the channel.
+		snprintf(send_string, 234, msg_txt(468), ircbot->channel->name, source_nick); // [ #%s ] User IRC.%s joined the channel.
 		clif->channel_msg2(ircbot->channel,send_string);
 	}
 }
@@ -414,9 +407,9 @@ static void irc_userleave(int fd, char *cmd, char *source, char *target, char *m
 
 	if( ircbot->channel ) {
 		if (!strcmpi(cmd, "QUIT"))
-			snprintf(send_string, 150, msg_txt(465), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s left the channel. [Quit: %s]
+			snprintf(send_string, 234, msg_txt(465), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s left the channel. [Quit: %s]
 		else
-			snprintf(send_string, 150, msg_txt(466), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s left the channel. [%s]
+			snprintf(send_string, 234, msg_txt(466), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s left the channel. [%s]
 		clif->channel_msg2(ircbot->channel,send_string);
 	}
 }
@@ -433,7 +426,7 @@ static void irc_usernick(int fd, char *cmd, char *source, char *target, char *ms
 		ircbot->parse_source(source,source_nick,source_ident,source_host);
 
 	if( ircbot->channel ) {
-		snprintf(send_string, 150, msg_txt(467), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s is now known as IRC.%s
+		snprintf(send_string, 234, msg_txt(467), ircbot->channel->name, source_nick, msg); // [ #%s ] User IRC.%s is now known as IRC.%s
 		clif->channel_msg2(ircbot->channel,send_string);
 	}
 }

@@ -1,0 +1,8 @@
+-	script	AutoJoinChannels	FAKE_NPC,{
+	end;
+
+	OnPCLoginEvent:
+		atcommand("@join #main");
+		atcommand("@join #market");
+		end;
+}
