@@ -1,0 +1,210 @@
+//
+// iRO repeatable exp quest
+// from here
+// https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
+//
+
+mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
+	if (questprogress(70003)) {
+		if (questprogress(70003,HUNTING) != 2) {
+			mes "[Tribesman]";
+			mes "Have you finished hunting the 50 Lava Golems?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Tribesman]";
+				mes "Hmm, I don't think you've hunted 50 yet...";
+				close;
+			case 2:
+				mes "[Tribesman]";
+				mes "Please hurry and kill 50 of those tasty err pesky Lava Golems.";
+				close;
+			case 3:
+				mes "[Tribesman]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Tribesman]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70003;
+					close;
+				case 2:
+					mes "[Tribesman]";
+					mes "Please hurry and kill 50 of those tasty err pesky Lava Golems.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Tribesman]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 484800,290700;
+			erasequest 70003;
+			close;
+		}
+	}
+	if (questprogress(70004)) {
+		if (questprogress(70004,HUNTING) != 2) {
+			mes "[Tribesman]";
+			mes "Have you finished hunting the 50 Lava Golems?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Tribesman]";
+				mes "Hmm, I don't think you've hunted 100 yet...";
+				close;
+			case 2:
+				mes "[Tribesman]";
+				mes "Please hurry and kill 100 of those tasty err pesky Lava Golems.";
+				close;
+			case 3:
+				mes "[Tribesman]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Tribesman]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70004;
+					close;
+				case 2:
+					mes "[Tribesman]";
+					mes "Please hurry and kill 100 of those tasty err pesky Lava Golems.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Tribesman]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 484800,290700;
+			getexp 484800,290700;
+			erasequest 70004;
+			close;
+		}
+	}
+	if (questprogress(70005)) {
+		if (questprogress(70005,HUNTING) != 2) {
+			mes "[Tribesman]";
+			mes "Have you finished hunting the 150 Lava Golems?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Tribesman]";
+				mes "Hmm, I don't think you've hunted 150 yet...";
+				close;
+			case 2:
+				mes "[Tribesman]";
+				mes "Please hurry and kill 150 of those tasty err pesky Lava Golems.";
+				close;
+			case 3:
+				mes "[Tribesman]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Tribesman]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70005;
+					close;
+				case 2:
+					mes "[Tribesman]";
+					mes "Please hurry and kill 150 of those tasty err pesky Lava Golems.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Tribesman]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 484800,290700;
+			getexp 484800,290700;
+			getexp 484800,290700;
+			erasequest 70005;
+			close;
+		}
+	}
+	//for minimum level
+	if (BaseLevel > 74) {
+		//for maximum level
+		if (BaseLevel < 96) {
+			mes "[Tribesman]";
+			mes "Lava Golems are fascinating.";
+			mes "I am still doing my, uh, research...";
+			mes "But now it is of a different nature.";
+			next;
+			mes "[Tribesman]";
+			mes "You see I've been uh, ''researching''";
+			mes "them by collecting their burning";
+			mes "hearts, which they don't seem to like.";
+			next;
+			mes "[Tribesman]";
+			mes "Can you do me a favor please?";
+			next;
+			switch(select("What kind of favor?", "No")) {
+			case 1:
+				mes "[Tribesman]";
+				mes "I am so afraid that these Lava Golems will hurt me for my, uh, researching activities.";
+				next;
+				mes "[Tribesman]";
+				mes "Can you help protect me by killing them?";
+				mes "I think I'll feel safer...";
+				mes "Please...";
+				next;
+				switch(select("Hunt Lava Golems", "Cancel")) {
+				case 1:
+					// Kill Count Quest
+					mes "[Tribesman]";
+					mes "Ah, ok I think you can help me out by hunting some Lava Golems.";
+					mes "How many would you like to hunt?";
+					next;
+					switch(select("50 Lava Golems", "100 Lava Golems", "150 Lava Golems")) {
+					case 1:
+						mes "[Tribesman]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70003;
+						close;
+					case 2:
+						mes "[Tribesman]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70004;
+						close;
+					case 3:
+						mes "[Tribesman]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70005;
+						close;
+					}
+				case 2:
+					mes "[Tribesman]";
+					mes "If you change your mind, please come back.";
+					close;
+				}
+			case 2:
+				mes "[Tribesman]";
+				mes "If you change your mind, please come back.";
+				close;
+			}
+		}
+		else {
+			mes "[Tribesman]";
+			mes "Hmmm... you seem to be too strong to be fighting over here.";
+			close;
+		}
+	}
+	else {
+		mes "[Tribesman]";
+		mes "Hi there.";
+		next;
+		mes "[Tribesman]";
+		mes "Those Kahos over there seem to be about your speed.";
+		close;
+	}
+}

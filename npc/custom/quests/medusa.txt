@@ -1,0 +1,210 @@
+//
+// iRO repeatable exp quest
+// from here
+// https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
+//
+
+beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINCPTMINER,{
+	if (questprogress(70000)) {
+		if (questprogress(70000,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 50 Medusas?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 50 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 50 of those tasty err pesky Medusas.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70000;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 50 of those tasty err pesky Medusas.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 515700,352275;
+			erasequest 70000;
+			close;
+		}
+	}
+	if (questprogress(70001)) {
+		if (questprogress(70001,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 50 Medusas?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 100 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 100 of those tasty err pesky Medusas.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70001;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 100 of those tasty err pesky Medusas.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 515700,352275;
+			getexp 515700,352275;
+			erasequest 70001;
+			close;
+		}
+	}
+	if (questprogress(70002)) {
+		if (questprogress(70002,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 150 Medusas?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 150 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 150 of those tasty err pesky Medusas.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70002;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 150 of those tasty err pesky Medusas.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 515700,352275;
+			getexp 515700,352275;
+			getexp 515700,352275;
+			erasequest 70002;
+			close;
+		}
+	}
+	//for minimum level
+	if (BaseLevel > 74) {
+		//for maximum level
+		if (BaseLevel < 96) {
+			mes "[Miner]";
+			mes "Medusas are fascinating.";
+			mes "I am still doing my, uh, research...";
+			mes "But now it is of a different nature.";
+			next;
+			mes "[Miner]";
+			mes "You see I've been uh, ''researching''";
+			mes "these monsters by collecting their";
+			mes "hair but they don't seem to like it.";
+			next;
+			mes "[Miner]";
+			mes "Can you do me a favor please?";
+			next;
+			switch(select("What kind of favor?", "No")) {
+			case 1:
+				mes "[Miner]";
+				mes "I am so afraid that these Medusas will hurt me for my, uh, researching activities.";
+				next;
+				mes "[Miner]";
+				mes "Can you help protect me by killing them?";
+				mes "I think I'll feel safer...";
+				mes "Please...";
+				next;
+				switch(select("Hunt Medusas", "Cancel")) {
+				case 1:
+					// Kill Count Quest
+					mes "[Miner]";
+					mes "Ah, ok I think you can help me out by hunting some Medusas.";
+					mes "How many would you like to hunt?";
+					next;
+					switch(select("50 Medusas", "100 Medusas", "150 Medusas")) {
+					case 1:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70000;
+						close;
+					case 2:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70001;
+						close;
+					case 3:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70002;
+						close;
+					}
+				case 2:
+					mes "[Miner]";
+					mes "If you change your mind, please come back.";
+					close;
+				}
+			case 2:
+				mes "[Miner]";
+				mes "If you change your mind, please come back.";
+				close;
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Hmmm... you seem to be too strong to be fighting over here.";
+			close;
+		}
+	}
+	else {
+		mes "[Miner]";
+		mes "Hi there.";
+		next;
+		mes "[Miner]";
+		mes "Those Pests over there seem to be about your speed.";
+		close;
+	}
+}

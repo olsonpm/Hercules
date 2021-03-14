@@ -1,0 +1,210 @@
+//
+// iRO repeatable exp quest
+// from here
+// https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
+//
+
+mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
+	if (questprogress(70006)) {
+		if (questprogress(70006,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 50 Deleters?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 50 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 50 of those tasty err pesky Deleters.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70006;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 50 of those tasty err pesky Deleters.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 387734,232733;
+			erasequest 70006;
+			close;
+		}
+	}
+	if (questprogress(70007)) {
+		if (questprogress(70007,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 50 Deleters?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 100 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 100 of those tasty err pesky Deleters.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70007;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 100 of those tasty err pesky Deleters.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 387734,232733;
+			getexp 387734,232733;
+			erasequest 70007;
+			close;
+		}
+	}
+	if (questprogress(70008)) {
+		if (questprogress(70008,HUNTING) != 2) {
+			mes "[Miner]";
+			mes "Have you finished hunting the 150 Deleters?";
+			next;
+			switch(select("Yes", "No", "I want to quit")) {
+			case 1:
+				mes "[Miner]";
+				mes "Hmm, I don't think you've hunted 150 yet...";
+				close;
+			case 2:
+				mes "[Miner]";
+				mes "Please hurry and kill 150 of those tasty err pesky Deleters.";
+				close;
+			case 3:
+				mes "[Miner]";
+				mes "Are you sure that you want to stop hunting?";
+				mes "Any progress that you've made will be erased";
+				next;
+				switch(select("Yes", "No")) {
+				case 1:
+					mes "[Miner]";
+					mes "Ok then, well come back here if you change your mind.";
+					erasequest 70008;
+					close;
+				case 2:
+					mes "[Miner]";
+					mes "Please hurry and kill 150 of those tasty err pesky Deleters.";
+					close;
+				}
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Oh thank you so much!";
+			mes "I think that I can rest easily now.";
+			getexp 387734,232733;
+			getexp 387734,232733;
+			getexp 387734,232733;
+			erasequest 70008;
+			close;
+		}
+	}
+	//for minimum level
+	if (BaseLevel > 74) {
+		//for maximum level
+		if (BaseLevel < 96) {
+			mes "[Miner]";
+			mes "Deleters are fascinating.";
+			mes "I am still doing my, uh, research...";
+			mes "But now it is of a different nature.";
+			next;
+			mes "[Miner]";
+			mes "You see I've been uh, ''researching''";
+			mes "them by collecting their teeth";
+			mes "which they don't seem to like.";
+			next;
+			mes "[Miner]";
+			mes "Can you do me a favor please?";
+			next;
+			switch(select("What kind of favor?", "No")) {
+			case 1:
+				mes "[Miner]";
+				mes "I am so afraid that these Deleters will hurt me for my, uh, researching activities.";
+				next;
+				mes "[Miner]";
+				mes "Can you help protect me by killing them?";
+				mes "I think I'll feel safer...";
+				mes "Please...";
+				next;
+				switch(select("Hunt Deleters", "Cancel")) {
+				case 1:
+					// Kill Count Quest
+					mes "[Miner]";
+					mes "Ah, ok I think you can help me out by hunting some Deleters.";
+					mes "How many would you like to hunt?";
+					next;
+					switch(select("50 Deleters", "100 Deleters", "150 Deleters")) {
+					case 1:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70006;
+						close;
+					case 2:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70007;
+						close;
+					case 3:
+						mes "[Miner]";
+						mes "Come back when you've finished your task and I will give you a small reward.";
+						setquest 70008;
+						close;
+					}
+				case 2:
+					mes "[Miner]";
+					mes "If you change your mind, please come back.";
+					close;
+				}
+			case 2:
+				mes "[Miner]";
+				mes "If you change your mind, please come back.";
+				close;
+			}
+		}
+		else {
+			mes "[Miner]";
+			mes "Hmmm... you seem to be too strong to be fighting over here.";
+			close;
+		}
+	}
+	else {
+		mes "[Miner]";
+		mes "Hi there.";
+		next;
+		mes "[Miner]";
+		mes "Those Blazers over there seem to be about your speed.";
+		close;
+	}
+}

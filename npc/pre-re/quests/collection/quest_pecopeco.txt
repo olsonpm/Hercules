@@ -77,7 +77,7 @@ moc_fild02,74,329,3	script	Gregor#PecoPeco_Hunt	4W_M_01,{
 	if (questprogress(60102)) {
 		if (questprogress(60102,HUNTING) != 2) {
 			mes "[Gregor]";
-			mes "Have you finished hunting the 50 Peco Pecos?";
+			mes "Have you finished hunting the 100 Peco Pecos?";
 			next;
 			switch(select("Yes", "No", "I want to quit")) {
 			case 1:
