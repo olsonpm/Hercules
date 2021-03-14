@@ -22,7 +22,7 @@
 #define CONFIG_CORE_H
 
 // from tag vXXXXXXXX.Y -> XXXXXXXXY
-#define HERCULES_VERSION 202102080
+#define HERCULES_VERSION 202103080
 
 /// Max number of items on @autolootid list
 #define AUTOLOOTITEM_SIZE 10
@@ -93,6 +93,9 @@
 
 /// Comment to disable autotrade persistency (where autotrading merchants survive server restarts)
 #define AUTOTRADE_PERSISTENCY
+
+/// Uncomment for use with Nemo patch ExtendCashShopPreview
+//#define ENABLE_CASHSHOP_PREVIEW_PATCH
 
 /**
  * No settings past this point

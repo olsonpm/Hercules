@@ -1236,6 +1236,8 @@ static int skill_calc_heal(struct block_list *src, struct block_list *target, ui
 			hp += hp / 10;
 		if (sc->data[SC_VITALITYACTIVATION])
 			hp = hp * 150 / 100;
+		if (sc->data[SC_NO_RECOVER_STATE])
+			hp = 0;
 	}
 
 #ifdef RENEWAL
@@ -2350,6 +2352,9 @@ static int skill_additional_effect(struct block_list *src, struct block_list *bl
 			if (sd->mdef_set_race[tstatus->race].rate)
 					status->change_start(src,bl, SC_MDEFSET, sd->mdef_set_race[tstatus->race].rate, sd->mdef_set_race[tstatus->race].value,
 					0, 0, 0, sd->mdef_set_race[tstatus->race].tick, SCFLAG_FIXEDTICK);
+			if (sd->no_recover_state_race[tstatus->race].rate)
+				status->change_start(src, bl, SC_NO_RECOVER_STATE, sd->no_recover_state_race[tstatus->race].rate,
+					0, 0, 0, 0, sd->no_recover_state_race[tstatus->race].tick, SCFLAG_FIXEDTICK);
 		}
 	}
 
@@ -8067,16 +8072,26 @@ static int skill_castend_nodamage_id(struct block_list *src, struct block_list *
 						hp += hp / 10;
 						sp += sp / 10;
 					}
+					if (tsc->data[SC_NO_RECOVER_STATE]) {
+						hp = 0;
+						sp = 0;
+					}
 				}
 				clif->skill_nodamage(src,bl,skill_id,skill_lv,1);
 				if( hp > 0 || (skill_id == AM_POTIONPITCHER && sp <= 0) )
 					clif->skill_nodamage(NULL,bl,AL_HEAL,(int)hp,1);
 				if( sp > 0 )
 					clif->skill_nodamage(NULL,bl,MG_SRECOVERY,sp,1);
-		#ifdef RENEWAL
-				if( tsc && tsc->data[SC_EXTREMITYFIST2] )
-					sp = 0;
-		#endif
+				if (tsc) {
+#ifdef RENEWAL
+					if (tsc->data[SC_EXTREMITYFIST2])
+						sp = 0;
+#endif
+					if (tsc->data[SC_NO_RECOVER_STATE]) {
+						hp = 0;
+						sp = 0;
+					}
+				}
 				status->heal(bl, (int)hp, sp, STATUS_HEAL_DEFAULT);
 			}
 			break;
@@ -8750,9 +8765,11 @@ static int skill_castend_nodamage_id(struct block_list *src, struct block_list *
 #ifdef RENEWAL
 				sp1 = sp1 / 2;
 				sp2 = sp2 / 2;
-				if( tsc && tsc->data[SC_EXTREMITYFIST2] )
+				if (tsc && tsc->data[SC_EXTREMITYFIST2])
 					sp1 = tstatus->sp;
 #endif // RENEWAL
+				if (tsc && tsc->data[SC_NO_RECOVER_STATE])
+					sp1 = tstatus->sp;
 				status->set_sp(src, sp2, STATUS_HEAL_FORCED | STATUS_HEAL_SHOWEFFECT);
 				status->set_sp(bl, sp1, STATUS_HEAL_FORCED | STATUS_HEAL_SHOWEFFECT);
 				clif->skill_nodamage(src,bl,skill_id,skill_lv,1);
@@ -8786,6 +8803,10 @@ static int skill_castend_nodamage_id(struct block_list *src, struct block_list *
 					if( tsc->data[SC_WATER_INSIGNIA] && tsc->data[SC_WATER_INSIGNIA]->val1 == 2) {
 						hp += hp / 10;
 						sp += sp / 10;
+					}
+					if (tsc->data[SC_NO_RECOVER_STATE]) {
+						hp = 0;
+						sp = 0;
 					}
 				}
 				if(hp > 0)
@@ -13362,13 +13383,18 @@ static int skill_unit_onplace_timer(struct skill_unit *src, struct block_list *b
 
 		case UNT_ANKLESNARE:
 		case UNT_MANHOLE:
-			if( sg->val2 == 0 && tsc && (sg->unit_id == UNT_ANKLESNARE || bl->id != sg->src_id) ) {
-				int sec = skill->get_time2(sg->skill_id,sg->skill_lv);
-				if( status->change_start(ss,bl,type,10000,sg->skill_lv,sg->group_id,0,0,sec, SCFLAG_FIXEDRATE) ) {
-					const struct TimerData* td = tsc->data[type]?timer->get(tsc->data[type]->timer):NULL;
-					if( td )
+			if (sg->val2 == 0 && tsc && (sg->unit_id == UNT_ANKLESNARE || bl->id != sg->src_id)) {
+				int sec = skill->get_time2(sg->skill_id, sg->skill_lv);
+				if (bl->type == BL_MOB && map->list[bl->m].flag.gvg_castle == 0) {
+					struct mob_data *md = BL_UCAST(BL_MOB, bl);
+					if (sg->unit_id == UNT_MANHOLE && (md->class_ == MOBID_EMPELIUM || md->class_ == MOBID_BARRICADE || md->class_ == MOBID_S_EMPEL_1 || md->class_ == MOBID_S_EMPEL_2)) {
+						// Do nothing...
+					}
+				} else if (status->change_start(ss, bl, type, 10000, sg->skill_lv, sg->group_id, 0, 0, sec, SCFLAG_FIXEDRATE)) {
+					const struct TimerData* td = tsc->data[type] ? timer->get(tsc->data[type]->timer) : NULL;
+					if (td)
 						sec = DIFF_TICK32(td->tick, tick);
-					if( sg->unit_id == UNT_MANHOLE || battle_config.skill_trap_type || !map_flag_gvg2(src->bl.m) ) {
+					if (sg->unit_id == UNT_MANHOLE || battle_config.skill_trap_type || map_flag_gvg2(src->bl.m) != 0) {
 						unit->move_pos(bl, src->bl.x, src->bl.y, 0, false);
 						clif->fixpos(bl);
 					}
@@ -13376,8 +13402,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src, struct block_list *b
 				} else {
 					sec = 3000; //Couldn't trap it?
 				}
-
-				if( sg->unit_id == UNT_ANKLESNARE ) {
+				if (sg->unit_id == UNT_ANKLESNARE) {
 					/**
 					 * If you're snared from a trap that was invisible this makes the trap be
 					 * visible again -- being you stepped on it (w/o this the trap remains invisible and you go "WTF WHY I CANT MOVE")
@@ -13385,7 +13410,7 @@ static int skill_unit_onplace_timer(struct skill_unit *src, struct block_list *b
 					 **/
 					clif->changetraplook(&src->bl, UNT_ANKLESNARE);
 				}
-				sg->limit = DIFF_TICK32(tick,sg->tick)+sec;
+				sg->limit = DIFF_TICK32(tick, sg->tick) + sec;
 				sg->interval = -1;
 				src->range = 0;
 			}
@@ -20187,141 +20212,17 @@ static int skill_block_check(struct block_list *bl, sc_type type, uint16 skill_i
 	if( !sc || !bl || !skill_id )
 		return 0; // Can do it
 
-	switch(type){
-		case SC_STASIS:
-			inf = skill->get_inf2(skill_id);
-			if( inf == INF2_SONG_DANCE || skill->get_inf2(skill_id) == INF2_CHORUS_SKILL || inf == INF2_SPIRIT_SKILL )
-				return 1; // Can't do it.
-			switch( skill_id ) {
-				case NV_FIRSTAID:
-				case TF_HIDING:
-				case AS_CLOAKING:
-				case WZ_SIGHTRASHER:
-				case RG_STRIPWEAPON:
-				case RG_STRIPSHIELD:
-				case RG_STRIPARMOR:
-				case WZ_METEOR:
-				case RG_STRIPHELM:
-				case SC_STRIPACCESSARY:
-				case ST_FULLSTRIP:
-				case WZ_SIGHTBLASTER:
-				case ST_CHASEWALK:
-				case SC_ENERVATION:
-				case SC_GROOMY:
-				case WZ_ICEWALL:
-				case SC_IGNORANCE:
-				case SC_LAZINESS:
-				case SC_UNLUCKY:
-				case WZ_STORMGUST:
-				case SC_WEAKNESS:
-				case AL_RUWACH:
-				case AL_PNEUMA:
-				case WZ_JUPITEL:
-				case AL_HEAL:
-				case AL_BLESSING:
-				case AL_INCAGI:
-				case WZ_VERMILION:
-				case AL_TELEPORT:
-				case AL_WARP:
-				case AL_HOLYWATER:
-				case WZ_EARTHSPIKE:
-				case AL_HOLYLIGHT:
-				case PR_IMPOSITIO:
-				case PR_ASPERSIO:
-				case WZ_HEAVENDRIVE:
-				case PR_SANCTUARY:
-				case PR_STRECOVERY:
-				case PR_MAGNIFICAT:
-				case WZ_QUAGMIRE:
-				case ALL_RESURRECTION:
-				case PR_LEXDIVINA:
-				case PR_LEXAETERNA:
-				case HW_GRAVITATION:
-				case PR_MAGNUS:
-				case PR_TURNUNDEAD:
-				case MG_SRECOVERY:
-				case HW_MAGICPOWER:
-				case MG_SIGHT:
-				case MG_NAPALMBEAT:
-				case MG_SAFETYWALL:
-				case HW_GANBANTEIN:
-				case MG_SOULSTRIKE:
-				case MG_COLDBOLT:
-				case MG_FROSTDIVER:
-				case WL_DRAINLIFE:
-				case MG_STONECURSE:
-				case MG_FIREBALL:
-				case MG_FIREWALL:
-				case WL_SOULEXPANSION:
-				case MG_FIREBOLT:
-				case MG_LIGHTNINGBOLT:
-				case MG_THUNDERSTORM:
-				case MG_ENERGYCOAT:
-				case WL_WHITEIMPRISON:
-				case WL_SUMMONFB:
-				case WL_SUMMONBL:
-				case WL_SUMMONWB:
-				case WL_SUMMONSTONE:
-				case WL_SIENNAEXECRATE:
-				case WL_RELEASE:
-				case WL_EARTHSTRAIN:
-				case WL_RECOGNIZEDSPELL:
-				case WL_READING_SB:
-				case SA_MAGICROD:
-				case SA_SPELLBREAKER:
-				case SA_DISPELL:
-				case SA_FLAMELAUNCHER:
-				case SA_FROSTWEAPON:
-				case SA_LIGHTNINGLOADER:
-				case SA_SEISMICWEAPON:
-				case SA_VOLCANO:
-				case SA_DELUGE:
-				case SA_VIOLENTGALE:
-				case SA_LANDPROTECTOR:
-				case PF_HPCONVERSION:
-				case PF_SOULCHANGE:
-				case PF_SPIDERWEB:
-				case PF_FOGWALL:
-				case TK_RUN:
-				case TK_HIGHJUMP:
-				case TK_SEVENWIND:
-				case SL_KAAHI:
-				case SL_KAUPE:
-				case SL_KAITE:
+	inf = skill->get_inf2(skill_id);
 
-				// Skills that need to be confirmed.
-				case SO_FIREWALK:
-				case SO_ELECTRICWALK:
-				case SO_SPELLFIST:
-				case SO_EARTHGRAVE:
-				case SO_DIAMONDDUST:
-				case SO_POISON_BUSTER:
-				case SO_PSYCHIC_WAVE:
-				case SO_CLOUD_KILL:
-				case SO_STRIKING:
-				case SO_WARMER:
-				case SO_VACUUM_EXTREME:
-				case SO_VARETYR_SPEAR:
-				case SO_ARRULLO:
-					return 1; // Can't do it.
-			}
-			break;
-		case SC_KG_KAGEHUMI:
-			switch(skill_id) {
-				case TF_HIDING:
-				case AS_CLOAKING:
-				case GC_CLOAKINGEXCEED:
-				case SC_SHADOWFORM:
-				case MI_HARMONIZE:
-				case CG_MARIONETTE:
-				case AL_TELEPORT:
-				case TF_BACKSLIDING:
-				case RA_CAMOUFLAGE:
-				case ST_CHASEWALK:
-				case GD_EMERGENCYCALL:
-					return 1; // needs more info
-			}
-			break;
+	switch(type) {
+	case SC_STASIS:
+		if (inf & INF2_NO_STASIS)
+			return 1; // Can't do it.
+		break;
+	case SC_KG_KAGEHUMI:
+		if (inf & INF2_NO_KAGEHUMI)
+			return 1;
+		break;
 	}
 
 	return 0;
@@ -21106,6 +21007,16 @@ static void skill_validate_skillinfo(struct config_setting_t *conf, struct s_ski
 					sk->inf2 |= INF2_IS_COMBO_SKILL;
 				else
 					sk->inf2 &= ~INF2_IS_COMBO_SKILL;
+			} else if (strcmpi(skill_info, "BlockedByStasis") == 0) {
+				if (on)
+					sk->inf2 |= INF2_NO_STASIS;
+				else
+					sk->inf2 &= ~INF2_NO_STASIS;
+			} else if (strcmpi(skill_info, "BlockedByKagehumi") == 0) {
+				if (on)
+					sk->inf2 |= INF2_NO_KAGEHUMI;
+				else
+					sk->inf2 &= ~INF2_NO_KAGEHUMI;
 			} else if (strcmpi(skill_info, "None") != 0) {
 				ShowWarning("%s: Invalid sub-type %s specified for skill ID %d in %s! Skipping sub-type...\n",
 					    __func__, skill_info, sk->nameid, conf->file);

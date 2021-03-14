@@ -3258,10 +3258,16 @@ typedef void (*HPMHOOK_pre_homun_stat_reset) (struct homun_data **hd);
 typedef void (*HPMHOOK_post_homun_stat_reset) (struct homun_data *hd);
 typedef bool (*HPMHOOK_pre_homun_shuffle) (struct homun_data **hd);
 typedef bool (*HPMHOOK_post_homun_shuffle) (bool retVal___, struct homun_data *hd);
-typedef bool (*HPMHOOK_pre_homun_read_db_sub) (char **str[], int *columns, int *current);
-typedef bool (*HPMHOOK_post_homun_read_db_sub) (bool retVal___, char *str[], int columns, int current);
 typedef void (*HPMHOOK_pre_homun_read_db) (void);
 typedef void (*HPMHOOK_post_homun_read_db) (void);
+typedef bool (*HPMHOOK_pre_homun_read_db_libconfig) (const char **filename);
+typedef bool (*HPMHOOK_post_homun_read_db_libconfig) (bool retVal___, const char *filename);
+typedef bool (*HPMHOOK_pre_homun_read_db_libconfig_sub) (struct config_setting_t **it, int *idx, const char **source);
+typedef bool (*HPMHOOK_post_homun_read_db_libconfig_sub) (bool retVal___, struct config_setting_t *it, int idx, const char *source);
+typedef bool (*HPMHOOK_pre_homun_read_db_libconfig_sub_stats) (struct config_setting_t **it, int *idx);
+typedef bool (*HPMHOOK_post_homun_read_db_libconfig_sub_stats) (bool retVal___, struct config_setting_t *it, int idx);
+typedef bool (*HPMHOOK_pre_homun_read_db_libconfig_sub_stats_group) (struct config_setting_t **it, struct h_stats **smin, struct h_stats **smax);
+typedef bool (*HPMHOOK_post_homun_read_db_libconfig_sub_stats_group) (bool retVal___, struct config_setting_t *it, struct h_stats *smin, struct h_stats *smax);
 typedef bool (*HPMHOOK_pre_homun_read_skill_db_sub) (char **split[], int *columns, int *current);
 typedef bool (*HPMHOOK_post_homun_read_skill_db_sub) (bool retVal___, char *split[], int columns, int current);
 typedef void (*HPMHOOK_pre_homun_skill_db_read) (void);
@@ -8238,12 +8244,14 @@ typedef bool (*HPMHOOK_pre_status_read_scdb_libconfig_sub_flag) (struct config_s
 typedef bool (*HPMHOOK_post_status_read_scdb_libconfig_sub_flag) (bool retVal___, struct config_setting_t *it, int type, const char *source);
 typedef bool (*HPMHOOK_pre_status_read_scdb_libconfig_sub_flag_additional) (struct config_setting_t **it, int *type, const char **source);
 typedef bool (*HPMHOOK_post_status_read_scdb_libconfig_sub_flag_additional) (bool retVal___, struct config_setting_t *it, int type, const char *source);
+typedef bool (*HPMHOOK_pre_status_read_scdb_libconfig_sub_skill) (struct config_setting_t **it, int *type, const char **source);
+typedef bool (*HPMHOOK_post_status_read_scdb_libconfig_sub_skill) (bool retVal___, struct config_setting_t *it, int type, const char *source);
 typedef void (*HPMHOOK_pre_status_read_job_db) (void);
 typedef void (*HPMHOOK_post_status_read_job_db) (void);
 typedef void (*HPMHOOK_pre_status_read_job_db_sub) (int *idx, const char **name, struct config_setting_t **jdb);
 typedef void (*HPMHOOK_post_status_read_job_db_sub) (int idx, const char *name, struct config_setting_t *jdb);
-typedef void (*HPMHOOK_pre_status_set_sc) (uint16 *skill_id, sc_type *sc, unsigned int *flag);
-typedef void (*HPMHOOK_post_status_set_sc) (uint16 skill_id, sc_type sc, unsigned int flag);
+typedef void (*HPMHOOK_pre_status_set_sc) (sc_type *sc, unsigned int *flag);
+typedef void (*HPMHOOK_post_status_set_sc) (sc_type sc, unsigned int flag);
 typedef void (*HPMHOOK_pre_status_copy) (struct status_data **a, const struct status_data **b);
 typedef void (*HPMHOOK_post_status_copy) (struct status_data *a, const struct status_data *b);
 typedef int (*HPMHOOK_pre_status_base_matk_min) (const struct status_data **st);
@@ -8370,8 +8378,8 @@ typedef bool (*HPMHOOK_pre_sv_readdb) (const char **directory, const char **file
 typedef bool (*HPMHOOK_post_sv_readdb) (bool retVal___, const char *directory, const char *filename, char delim, int mincols, int maxcols, int maxrows, bool ( *parseproc ) (char *fields[], int columns, int current));
 #endif // COMMON_STRLIB_H
 #ifdef COMMON_SYSINFO_H /* sysinfo */
-typedef int (*HPMHOOK_pre_sysinfo_getpagesize) (void);
-typedef int (*HPMHOOK_post_sysinfo_getpagesize) (int retVal___);
+typedef long (*HPMHOOK_pre_sysinfo_getpagesize) (void);
+typedef long (*HPMHOOK_post_sysinfo_getpagesize) (long retVal___);
 typedef const char* (*HPMHOOK_pre_sysinfo_platform) (void);
 typedef const char* (*HPMHOOK_post_sysinfo_platform) (const char* retVal___);
 typedef const char* (*HPMHOOK_pre_sysinfo_osversion) (void);
