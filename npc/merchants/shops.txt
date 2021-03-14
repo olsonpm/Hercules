@@ -1218,7 +1218,6 @@ OnInit:
 	sellitem Scell;
 	sellitem Monsters_Feed;
 	sellitem Animals_Skin;
-	sellitem Bill_Of_Birds;
 }
 
 moc_ruins,81,113,0	trader	Item Collector#moc2	4_M_03,{
@@ -1226,7 +1225,6 @@ OnInit:
 	sellitem Scell;
 	sellitem Monsters_Feed;
 	sellitem Animals_Skin;
-	sellitem Bill_Of_Birds;
 }
 
 moc_ruins,110,105,2	trader	Jeweler#moc1	8_F,{
