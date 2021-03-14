@@ -9,6 +9,7 @@ OnInit:
 	sellitem Awakening_Potion;
 	sellitem Berserk_Potion;
 	sellitem Empty_Potion;
+	sellitem Medicine_Bowl;
 }
 
 prontera,136,205,4	trader	Montgomery Flea Market::bro_prt_misctrader	4_M_DEWOLDMAN,{
@@ -18,6 +19,11 @@ OnInit:
 	sellitem Blue_Gemstone;
 	sellitem Red_Gemstone;
 	sellitem Yellow_Gemstone;
+	sellitem Scroll;
+	sellitem Oridecon_Hammer;
+	sellitem Portable_Furnace;
+	sellitem Pet_Incubator;
+	sellitem Pet_Food;
 }
 
 prontera,140,205,3	trader	Arrow Zealot::bro_prt_arrowzealot	4_M_ARCHER,{
