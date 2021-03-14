@@ -175,7 +175,7 @@ F10: Go("lou_fild01",229,187);
 F11: Go("xmas_fild01",115,145);
 F12: Go("man_fild01",35,236);
 F13: Go("mjolnir_01",204,120);
-F14: Go("mosk_fild01",82,104);
+F14: Go("mosk_fild02",190,254);
 F15: Go("nif_fild01",215,229);
 F16: Go("pay_fild01",158,206);
 F17: Go("prt_fild00",208,227);
