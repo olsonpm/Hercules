@@ -4,7 +4,7 @@
 // https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
 //
 
-beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINCPTMINER,{
+beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 	if (questprogress(70000)) {
 		if (questprogress(70000,HUNTING) != 2) {
 			mes "[Miner]";
