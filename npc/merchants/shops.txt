@@ -1408,7 +1408,6 @@ OnInit:
 	sellitem Pumpkin;
 	sellitem Pumpkin_Head;
 	sellitem Tree_Root;
-	sellitem Goats_Horn;
 	sellitem Pet_Food;
 	sellitem Poison_Powder;
 	sellitem Single_Cell;
