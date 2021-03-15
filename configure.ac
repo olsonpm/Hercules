@@ -124,19 +124,6 @@ AC_ARG_ENABLE(
 	[enable_packetver=""]
 )
 
-#
-# cash shop preview patch
-#
-AC_ARG_ENABLE(
-	[cashshop-preview-patch],
-	AC_HELP_STRING(
-		[--enable-cashshop-preview-patch],
-		[Enable Nemo patch ExtendCashShopPreview.]
-	),
-	[enable_cashshop_preview_patch=1],
-	[enable_cashshop_preview_patch=0]
-)
-
 
 #
 # packetver-RE
@@ -809,31 +796,24 @@ AC_RUN_IFELSE(
 # Check if CC supports __thread attribute (Thread Local Storage) 
 # (Usually our OSX friends 're lacking support of it in older llvm versions ..)
 # 
-case "${host}" in
-	*-*-mingw*)
-		CPPFLAGS="$CPPFLAGS -DHAS_TLS"
-		;;
-	*)
-		AC_MSG_CHECKING([whether $CC supports __thread specifier (TLS)])
-		AC_RUN_IFELSE(
-			[AC_LANG_SOURCE([
-				__thread int g_Test = -1;
-				int main(int argc, char **argv){
-					g_Test = 0;
-					return g_Test;
-				}
-			])],
-			[
-				AC_MSG_RESULT([yes])
-				CPPFLAGS="$CPPFLAGS -DHAS_TLS"
-			],
-			[
-				AC_MSG_RESULT([no])
-			]
-		)
-		;;
-esac
+AC_MSG_CHECKING([whether $CC supports __thread specifier (TLS)])
+AC_RUN_IFELSE(
+	[AC_LANG_SOURCE([
+		__thread int g_Test = -1;
 
+		int main(int argc, char **argv){
+			g_Test = 0;
+			return g_Test;		
+		}
+	])],
+	[
+		AC_MSG_RESULT([yes])
+		CPPFLAGS="$CPPFLAGS -DHAS_TLS"
+	],
+	[
+		AC_MSG_RESULT([no])
+	]
+)
 
 #
 # Check if the linker supports/accepts -rdynamic
@@ -1414,18 +1394,6 @@ case $enable_packetver_ad in
 esac
 
 #
-# cash shop preview patch
-#
-case $enable_cashshop_preview_patch in
-	0)
-		#default value
-		;;
-	1)
-		CPPFLAGS="$CPPFLAGS -DENABLE_CASHSHOP_PREVIEW_PATCH"
-		;;
-esac
-
-#
 # Epoll
 #
 case $have_linux_epoll in
@@ -1779,7 +1747,7 @@ AC_SUBST([DLLEXT])
 AC_MSG_CHECKING([for MinGW])
 if test -n "`$CC --version 2>/dev/null | grep -i mingw`" ; then
 	AC_MSG_RESULT([yes])
-	CPPFLAGS="$CPPFLAGS -DMINGW -DLIBCONFIG_EXPORTS"
+	CPPFLAGS="$CPPFLAGS -DMINGW"
 	if test -z "$fd_setsize" ; then
 		CPPFLAGS="$CPPFLAGS -DFD_SETSIZE=4096"
 	fi
@@ -1850,19 +1818,13 @@ fi
 #
 # pthread
 #
-case "${host}" in
-	*-*-mingw*)
-		;;
-	*)
-		AC_SEARCH_LIBS([pthread_create], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_sigmask], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_attr_init], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_attr_setstacksize], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_attr_destroy], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_cancel], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		AC_SEARCH_LIBS([pthread_join], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
-		;;
-esac
+AC_SEARCH_LIBS([pthread_create], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_sigmask], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_attr_init], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_attr_setstacksize], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_attr_destroy], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_cancel], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
+AC_SEARCH_LIBS([pthread_join], [pthread], [], [AC_MSG_ERROR([pthread library not found or incompatible])])
 
 # execinfo (backtrace)
 AC_CHECK_HEADERS([execinfo.h],
@@ -1902,38 +1864,29 @@ fi
 
 MYSQL_OLD_LIBS="$LIBS" ; LIBS="$LIBS $MYSQL_LIBS"
 MYSQL_OLD_CPPFLAGS="$CPPFLAGS" ; CPPFLAGS="$CPPFLAGS $MYSQL_CFLAGS"
+AC_CHECK_FUNC([mysql_init], [HAVE_MYSQL="yes"])
+AC_CHECK_HEADER([mysql.h], [], [HAVE_MYSQL=""])
 
-case "${host}" in
-	*-*-mingw*)
-		HAVE_MYSQL="yes"
+AC_MSG_CHECKING([whether my_bool is supported (MySQL)])
+AC_RUN_IFELSE(
+	[AC_LANG_SOURCE([
+		#ifdef WIN32
+		#include "common/winapi.h" // Needed before mysql.h
+		#endif
+		#include <mysql.h>
+		int main(int argc, char **argv){
+			my_bool val = (my_bool)0;
+			return (int)val;
+		}
+	])],
+	[
+		AC_MSG_RESULT([yes])
+	],
+	[
+		AC_MSG_RESULT([no (converting my_bool to bool)])
 		MYSQL_CFLAGS="$MYSQL_CFLAGS -Dmy_bool=bool"
-		;;
-	*)
-		AC_CHECK_FUNC([mysql_init], [HAVE_MYSQL="yes"])
-		AC_CHECK_HEADER([mysql.h], [], [HAVE_MYSQL=""])
-
-		AC_MSG_CHECKING([whether my_bool is supported (MySQL)])
-		AC_RUN_IFELSE(
-			[AC_LANG_SOURCE([
-				#ifdef WIN32
-				#include "common/winapi.h" // Needed before mysql.h
-				#endif
-				#include <mysql.h>
-				int main(int argc, char **argv){
-					my_bool val = (my_bool)0;
-					return (int)val;
-				}
-			])],
-			[
-				AC_MSG_RESULT([yes])
-			],
-			[
-				AC_MSG_RESULT([no (converting my_bool to bool)])
-				MYSQL_CFLAGS="$MYSQL_CFLAGS -Dmy_bool=bool"
-			]
-		)
-		;;
-esac
+	]
+)
 
 CPPFLAGS="$MYSQL_OLD_CPPFLAGS"
 LIBS="$MYSQL_OLD_LIBS"
