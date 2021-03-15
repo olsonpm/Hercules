@@ -4,7 +4,7 @@
 // https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
 //
 
-mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
+mag_dun02,46,40,0	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 	if (questprogress(30006)) {
 		if (questprogress(30006,HUNTING) != 2) {
 			mes "[Miner]";

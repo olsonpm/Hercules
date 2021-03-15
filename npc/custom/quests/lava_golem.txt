@@ -4,7 +4,7 @@
 // https://irowiki.org/classic/Repeatable_EXP_Quests#Monster_Hunting
 //
 
-mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
+mag_dun01,127,71,0	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 	if (questprogress(30003)) {
 		if (questprogress(30003,HUNTING) != 2) {
 			mes "[Tribesman]";
