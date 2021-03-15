@@ -5,8 +5,8 @@
 //
 
 mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
-	if (questprogress(70003)) {
-		if (questprogress(70003,HUNTING) != 2) {
+	if (questprogress(30003)) {
+		if (questprogress(30003,HUNTING) != 2) {
 			mes "[Tribesman]";
 			mes "Have you finished hunting the 50 Lava Golems?";
 			next;
@@ -28,7 +28,7 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 				case 1:
 					mes "[Tribesman]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70003;
+					erasequest 30003;
 					close;
 				case 2:
 					mes "[Tribesman]";
@@ -42,12 +42,12 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 			mes "Oh thank you so much!";
 			mes "I think that I can rest easily now.";
 			getexp 484800,290700;
-			erasequest 70003;
+			erasequest 30003;
 			close;
 		}
 	}
-	if (questprogress(70004)) {
-		if (questprogress(70004,HUNTING) != 2) {
+	if (questprogress(30004)) {
+		if (questprogress(30004,HUNTING) != 2) {
 			mes "[Tribesman]";
 			mes "Have you finished hunting the 50 Lava Golems?";
 			next;
@@ -69,7 +69,7 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 				case 1:
 					mes "[Tribesman]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70004;
+					erasequest 30004;
 					close;
 				case 2:
 					mes "[Tribesman]";
@@ -84,12 +84,12 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 			mes "I think that I can rest easily now.";
 			getexp 484800,290700;
 			getexp 484800,290700;
-			erasequest 70004;
+			erasequest 30004;
 			close;
 		}
 	}
-	if (questprogress(70005)) {
-		if (questprogress(70005,HUNTING) != 2) {
+	if (questprogress(30005)) {
+		if (questprogress(30005,HUNTING) != 2) {
 			mes "[Tribesman]";
 			mes "Have you finished hunting the 150 Lava Golems?";
 			next;
@@ -111,7 +111,7 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 				case 1:
 					mes "[Tribesman]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70005;
+					erasequest 30005;
 					close;
 				case 2:
 					mes "[Tribesman]";
@@ -127,7 +127,7 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 			getexp 484800,290700;
 			getexp 484800,290700;
 			getexp 484800,290700;
-			erasequest 70005;
+			erasequest 30005;
 			close;
 		}
 	}
@@ -169,17 +169,17 @@ mag_dun01,127,71,4	script	Jotun Tribesman::bro_lava_golem_hunt	4_M_NFDEADMAN,{
 					case 1:
 						mes "[Tribesman]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70003;
+						setquest 30003;
 						close;
 					case 2:
 						mes "[Tribesman]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70004;
+						setquest 30004;
 						close;
 					case 3:
 						mes "[Tribesman]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70005;
+						setquest 30005;
 						close;
 					}
 				case 2:

@@ -5,8 +5,8 @@
 //
 
 beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
-	if (questprogress(70000)) {
-		if (questprogress(70000,HUNTING) != 2) {
+	if (questprogress(30000)) {
+		if (questprogress(30000,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 50 Medusas?";
 			next;
@@ -28,7 +28,7 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70000;
+					erasequest 30000;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -42,12 +42,12 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 			mes "Oh thank you so much!";
 			mes "I think that I can rest easily now.";
 			getexp 515700,352275;
-			erasequest 70000;
+			erasequest 30000;
 			close;
 		}
 	}
-	if (questprogress(70001)) {
-		if (questprogress(70001,HUNTING) != 2) {
+	if (questprogress(30001)) {
+		if (questprogress(30001,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 50 Medusas?";
 			next;
@@ -69,7 +69,7 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70001;
+					erasequest 30001;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -84,12 +84,12 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 			mes "I think that I can rest easily now.";
 			getexp 515700,352275;
 			getexp 515700,352275;
-			erasequest 70001;
+			erasequest 30001;
 			close;
 		}
 	}
-	if (questprogress(70002)) {
-		if (questprogress(70002,HUNTING) != 2) {
+	if (questprogress(30002)) {
+		if (questprogress(30002,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 150 Medusas?";
 			next;
@@ -111,7 +111,7 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70002;
+					erasequest 30002;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -127,7 +127,7 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 			getexp 515700,352275;
 			getexp 515700,352275;
 			getexp 515700,352275;
-			erasequest 70002;
+			erasequest 30002;
 			close;
 		}
 	}
@@ -169,17 +169,17 @@ beach_dun,269,71,4	script	Miner#Medusa_Hunt	4_M_EINMINER,{
 					case 1:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70000;
+						setquest 30000;
 						close;
 					case 2:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70001;
+						setquest 30001;
 						close;
 					case 3:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70002;
+						setquest 30002;
 						close;
 					}
 				case 2:

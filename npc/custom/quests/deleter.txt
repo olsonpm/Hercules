@@ -5,8 +5,8 @@
 //
 
 mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
-	if (questprogress(70006)) {
-		if (questprogress(70006,HUNTING) != 2) {
+	if (questprogress(30006)) {
+		if (questprogress(30006,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 50 Deleters?";
 			next;
@@ -28,7 +28,7 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70006;
+					erasequest 30006;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -42,12 +42,12 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 			mes "Oh thank you so much!";
 			mes "I think that I can rest easily now.";
 			getexp 387734,232733;
-			erasequest 70006;
+			erasequest 30006;
 			close;
 		}
 	}
-	if (questprogress(70007)) {
-		if (questprogress(70007,HUNTING) != 2) {
+	if (questprogress(30007)) {
+		if (questprogress(30007,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 50 Deleters?";
 			next;
@@ -69,7 +69,7 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70007;
+					erasequest 30007;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -84,12 +84,12 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 			mes "I think that I can rest easily now.";
 			getexp 387734,232733;
 			getexp 387734,232733;
-			erasequest 70007;
+			erasequest 30007;
 			close;
 		}
 	}
-	if (questprogress(70008)) {
-		if (questprogress(70008,HUNTING) != 2) {
+	if (questprogress(30008)) {
+		if (questprogress(30008,HUNTING) != 2) {
 			mes "[Miner]";
 			mes "Have you finished hunting the 150 Deleters?";
 			next;
@@ -111,7 +111,7 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 				case 1:
 					mes "[Miner]";
 					mes "Ok then, well come back here if you change your mind.";
-					erasequest 70008;
+					erasequest 30008;
 					close;
 				case 2:
 					mes "[Miner]";
@@ -127,7 +127,7 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 			getexp 387734,232733;
 			getexp 387734,232733;
 			getexp 387734,232733;
-			erasequest 70008;
+			erasequest 30008;
 			close;
 		}
 	}
@@ -169,17 +169,17 @@ mag_dun02,46,40,4	script	Coal Miner::bro_deleter_hunt	4_M_EINMINER,{
 					case 1:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70006;
+						setquest 30006;
 						close;
 					case 2:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70007;
+						setquest 30007;
 						close;
 					case 3:
 						mes "[Miner]";
 						mes "Come back when you've finished your task and I will give you a small reward.";
-						setquest 70008;
+						setquest 30008;
 						close;
 					}
 				case 2:
