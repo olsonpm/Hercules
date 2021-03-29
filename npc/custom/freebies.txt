@@ -23,7 +23,7 @@ iz_int,21,33,3	script	Alfred#bro_freebies	1_M_LIBRARYMASTER,10,10,{
 			getitem Novice_Guard,1;
 			getitem Novice_Knife,1;
 			getitem Novice_Boots,1;
-			getitem N_Adventurers_Suit,1;
+			getitem Novice_Plate,1;
 
       mes("Make sure to use your first few stat points.  Otherwise those cute pink porings outside might getcha.");
       getexp(1, 1);
