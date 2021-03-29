@@ -1,0 +1,70 @@
+//===== Hercules Script ======================================
+//= Purifier
+//===== By: ==================================================
+//= olsonpm
+//===== Current Version: =====================================
+//= 0.1.0
+//===== Description: =========================================
+//= purifies all your oridecon and elunium for a price
+//============================================================
+prontera,128,209,5	script	Dasani	4_CHN_SHAOTH,{
+	mes "[Dasani]";
+	mes "I can purify all your";
+	mes "Rough Oridecons and Eluniums.";
+	mes "I charge 2000 zeny for each Oridecon";
+	mes "and 5000 for each Elunium made";
+	next;
+
+	.@ori = countitem(Oridecon_Stone) / 5;
+	.@roughOri = .@ori * 5;
+	.@elu = countitem(Elunium_Stone) / 5;
+	.@roughElu = .@elu * 5;
+	.@cost = .@ori * 2000 + .@elu * 5000;
+
+	if (.@ori == 0 && .@elu == 0) {
+		mes "[Dasani]";
+		mes "Oh it looks like you don't have";
+		mes "5 Rough Oridcecons or Eluniums.";
+		mes "Come back when you do !";
+		close;
+	} else {
+		mes "[Dasani]";
+		mes "Okay it looks like I can make";
+		mes .@ori + " Oridcecons and " + .@elu + " Eluniums";
+		mes "for " + .@cost + " zeny.";
+		mes "Sound good to you ?";
+		next;
+		switch(select("Yes please", "Not now")) {
+		case 1:
+			if (.@cost > Zeny) {
+				mes "[Dasani]";
+				mes "Oh it looks like you don't have";
+				mes "enough zeny.  Please come back";
+				mes "when you have more.";
+				close;
+				break;
+			}
+			if (.@ori > 0) {
+				delitem Oridecon_Stone,.@roughOri;
+				getitem Oridecon,.@ori;
+			}
+			if (.@elu > 0) {
+				delitem Elunium_Stone,.@roughElu;
+				getitem Elunium,.@elu;
+			}
+			Zeny -= .@cost;
+			mes "[Dasani]";
+			mes "Done !";
+			mes "Hope to see you again soon.";
+			close;
+			break;
+		case 2:
+			mes "[Dasani]";
+			mes "Okay no problem.  Hope to see you again soon.";
+			close;
+			break;
+		}
+	}
+
+	end;
+}
