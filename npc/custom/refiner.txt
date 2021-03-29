@@ -215,7 +215,7 @@ prontera,142,202,3	script	Refiner	1_M_SMITH,{
 			mes .NpcName$;
 			mes "Oh no! If I refine this again";
 			mes "there's a risk it could be destroyed!";
-			mes "That means that That means that ";
+			mes "That means that";
 			mes "^FF0000this item^000000, and ^FF0000anything^000000 on it";
 			mes "^FF0000will be gone^000000.";
 			next;
