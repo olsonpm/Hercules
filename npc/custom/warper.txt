@@ -189,14 +189,16 @@ F22: Go("yuno_fild01",189,224);
 	Dungeons:
 // --------------------------------------------------
 menu	"Abyss Lakes",D1, "Amatsu Dungeon",D2, "Anthell",D3, "Ayothaya Dungeon",D4,
-		"Beach Dungeon",D5, "Bio Labs",D6, "Byalan Dungeon",D7, "Clock Tower",D8,
-		"Coal Mines",D9, "Culvert",D10, "Cursed Abbey",D11, "Einbroch Dungeon",D12,
-		"Gefenia",D13, "Geffen Dungeon",D14, "Glast Heim",D15, "Gonryun Dungeon",D16,
-		"Hidden Dungeon",D17, "Ice Dungeon",D18, "Juperos",D19, "Kiel Dungeon",D20,
-		"Louyang Dungeon",D21, "Magma Dungeon",D22, "Moscovia Dungeon",D23,
-		"Nidhogg's Dungeon",D24, "Odin Temple",D25, "Orc Dungeon",D26, "Payon Dungeon",D27,
-		"Pyramids",D28, "Rachel Sanctuary",D29, "Sphinx",D30, "Sunken Ship",D31, "Thanatos Tower",D32,
-		"Thor Volcano",D33, "Toy Factory",D34, "Turtle Dungeon",D35, "Umbala Dungeon",D36;
+		"Beach Dungeon",D5, "Bio Labs",D6, "Byalan Dungeon L1",D7, "Byalan Dungeon L3",D8
+		"Clock Tower F1",D9, "Clock Tower F3",D10, "Clock Tower B3",D11, "Coal Mines",D12,
+		"Culvert",D13, "Cursed Abbey",D14, "Einbroch Dungeon",D15, "Gefenia",D16,
+		"Geffen Dungeon",D17, "Glast Heim",D18, "Gonryun Dungeon",D19, "Hidden Dungeon",D20,
+		"Ice Dungeon",D21, "Juperos",D22, "Kiel Dungeon",D23, "Louyang Dungeon",D24,
+		"Magma Dungeon L1",D25, "Magma Dungeon L2",D26, "Moscovia Dungeon",D27,
+		"Nidhogg's Dungeon",D28, "Odin Temple",D29, "Orc Dungeon",D30, "Payon Dungeon",D31,
+		"Pyramids",D32, "Rachel Sanctuary",D33, "Sphinx",D34, "Sunken Ship",D35,
+		"Thanatos Tower",D36, "Thor Volcano",D37, "Toy Factory L1",D38, "Toy Factory L2",D39,
+		"Turtle Dungeon",D40, "Umbala Dungeon",D41;
 
 D1: Go("abyss_01",261,272);
 D2: Go("ama_dun01",228,11);
@@ -205,35 +207,40 @@ D4: Go("ayo_dun01",275,19);
 D5: Go("beach_dun",266,67);
 D6: Go("lhz_dun01",150,288);
 D7: Go("iz_dun00",168,168);
-D8: Go("c_tower1",199,159);
-D9: Go("mjo_dun01",52,17);
-D10: Go("prt_sewb1",131,247);
-D11: Go("abbey01",51,14);
-D12: Go("ein_dun01",22,14);
-D13: Go("gefenia01",40,103);
-D14: Go("gef_dun00",104,99);
-D15: Go("glast_01",370,304);
-D16: Go("gon_dun01",153,53);
-D17: Go("prt_maze01",176,7);
-D18: Go("ice_dun01",157,14);
-D19: Go("jupe_cave",140,51);
-D20: Go("kh_dun01",28,226);
-D21: Go("lou_dun01",218,196);
-D22: Go("mag_dun01",126,68);
-D23: Go("mosk_dun01",189,48);
-D24: Go("nyd_dun01",61,239);
-D25: Go("odin_tem01",298,167);
-D26: Go("orcsdun01",32,170);
-D27: Go("pay_dun00",21,183);
-D28: Go("moc_pryd01",192,9);
-D29: Go("ra_san01",140,11);
-D30: Go("in_sphinx1",288,9);
-D31: Go("treasure01",69,24);
-D32: Go("tha_t01",150,39);
-D33: Go("thor_v01",21,228);
-D34: Go("xmas_dun01",205,15);
-D35: Go("tur_dun01",154,49);
-D36: Go("um_dun01",42,31);
+D8: Go("iz_dun02",234,206);
+D9: Go("c_tower1",199,159);
+D10: Go("c_tower3",64,143);
+D11: Go("alde_dun03",265,22);
+D12: Go("mjo_dun01",52,17);
+D13: Go("prt_sewb1",131,247);
+D14: Go("abbey01",51,14);
+D15: Go("ein_dun01",22,14);
+D16: Go("gefenia01",40,103);
+D17: Go("gef_dun00",104,99);
+D18: Go("glast_01",370,304);
+D19: Go("gon_dun01",153,53);
+D20: Go("prt_maze01",176,7);
+D21: Go("ice_dun01",157,14);
+D22: Go("jupe_cave",140,51);
+D23: Go("kh_dun01",28,226);
+D24: Go("lou_dun01",218,196);
+D25: Go("mag_dun01",126,68);
+D26: Go("mag_dun02",47,40);
+D27: Go("mosk_dun01",189,48);
+D28: Go("nyd_dun01",61,239);
+D29: Go("odin_tem01",298,167);
+D30: Go("orcsdun01",32,170);
+D31: Go("pay_dun00",21,183);
+D32: Go("moc_pryd01",192,9);
+D33: Go("ra_san01",140,11);
+D34: Go("in_sphinx1",288,9);
+D35: Go("treasure01",69,24);
+D36: Go("tha_t01",150,39);
+D37: Go("thor_v01",21,228);
+D38: Go("xmas_dun01",205,15);
+D39: Go("xmas_dun02",130,123);
+D40: Go("tur_dun01",154,49);
+D41: Go("um_dun01",42,31);
 
 // --------------------------------------------------
 	Castles:
