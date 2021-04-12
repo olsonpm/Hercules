@@ -14,6 +14,7 @@ OnInit:
 
 prontera,136,205,4	trader	Montgomery Flea Market::bro_prt_misctrader	4_M_DEWOLDMAN,{
 OnInit:
+	sellitem Grape;
 	sellitem Spectacles;
 	sellitem Wing_Of_Fly;
 	sellitem Blue_Gemstone;
