@@ -156,35 +156,34 @@ T28: Go("yuno",157,51);
 	Fields:
 // --------------------------------------------------
 menu	"Amatsu Fields",F1, "Ayothaya Fields",F2, "Comodo Fields",F3, "Einbroch Fields",F4,
-		"El Dicastes Fields",F5, "Geffen Fields",F6, "Gonryun Field",F7, "Hugel Fields",F8,
-		"Lighthalzen Fields",F9, "Louyang Field",F10, "Lutie Field",F11, "Manuk Fields",F12,
-		"Mjolnir Fields",F13, "Moscovia Fields",F14, "Niflheim Fields",F15, "Payon Forests",F16,
-		"Prontera Fields",F17, "Rachel Fields",F18, "Sograt Deserts",F19, "Splendide Fields",F20,
-		"Umbala Fields",F21, "Veins Fields",F22, "Yuno Fields",F23;
+		"Geffen Fields",F5, "Gonryun Field",F6, "Hugel Fields",F7, "Lighthalzen Fields",F8,
+		"Louyang Field",F9, "Lutie Field",F10, "Manuk Fields",F11, "Mjolnir Fields",F12,
+		"Moscovia Fields",F13, "Niflheim Fields",F14, "Payon Forests",F15, "Prontera Fields",F16,
+		"Rachel Fields",F17, "Sograt Deserts",F18, "Splendide Fields",F19, "Umbala Fields",F20,
+		"Veins Fields",F21, "Yuno Fields",F22;
 
 F1: Go("ama_fild01",190,197);
 F2: Go("ayo_fild01",173,134);
 F3: Go("cmd_fild01",180,178);
 F4: Go("ein_fild01",142,225);
-F5: Go("dic_fild01",143,132);
-F6: Go("gef_fild00",46,199);
-F7: Go("gon_fild01",220,227);
-F8: Go("hu_fild01",268,101);
-F9: Go("lhz_fild01",240,179);
-F10: Go("lou_fild01",229,187);
-F11: Go("xmas_fild01",115,145);
-F12: Go("man_fild01",35,236);
-F13: Go("mjolnir_01",204,120);
-F14: Go("mosk_fild02",190,254);
-F15: Go("nif_fild01",215,229);
-F16: Go("pay_fild01",158,206);
-F17: Go("prt_fild00",208,227);
-F18: Go("ra_fild01",192,162);
-F19: Go("moc_fild01",219,205);
-F20: Go("spl_fild01",175,186);
-F21: Go("um_fild01",217,206);
-F22: Go("ve_fild01",186,175);
-F23: Go("yuno_fild01",189,224);
+F5: Go("gef_fild00",46,199);
+F6: Go("gon_fild01",220,227);
+F7: Go("hu_fild01",268,101);
+F8: Go("lhz_fild01",240,179);
+F9: Go("lou_fild01",229,187);
+F10: Go("xmas_fild01",115,145);
+F11: Go("man_fild01",35,236);
+F12: Go("mjolnir_01",204,120);
+F13: Go("mosk_fild02",190,254);
+F14: Go("nif_fild01",215,229);
+F15: Go("pay_fild01",158,206);
+F16: Go("prt_fild00",208,227);
+F17: Go("ra_fild01",192,162);
+F18: Go("moc_fild01",219,205);
+F19: Go("spl_fild01",175,186);
+F20: Go("um_fild01",217,206);
+F21: Go("ve_fild01",186,175);
+F22: Go("yuno_fild01",189,224);
 
 // --------------------------------------------------
 	Dungeons:
