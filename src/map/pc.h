@@ -1041,6 +1041,7 @@ END_ZEROED_BLOCK; /* End */
 	bool (*statusup) (struct map_session_data *sd, int type, int increase);
 	int (*statusup2) (struct map_session_data *sd,int type,int val);
 	int (*skillup) (struct map_session_data *sd,uint16 skill_id);
+	int (*skillup2) (struct map_session_data *sd,uint16 skill_id, int level);
 	int (*allskillup) (struct map_session_data *sd);
 	int (*resetlvl) (struct map_session_data *sd,int type);
 	int (*resetstate) (struct map_session_data *sd);

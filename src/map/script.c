@@ -10652,6 +10652,27 @@ static BUILDIN(autobonus3)
 	return true;
 }
 
+/// Up the level of a player skill.
+/// [Cretino]
+/// skillup <skill id>,<level>
+/// skillup "<skill name>",<level>
+static BUILDIN(skillup)
+{
+	uint16 id;
+	int level;
+	struct map_session_data *sd = script->rid2sd(st);
+
+	if (sd == NULL)
+		return true;
+
+	id = (script_isstringtype(st, 2) ? skill->name2id(script_getstr(st, 2)) : script_getnum(st, 2));
+	level = (script_hasdata(st, 3) ? script_getnum(st, 3) : 1);
+
+	pc->skillup2(sd, id, level);
+
+	return true;
+}
+
 /// Changes the level of a player skill.
 /// <flag> defaults to 1
 /// <flag>=0 : set the level of the skill
@@ -27593,6 +27614,7 @@ static void script_parse_builtin(void)
 		BUILDIN_DEF(autobonus2,"sii??"),
 		BUILDIN_DEF(autobonus3,"siiv?"),
 		BUILDIN_DEF(skill,"vi?"),
+		BUILDIN_DEF(skillup,"v?"), // [Cretino]
 		BUILDIN_DEF(addtoskill,"vi?"), // [Valaris]
 		BUILDIN_DEF(guildskill,"vi"),
 		BUILDIN_DEF(getskilllv,"v"),

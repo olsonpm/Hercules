@@ -7655,6 +7655,42 @@ static int pc_skillup(struct map_session_data *sd, uint16 skill_id)
 }
 
 /*==========================================
+ * Update skill_lv for player sd
+ * [Cretino]
+ *------------------------------------------*/
+static int pc_skillup2(struct map_session_data *sd, uint16 skill_id, int level)
+{
+	int index = 0;
+
+	nullpo_ret(sd);
+
+	if (skill_id >= GD_SKILLBASE && skill_id < GD_SKILLBASE + MAX_GUILDSKILL)
+		return 0;
+
+	if (skill_id >= HM_SKILLBASE && skill_id < HM_SKILLBASE + MAX_HOMUNSKILL && sd->hd)
+		return 0;
+
+	if (!(index = skill->get_index(skill_id)))
+		return 0;
+
+	sd->status.skill[index].id = skill_id;
+	sd->status.skill[index].flag = SKILL_FLAG_PERMANENT;
+	sd->status.skill[index].lv = cap_value(sd->status.skill[index].lv + level, 0, skill->tree_get_max(skill_id, sd->status.class));
+
+	//if (!skill->dbs->db[index].inf)
+	//	status_calc_pc(sd, SCO_NONE); // Only recalculate for passive skills.
+
+	if ((sd->job & MAPID_UPPERMASK) == MAPID_TAEKWON && sd->status.base_level >= 90 && pc->fame_rank(sd->status.char_id, RANKTYPE_TAEKWON) > 0)
+		pc->calc_skilltree(sd); // Required to grant all TK Ranger skills.
+
+	clif->skillup(sd, skill_id, sd->status.skill[index].lv, 1);
+	clif->addskill(sd, skill_id);
+	clif->skillinfo(sd, skill_id, 0);
+
+	return 0;
+}
+
+/*==========================================
  * /allskill
  *------------------------------------------*/
 static int pc_allskillup(struct map_session_data *sd)
@@ -9027,7 +9063,7 @@ static int pc_itemheal(struct map_session_data *sd, int itemid, int hp, int sp)
 		if (sd->sc.data[SC_BITESCAR]) {
 			hp = 0;
 		}
-		
+
 		if (sd->sc.data[SC_NO_RECOVER_STATE]) {
 			hp = 0;
 			sp = 0;
@@ -12969,6 +13005,7 @@ void pc_defaults(void)
 	pc->statusup = pc_statusup;
 	pc->statusup2 = pc_statusup2;
 	pc->skillup = pc_skillup;
+	pc->skillup2 = pc_skillup2;
 	pc->allskillup = pc_allskillup;
 	pc->resetlvl = pc_resetlvl;
 	pc->resetstate = pc_resetstate;
