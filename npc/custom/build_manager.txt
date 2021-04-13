@@ -21,7 +21,7 @@
 //      Little improvement applied [Cretino]
 //= 1.2 Updated script and source modification to work with last Hercules revision [Cretino]
 //      Need apply the new '.dif' file to emulator to use it.
-//= 1.3 Misc updates to the script [olsonpm]
+//= 1.3 Misc updates to the script [phil]
 //      Fix some grammar
 //      Modify some variable names
 //      Remove "last profile" functionality since I don't feel it's intuitive.
