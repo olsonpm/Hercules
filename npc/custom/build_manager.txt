@@ -32,6 +32,8 @@
 //      No longer reset stats or skills when creating a profile
 //      Change menu flow to fit what I think make more sense
 //      Calculate StatusPoint cost from new global function F_GetStatPointCost
+//      When viewing a stat profile, show value of resulting stat point instead
+//        of val - 1
 //============================================================
 
 function	script	displayZeny	{
@@ -389,7 +391,7 @@ PROFILE_STATS_INFO:
 			mes "Profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
 
 			for(.@i = 0; .@i < getd(.@var_name$ + "_count"); .@i++)
-				mes "^00FF00" + .stats_name$[(getd(.@var_name$ + "_id" + "[" + .@i + "]") - bStr)] + "^000000 = ^0000FF" + getd(.@var_name$ + "_value" + "[" + .@i + "]") + "^000000";
+				mes "^00FF00" + .stats_name$[(getd(.@var_name$ + "_id" + "[" + .@i + "]") - bStr)] + "^000000 = ^0000FF" + (getd(.@var_name$ + "_value" + "[" + .@i + "]") + 1) + "^000000";
 
 			mes " ";
 
