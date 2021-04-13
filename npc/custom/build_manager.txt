@@ -5,7 +5,7 @@
 //= kerbiii (Found a bug.)
 //= Anisotropic Defixation (Reported all bugged skills.)
 //===== Current Version: =====================================
-//= 1.2
+//= 1.3
 //===== Description: =========================================
 //= Saves and loads build saved by the player. (Stats and/or Skills)
 //===== Additional Comments: =================================
@@ -21,6 +21,17 @@
 //      Little improvement applied [Cretino]
 //= 1.2 Updated script and source modification to work with last Hercules revision [Cretino]
 //      Need apply the new '.dif' file to emulator to use it.
+//= 1.3 Misc updates to the script [olsonpm]
+//      Fix some grammar
+//      Modify some variable names
+//      Remove "last profile" functionality since I don't feel it's intuitive.
+//      Use mesclear instead of next in places where next caused unnecessary
+//        user interaction
+//      Add zeny cost labels to menu options
+//      Reorder menu options (and thus case statements)
+//      No longer reset stats or skills when creating a profile
+//      Change menu flow to fit what I think make more sense
+//      Calculate StatusPoint cost from new global function F_GetStatPointCost
 //============================================================
 
 function	script	displayZeny	{
