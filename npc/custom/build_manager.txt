@@ -34,6 +34,7 @@
 //      Calculate StatusPoint cost from new global function F_GetStatPointCost
 //      When viewing a stat profile, show value of resulting stat point instead
 //        of val - 1
+//      Add menu option which explains profiles
 //============================================================
 
 function	script	displayZeny	{
@@ -60,7 +61,7 @@ PROFILE_START_MENU:
 
 	mes "Hey ^FF0000" + strcharinfo(0) + "^000000, what can I do for ya?";
 
-	.@selected = select("Skill profiles:Stat profiles:Cancel");
+	.@selected = select("Skill profiles:Stat profiles:What are profiles?:Cancel");
 
 	switch(.@selected)
 	{
@@ -87,6 +88,24 @@ PROFILE_START_MENU:
 		break;
 
 		case 3:
+			mes .@npc_name$;
+			mes "Oh a newcomer !";
+			mes " ";
+			mes "Profiles allow you to save a certain set of stats or skills which you can 'load' any time later.";
+			next;
+			mes .@npc_name$;
+			mes "You can think of these as 'builds' since you might have a set you use for a particular task, such as high luk for catching pets";
+			next;
+			mes .@npc_name$;
+			mes "To create a profile, set your skills or stats to what you want, then go through my menu to create the profile.";
+			next;
+			mes .@npc_name$;
+			mes "Once it's created, you can load it whenever you like.  Pretty great huh ?";
+			next;
+			goto PROFILE_START_MENU;
+		break;
+
+		case 4:
 			mes .@npc_name$;
 			mes "Come back whenever you need me!";
 			close;
