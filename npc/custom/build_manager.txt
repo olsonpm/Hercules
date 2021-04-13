@@ -1,0 +1,587 @@
+//===== Hercules Script ======================================
+//= Build Manager
+//===== By: ==================================================
+//= Cretino
+//= kerbiii (Found a bug.)
+//= Anisotropic Defixation (Reported all bugged skills.)
+//===== Current Version: =====================================
+//= 1.2
+//===== Description: =========================================
+//= Saves and loads build saved by the player. (Stats and/or Skills)
+//===== Additional Comments: =================================
+//= 1.0 Initial version [Cretino]
+//      TODO: Need revise all script with comments for spelling errors
+//      Little improvement applied [Cretino]
+//      Fixed typo error in variable '.load_stats_cost' (Thanks to [kerbiii]:[Hercules])
+//      Added option to check max level of base and job (Can be disabled) [Cretino]
+//      Make a list of bugged skills (Thanks to [Anisotropic Defixation]:[Hercules])
+//= 1.1 "Fixed" bugged skills (Need source modification) [Cretino]
+//      Added a new script command 'skillup'
+//      Need apply the '.dif' file to emulator to use it.
+//      Little improvement applied [Cretino]
+//= 1.2 Updated script and source modification to work with last Hercules revision [Cretino]
+//      Need apply the new '.dif' file to emulator to use it.
+//============================================================
+
+function	script	displayZeny	{
+	return "^FF0000" + callfunc("F_InsertComma", getarg(0), 3, ",") + "z^000000";
+}
+
+prontera,152,185,5	script	Build Manager	2_M_SAGE_OLD,{
+	.@npc_name$ = "[" + strnpcinfo(3) + "]";
+
+PROFILE_START_MENU:
+	mes .@npc_name$;
+
+	if (.check_max_lv == true)
+	{
+		if (NextJobExp > 0 || ((Class == Job_Super_Novice_E || Class == Job_Super_Baby_E || Class == Job_Kagerou || Class == Job_Oboro
+							 || Class == Job_Rebellion || Class == Job_Star_Gladiator
+							 || Class == Job_Star_Gladiator2 || Job_Soul_Linker) ? (NextBaseExp > 0) : BaseLevel < MAX_LEVEL))
+		{
+			mes "Sorry ^FF0000" + strcharinfo(0) + "^000000,";
+			mes "but you need reach the max level of Base and Job to use my services.";
+			close;
+		}
+	}
+
+	mes "Hey ^FF0000" + strcharinfo(0) + "^000000, what can I do for ya?";
+
+	.@selected = select("Skill profiles:Stat profiles:Cancel");
+
+	switch(.@selected)
+	{
+		mesclear();
+
+		case 1:
+			if (BaseClass == Job_Novice)
+			{
+				.@eac = eaclass();
+
+				if ((.@eac&EAJ_UPPERMASK) != EAJ_SUPER_NOVICE)
+				{
+					mes .@npc_name$;
+					mes "Sorry ^FF0000" + strcharinfo(0) + "^000000, but ^FF0000" + jobname(Class) + "^000000 can't use skills profile.";
+					close;
+				}
+			}
+
+			goto PROFILE_SKILLS_MAIN;
+		break;
+
+		case 2:
+			goto PROFILE_STATS_MAIN;
+		break;
+
+		case 3:
+			mes .@npc_name$;
+			mes "Come back whenever you need me!";
+			close;
+		break;
+	}
+
+PROFILE_SKILLS_MAIN:
+	mes .@npc_name$;
+	mes "Skill profiles eh ?";
+
+	.@selected = select("View profiles:" + .opt_skills_create$ + ":" + .opt_skills_reset$ + ":Back");
+
+	switch(.@selected)
+	{
+		mesclear();
+
+		case 1:
+			mes .@npc_name$;
+			if (getarraysize(#skills_profile) == 0) {
+				mes "You don't have any skill profiles.";
+				next;
+				goto PROFILE_SKILLS_MAIN;
+			}
+
+PROFILE_SKILLS_SELECT:
+			mes "Choose your skills profile:";
+
+			.@menu$ = "";
+
+			if (getarraysize(#skills_profile) > 100)
+				.@free = freeloop(true);
+
+			for(.@i = 0; .@i < getarraysize(#skills_profile); .@i++)
+			{
+				.@menu$ += "^FF0000" + getd("#skilllist_" + #skills_profile[.@i] + "_name$") + "^000000" + ":";
+
+				if (.@i + 1 == getarraysize(#skills_profile))
+					.@menu$ += "Back";
+			}
+
+			if (.@free == true)
+				.@free = freeloop(false);
+
+			.@selected = select(.@menu$);
+			mesclear();
+
+			if (.@selected == getarraysize(#skills_profile) + 1) goto PROFILE_SKILLS_MAIN;
+
+			.@profile_id = (.@selected - 1);
+			.@var_name$ = "#skilllist_" + #skills_profile[.@profile_id];
+PROFILE_SKILLS_INFO:
+			mes .@npc_name$;
+			mes "Skills profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
+
+			.@selected = select("Load - " + displayZeny(.load_skills_cost) + ":Delete:Back");
+
+			switch(.@selected)
+			{
+				mesclear();
+				mes .@npc_name$;
+
+				case 1:
+					if (getd(.@var_name$ + "_class") != Class)
+					{
+						mes "You can't load a skills profile of ^FF0000" + jobname(getd(.@var_name$ + "_class")) + "^000000, because you are ^FF0000" + jobname(Class) + "^000000.";
+						next;
+						mes .@npc_name$;
+						goto PROFILE_SKILLS_SELECT;
+					}
+
+					if (Zeny - .load_skills_cost < 0)
+						mes "You don't have " + displayZeny(.load_skills_cost) + " to load your skills profile.";
+
+					resetskill;
+
+					if (SkillPoint - getd(.@var_name$ + "_cost") >= 0)
+					{
+						SkillPoint -= getd(.@var_name$ + "_cost");
+						Zeny -= .load_skills_cost;
+
+						freeloop(true);
+
+						for(.@i = 0; .@i < getd(.@var_name$ + "_count"); .@i++)
+							skillup getd(.@var_name$ + "_id" + "[" + .@i + "]"), getd(.@var_name$ + "_lv" + "[" + .@i + "]");
+
+						freeloop(false);
+
+						mes "Your skills profile ^FF0000" + getd(.@var_name$ + "_name$") + "^000000 has been loaded.";
+						next;
+						goto PROFILE_SKILLS_MAIN;
+					}
+					else
+					{
+						Zeny -= .reset_skills_cost;
+						mes "You don't have sufficient skill points to load your skills profile.";
+						mes "";
+						mes "Was this profile made before you became reborn ?  Anyway, your skills have been reset for the reset cost.";
+					}
+
+					next;
+					goto PROFILE_SKILLS_INFO;
+				break;
+
+				case 2:
+					mes "You sure you want to delete the skills profile?";
+					mes "Skills profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
+
+					.@yesNo = select("No:Yes");
+					mesclear();
+
+					if (.@yesNo == 1) goto PROFILE_SKILLS_INFO;
+
+					mes .@npc_name$;
+					mes "Skills profile ^FF0000" + getd(.@var_name$ + "_name$") + "^000000 deleted.";
+
+					setd .@var_name$ + "_count", 0;
+					setd .@var_name$ + "_cost", 0;
+					setd .@var_name$ + "_class", 0;
+					setd .@var_name$ + "_name$", "";
+					deletearray getd(.@var_name$ + "_lv");
+					deletearray getd(.@var_name$ + "_id");
+					deletearray #skills_profile[.@profile_id], 1;
+
+					next;
+
+					if (getarraysize(#skills_profile) != 0)
+					{
+						mes .@npc_name$;
+						goto PROFILE_SKILLS_SELECT;
+					}
+					else
+						goto PROFILE_SKILLS_MAIN;
+				break;
+
+				case 3:
+					goto PROFILE_SKILLS_SELECT;
+				break;
+			}
+
+			next;
+			goto PROFILE_SKILLS_MAIN;
+		break;
+
+		case 2:
+			mes .@npc_name$;
+
+			getskilllist();
+
+			if (@skilllist_count == 0)
+			{
+				mes "Sorry ^FF0000" + strcharinfo(0) + "^000000, but you don't have any skills to create a profile with.";
+				next;
+				goto PROFILE_SKILLS_MAIN;
+			}
+
+			mes "Input the skills profile name:";
+			input .@profile_name$;
+			mesclear();
+
+			.@profile_name$ = replacestr(.@profile_name$, ":", "");
+
+			if (.@profile_name$ == "" || compare(.@profile_name$, ":"))
+			{
+				mes .@npc_name$;
+				mes "Invalid skills profile name.";
+				mes "^FF0000" + .@profile_name$ + "^000000";
+				next;
+				goto PROFILE_SKILLS_MAIN;
+			}
+
+			freeloop(true);
+
+			.@j = 0;
+
+			for(.@i = 0; .@i < @skilllist_count; .@i++)
+			{
+				if (@skilllist_flag[.@i] == 0 && @skilllist_lv[.@i] > 0 && @skilllist_id[.@i] > 0 && @skilllist_id[.@i] != NV_BASIC)
+				{
+					.@skilllist_id[.@j] = @skilllist_id[.@i];
+					.@skilllist_lv[.@j] = @skilllist_lv[.@i];
+					.@j++;
+				}
+			}
+
+			freeloop(false);
+
+			mes .@npc_name$;
+
+			if (.@j == 0) {
+				mes "You don't have any skills to create a profile with.";
+				next;
+				goto PROFILE_SKILLS_MAIN;
+			}
+
+			if (Zeny - .create_skills_cost < 0)
+			{
+				mes "You don't have " + displayZeny(.create_skills_cost) + " to create your skills profile.";
+				next;
+				goto PROFILE_SKILLS_MAIN;
+			}
+
+			Zeny -= .create_skills_cost;
+
+			.@pos = getarraysize(#skills_profile);
+			#skills_profile[.@pos] = ++#skills_profile_count; // '#skills_profile_count' is used only to generate unique profile id.
+			.@var_name$ = "#skilllist_" + #skills_profile[.@pos];
+
+			setd .@var_name$ + "_name$", .@profile_name$;
+			setd .@var_name$ + "_count", .@j;
+			setd .@var_name$ + "_class", Class;
+			setd .@var_name$ + "_cost", skillpointcount() - SkillPoint;
+
+			freeloop(true);
+
+			for(.@i = 0; .@i < .@j; .@i++)
+			{
+				setd .@var_name$ + "_lv" + "[" + .@i + "]", .@skilllist_lv[.@i];
+				setd .@var_name$ + "_id" + "[" + .@i + "]", .@skilllist_id[.@i];
+			}
+
+			freeloop(false);
+
+			deletearray .@skilllist_id;
+			deletearray .@skilllist_lv;
+
+			mes "Your skills profile ^FF0000" + .@profile_name$ + "^000000 has been created.";
+
+			next;
+			goto PROFILE_SKILLS_MAIN;
+		break;
+
+		case 3:
+			mes .@npc_name$;
+
+			if (Zeny - .reset_skills_cost >= 0)
+			{
+				Zeny -= .reset_skills_cost;
+				resetskill;
+				mes "Your skills have been reset.";
+			}
+			else
+				mes "You don't have " + displayZeny(.reset_skills_cost) + " to reset your skills.";
+
+			next;
+			goto PROFILE_SKILLS_MAIN;
+		break;
+
+		case 4:
+			goto PROFILE_START_MENU;
+		break;
+	}
+
+PROFILE_STATS_MAIN:
+	mes .@npc_name$;
+	mes "Stat profiles eh ?";
+
+	.@selected = select("View profiles:" + .opt_stats_create$ + ":" + .opt_stats_reset$ + ":Back");
+
+	switch(.@selected)
+	{
+		mesclear();
+
+		case 1:
+			mes .@npc_name$;
+
+			if (getarraysize(#stats_profile) == 0)
+			{
+				mes "You don't have any stat profiles.";
+				next;
+				goto PROFILE_STATS_MAIN;
+			}
+
+PROFILE_STATS_SELECT:
+			mes "Choose your stats profile:";
+
+			.@menu$ = "";
+
+			if (getarraysize(#stats_profile) > 100)
+				.@free = freeloop(true);
+
+			for(.@i = 0; .@i < getarraysize(#stats_profile); .@i++)
+			{
+				.@menu$ += "^FF0000" + getd("#statslist_" + #stats_profile[.@i] + "_name$") + "^000000" + ":";
+
+				if (.@i + 1 == getarraysize(#stats_profile))
+					.@menu$ += "Back";
+			}
+
+			if (.@free == true)
+				.@free = freeloop(false);
+
+			.@selected = select(.@menu$);
+
+			mesclear();
+
+			if (.@selected == getarraysize(#stats_profile) + 1) goto PROFILE_STATS_MAIN;
+
+			.@profile_id = (.@selected - 1);
+			.@var_name$ = "#statslist_" + #stats_profile[.@profile_id];
+PROFILE_STATS_INFO:
+			mes .@npc_name$;
+			mes "Profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
+
+			for(.@i = 0; .@i < getd(.@var_name$ + "_count"); .@i++)
+				mes "^00FF00" + .stats_name$[(getd(.@var_name$ + "_id" + "[" + .@i + "]") - bStr)] + "^000000 = ^0000FF" + getd(.@var_name$ + "_value" + "[" + .@i + "]") + "^000000";
+
+			mes " ";
+
+			.@selected = select("Load - " + displayZeny(.load_stats_cost) + ":Delete:Back");
+
+			switch(.@selected)
+			{
+				mesclear();
+				mes .@npc_name$;
+
+				case 1:
+					if (Zeny - .load_stats_cost < 0)
+						mes "You don't have " + displayZeny(.load_stats_cost) + " to load your stats profile.";
+
+					resetstatus;
+
+					if (StatusPoint - getd(.@var_name$ + "_cost") >= 0)
+					{
+						Zeny -= .load_stats_cost;
+						StatusPoint -= getd(.@var_name$ + "_cost");
+
+						for(.@i = 0; .@i < getd(.@var_name$ + "_count"); .@i++)
+							statusup2 getd(.@var_name$ + "_id" + "[" + .@i + "]"), getd(.@var_name$ + "_value" + "[" + .@i + "]");
+
+						mes "Your stats profile ^FF0000" + .@profile_name$ + "^000000 has been loaded.";
+						next;
+						goto PROFILE_STATS_MAIN;
+					}
+					else
+					{
+						Zeny -= .reset_stats_cost;
+						mes "You don't have sufficient stat points to load this profile.";
+						mes "";
+						mes "Was this profile made before you became reborn ?  Anyway, your stats have been reset for the reset cost.";
+					}
+
+					next;
+					goto PROFILE_STATS_INFO;
+				break;
+
+				case 2:
+					mes "You sure you want to delete the stats profile?";
+					mes "Stats profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
+
+					.@yesNo = select("No:Yes");
+					mesclear();
+
+					if (.@yesNo == 1) goto PROFILE_STATS_INFO;
+
+					mes .@npc_name$;
+					mes "Stats profile ^FF0000" + getd(.@var_name$ + "_name$") + "^000000 deleted.";
+
+					setd .@var_name$ + "_count", 0;
+					setd .@var_name$ + "_cost", 0;
+					setd .@var_name$ + "_name$", "";
+					deletearray getd(.@var_name$ + "_value");
+					deletearray getd(.@var_name$ + "_id");
+					deletearray #stats_profile[.@profile_id], 1;
+
+					next;
+
+					if (getarraysize(#stats_profile) != 0)
+					{
+						mes .@npc_name$;
+						goto PROFILE_STATS_SELECT;
+					}
+					else
+						goto PROFILE_STATS_MAIN;
+				break;
+
+				case 3:
+					goto PROFILE_STATS_SELECT;
+				break;
+			}
+
+			next;
+			goto PROFILE_STATS_MAIN;
+		break;
+
+		case 2:
+			mes .@npc_name$;
+
+			if (Zeny - .create_stats_cost < 0) {
+				mes "You don't have " + displayZeny(.create_stats_cost) + " to create your stats profile.";
+				next;
+				goto PROFILE_STATS_MAIN;
+			}
+
+			mes "Input the stats profile name:";
+			input .@profile_name$;
+			mesclear();
+
+			.@profile_name$ = replacestr(.@profile_name$, ":", "");
+
+			if (.@profile_name$ == "" || compare(.@profile_name$, ":"))
+			{
+				mes .@npc_name$;
+				mes "Invalid stats profile name.";
+				mes "^FF0000" + .@profile_name$ + "^000000";
+				next;
+				goto PROFILE_STATS_MAIN;
+			}
+
+			.@last_status = StatusPoint;
+			.@j = 0;
+			.@status_point_cost = 0;
+
+			for(.@i = bStr; .@i < (bLuk + 1); .@i++)
+			{
+				.@value = readparam(.@i);
+
+				if (.@value > 1)
+				{
+					.@statslist_value[.@j] = .@value - 1;
+					.@statslist_id[.@j] = .@i;
+					.@j++;
+					.@status_point_cost += callfunc("F_GetStatPointCost",.@value);
+				}
+			}
+
+			mes .@npc_name$;
+
+			if (.@j == 0) {
+				mes "You don't have any stats to create a profile with.";
+				next;
+				goto PROFILE_STATS_MAIN;
+			}
+
+			Zeny -= .create_stats_cost;
+
+			.@pos = getarraysize(#stats_profile);
+			#stats_profile[.@pos] = ++#stats_profile_count; // '#stats_profile_count' is used only to generate unique profile id.
+			.@var_name$ = "#statslist_" + #stats_profile[.@pos];
+
+			setd .@var_name$ + "_name$", .@profile_name$;
+			setd .@var_name$ + "_count", .@j;
+			setd .@var_name$ + "_cost", .@status_point_cost;
+
+			for(.@i = 0; .@i < .@j; .@i++)
+			{
+				setd .@var_name$ + "_value" + "[" + .@i + "]", .@statslist_value[.@i];
+				setd .@var_name$ + "_id" + "[" + .@i + "]", .@statslist_id[.@i];
+			}
+
+			deletearray .@statslist_value;
+			deletearray .@statslist_id;
+
+			mes "Your stats profile ^FF0000" + .@profile_name$ + "^000000 has been created.";
+			next;
+			goto PROFILE_STATS_MAIN;
+		break;
+
+		case 3:
+			mes .@npc_name$;
+
+			if (Zeny - .reset_stats_cost >= 0)
+			{
+				Zeny -= .reset_stats_cost;
+				resetstatus;
+				mes "Your stats have been reset.";
+			}
+			else
+				mes "You don't have " + displayZeny(.reset_stats_cost) + " to reset your stats.";
+
+			next;
+			goto PROFILE_STATS_MAIN;
+		break;
+
+		case 4:
+			goto PROFILE_START_MENU;
+		break;
+	}
+
+	OnInit:
+		// Cost to reset player stats
+		.reset_stats_cost = 10000;
+
+		// Cost to reset player skills
+		.reset_skills_cost = 10000;
+
+		// Cost to create a new stats profile
+		.create_stats_cost = .reset_stats_cost * 3;
+
+		// Cost to create a new skills profile
+		.create_skills_cost = .reset_skills_cost * 3;
+
+		// Cost to load a stats profile
+		.load_stats_cost = .reset_stats_cost * 2;
+
+		// Cost to load a skills profile
+		.load_skills_cost = .reset_skills_cost * 2;
+
+		// Will check if player have max base level and job level to access the npc. (Max Level = 'MAX_LEVEL' constant)
+		// false = Disabled
+		.check_max_lv = false;
+
+		.opt_stats_create$ = "Create a new stats profile - " + displayZeny(.create_stats_cost);
+		.opt_stats_reset$ = "Reset stats - " + displayZeny(.reset_stats_cost);
+
+		.opt_skills_create$ = "Create a new skills profile - " + displayZeny(.create_skills_cost);
+		.opt_skills_reset$ = "Reset skills - " + displayZeny(.reset_skills_cost);
+
+		// ONLY CHANGE IF YOU KNOW WHAT YOU'RE DOING !!
+		setarray .stats_name$[0], "Str", "Agi", "Vit", "Int", "Dex", "Luk";
+	end;
+}
