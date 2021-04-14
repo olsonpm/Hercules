@@ -527,7 +527,7 @@ PROFILE_STATS_INFO:
 					.@statslist_value[.@j] = .@value - 1;
 					.@statslist_id[.@j] = .@i;
 					.@j++;
-					.@status_point_cost += callfunc("F_GetStatPointCost",.@value);
+					.@status_point_cost += F_GetStatPointCost(.@value);
 				}
 			}
 

@@ -495,3 +495,26 @@ function	script	F_GetStatPointCost	{
 
 	return (.@tens * (.@tens * 5 + 15)) + (.@ones * (.@tens + 2));
 }
+
+//== Function F_GetItemRefineLevel ============================
+// Returns the refine level for the passed in item id.  If your character has
+//   multiple of this item in their inventory, -1 is returned.  If the item
+//   doesn't exist in the inventory, -2 is returned.
+function	script	F_GetItemRefineLevel	{
+	.@itemId = getarg(0);
+	.@itemCount = countitem(.@itemId);
+
+	if (.@itemCount > 1) return -1;
+	if (.@itemCount == 0) return -2;
+
+	getinventorylist();
+
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		.@tmpId = @inventorylist_id[.@i];
+
+		if (.@tmpId == .@itemId) return @inventorylist_refine[.@i];
+	}
+
+	// not sure whether this is possible, but just in case
+	return -2;
+}

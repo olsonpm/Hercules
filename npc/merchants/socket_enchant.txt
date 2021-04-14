@@ -240,11 +240,10 @@
 			next;
 			mes "[Seiyablem]";
 			mes "Oh, there's also something really important that you should know.";
-			mes "If you ask me to add a Slot to something, make sure that you don't have multiples of it in your inventory.";
+			mes "If you ask me to add a Slot to something, you can't have multiples of it in your inventory.";
 			next;
 			mes "[Seiyablem]";
-			mes "Here's an example: if you have a +7 Manteau and a normal Manteau in your inventory, then I will randomly pick one of them for my Slot Addition attempt.";
-			mes "Just remember to be careful.";
+			mes "This is to avoid issues where you have both a +7 and a normal Manteau, I need to know which one to slot.";
 			next;
 			mes "[Seiyablem]";
 			mes "Again, ^FF0000only carry one of the equipment to which you want me to add a Slot^000000.";
@@ -286,10 +285,11 @@ function	script	Func_Socket	{
 	}
 	mes "Do you still want to try to add a Slot?";
 	next;
+	.@hasZenyAndItems = (Zeny >= getarg(4)*1000) && (countitem(getarg(5)) >= getarg(6)) && (countitem(getarg(7,512)) >= getarg(8,0));
 	switch(select("Attempt Slot Addition", "Cancel"))
 	{
 		case 1:
-			if ((Zeny >= getarg(4)*1000) && (countitem(getarg(5)) >= getarg(6)) && (countitem(getarg(7,512)) >= getarg(8,0)) && (countitem(getarg(0)) > 0)) // if there's no getarg(7) and getarg(8) provided, check itemcount against 0 (we still need a valid item ID though)
+			if (.@hasZenyAndItems && countitem(getarg(0)) == 1) // if there's no getarg(7) and getarg(8) provided, check itemcount against 0 (we still need a valid item ID though)
 			{
 				mes "[Seiyablem]";
 				mes "Alright then, let the work begin!";
@@ -302,12 +302,13 @@ function	script	Func_Socket	{
 					mes "[Seiyablem]";
 					mes "Great, it seems to be successful.";
 					mes "It looks pretty well done. Congratulations!";
+					.@refineLevel = F_GetItemRefineLevel(getarg(0));
 					delitem getarg(0),1;
 					delitem getarg(5),getarg(6);
 					if (getarg(7,0) != 0 && getarg(8,0) != 0)
 						delitem getarg(7),getarg(8);
 					Zeny -= getarg(4)*1000;
-					getitem getarg(1),1;
+					getitem2 getarg(1),1,1,.@refineLevel,0,0,0,0,0;
 					next;
 					mes "[Seiyablem]";
 					mes "See you again, buddy!";
@@ -331,6 +332,12 @@ function	script	Func_Socket	{
 					mes "I wish you good luck next time!";
 					close;
 				}
+			}
+			else if (.@hasZenyAndItems && countitem(getarg(0)) > 1)
+			{
+				mes "[Seiyablem]";
+				mes "It looks like you have more than one " + getitemname(getarg(0)) + " in your inventory.  Please store all but one in kafra storage.";
+				close;
 			}
 			else
 			{
