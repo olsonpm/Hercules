@@ -3830,6 +3830,7 @@ ACMD(reloadbattleconf)
 	   ||  prev_config.base_exp_rate          != battle_config.base_exp_rate
 	   ||  prev_config.job_exp_rate           != battle_config.job_exp_rate
 	) { // Exp or Drop rates changed.
+		itemdb->read_chains();
 		mob->reload(); //Needed as well so rate changes take effect.
 		chrif->ragsrvinfo(battle_config.base_exp_rate, battle_config.job_exp_rate, battle_config.item_rate_common);
 	}
