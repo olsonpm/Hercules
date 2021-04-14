@@ -1526,7 +1526,12 @@ static void itemdb_read_chains(void)
 				prev->next = &itemdb->chains[count].items[c - 1];
 
 			itemdb->chains[count].items[c - 1].id = data ? data->nameid : 0;
-			itemdb->chains[count].items[c - 1].rate = data ? libconfig->setting_get_int(entry) : 0;
+
+			int rate = data ? libconfig->setting_get_int(entry) : 0;
+			if (battle_config.item_rate_adddrop != 100)
+				itemdb->chains[count].items[c - 1].rate = rate*battle_config.item_rate_adddrop/100;
+			else
+				itemdb->chains[count].items[c - 1].rate = rate;
 
 			prev = &itemdb->chains[count].items[c - 1];
 		}
@@ -2568,7 +2573,7 @@ static void itemdb_read(bool minimal)
 	itemdb->other->foreach(itemdb->other, itemdb->addname_sub);
 
 	itemdb->read_options();
-	
+
 	if (minimal)
 		return;
 
