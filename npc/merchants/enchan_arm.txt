@@ -87,82 +87,84 @@ S_EnchantArmor:
 	.@itemid = getarg(0);
 	.@failrate = getarg(1);
 	mes "[Apprentice Craftsman]";
-	if (countitem(.@itemid) == 1) {
-		mes "Socket enchant will cost you 400,000 zeny. And there will be a random option enchanted. Of course, there is a chance of breaking your armor.";
-		next;
-		mes "[Apprentice Craftsman]";
-		mes "First and most importantly.";
-		mes "^ff5555Existing Refine Level of the Armor";
-		mes "and Cards will be GONE.^000000";
-		mes "Do you still want to try an Enchant?";
-		next;
-		if(select("Hmm... Let me think it over.", "Go ahead.") == 1) {
-			mes "[Apprentice Craftsman]";
-			mes "Well, I can't blame you. Safety first, eh?";
-			mes "Now you have a nice day.";
-			close;
-		}
-		mes "[Apprentice Craftsman]";
-		mes "Quite of an adventurer huh? Well, shall we?";
-		close2;
-		specialeffect(EF_MAPPILLAR, AREA, playerattached());
-		if (Zeny < 400000) {
-			mes "[Apprentice Craftsman]";
-			mes "Sorry, but you don't have enough zeny.";
-			close;
-		}
-		progressbar "ffff00",7;
-		Zeny -= 400000;
-		delitem .@itemid,1;
-		switch (rand(1,.@failrate)) {
-			case 1: .@addpart = 4702;break;
-			case 2: .@addpart = 4712;break;
-			case 3: .@addpart = 4722;break;
-			case 4: .@addpart = 4732;break;
-			case 5: .@addpart = 4742;break;
-			case 6: .@addpart = 4752;break;
-			case 7:
-			case 8: .@addpart = 4701;break;
-			case 9:
-			case 10: .@addpart = 4711;break;
-			case 11:
-			case 12: .@addpart = 4721;break;
-			case 13:
-			case 14: .@addpart = 4731;break;
-			case 15:
-			case 16: .@addpart = 4741;break;
-			case 17:
-			case 18: .@addpart = 4751;break;
-			case 19:
-			case 20:
-			case 21: .@addpart = 4700;break;
-			case 22:
-			case 23:
-			case 24: .@addpart = 4710;break;
-			case 25:
-			case 26:
-			case 27: .@addpart = 4720;break;
-			case 28:
-			case 29:
-			case 30: .@addpart = 4730;break;
-			case 31:
-			case 32:
-			case 33: .@addpart = 4740;break;
-			case 34:
-			case 35:
-			case 36: .@addpart = 4750;break;
-			default:
-				specialeffect(EF_PHARMACY_FAIL, AREA, playerattached());
-				mes "[Apprentice Craftsman]";
-				mes "Well that's too bad.";
-				mes "The requested equipment has failed to enchant.";
-				close;
-		}
-		getitem2 .@itemid, 1, 1, 0, 0, 0, 0, 0, .@addpart;
-	}
-	else {
-		mes "Hmm? There's nothing to be enchanted!";
+	if (countitem(.@itemid) != 1) {
 		mes "Please come back with just ONE equipment to be enchanted.";
 		close;
 	}
+
+	mes "Socket enchant will cost you 400,000 zeny. And there will be a random option enchanted. Of course, there is a chance of breaking your armor.";
+	next;
+	mes "[Apprentice Craftsman]";
+	mes "First and most importantly.";
+	mes "^ff5555Cards will be GONE.";
+	mes "Do you still want to try an Enchant?";
+	next;
+	if(select("Hmm... Let me think it over.", "Go ahead.") == 1) {
+		mes "[Apprentice Craftsman]";
+		mes "Well, I can't blame you. Safety first, eh?";
+		mes "Now you have a nice day.";
+		close;
+	}
+	mes "[Apprentice Craftsman]";
+	mes "Quite of an adventurer huh? Well, shall we?";
+	close2;
+	specialeffect(EF_MAPPILLAR, AREA, playerattached());
+	if (Zeny < 400000) {
+		mes "[Apprentice Craftsman]";
+		mes "Sorry, but you don't have enough zeny.";
+		close;
+	}
+	progressbar "ffff00",7;
+	Zeny -= 400000;
+	.@itemRefineLevel = F_GetItemRefineLevel(.@itemid);
+	delitem .@itemid,1;
+	// switch (rand(1,.@failrate)) {
+	switch (1) {
+		case 1: .@addpart = 4702;break;
+		case 2: .@addpart = 4712;break;
+		case 3: .@addpart = 4722;break;
+		case 4: .@addpart = 4732;break;
+		case 5: .@addpart = 4742;break;
+		case 6: .@addpart = 4752;break;
+		case 7:
+		case 8: .@addpart = 4701;break;
+		case 9:
+		case 10: .@addpart = 4711;break;
+		case 11:
+		case 12: .@addpart = 4721;break;
+		case 13:
+		case 14: .@addpart = 4731;break;
+		case 15:
+		case 16: .@addpart = 4741;break;
+		case 17:
+		case 18: .@addpart = 4751;break;
+		case 19:
+		case 20:
+		case 21: .@addpart = 4700;break;
+		case 22:
+		case 23:
+		case 24: .@addpart = 4710;break;
+		case 25:
+		case 26:
+		case 27: .@addpart = 4720;break;
+		case 28:
+		case 29:
+		case 30: .@addpart = 4730;break;
+		case 31:
+		case 32:
+		case 33: .@addpart = 4740;break;
+		case 34:
+		case 35:
+		case 36: .@addpart = 4750;break;
+		default:
+			specialeffect(EF_PHARMACY_FAIL, AREA, playerattached());
+			mes "[Apprentice Craftsman]";
+			mes "Well that's too bad.";
+			mes "The requested equipment has failed to enchant.";
+			close;
+	}
+	getitem2 .@itemid, 1, 1, .@itemRefineLevel, 0, 0, 0, 0, .@addpart;
+	mes "[Apprentice Craftsman]";
+	mes "Congrats, it worked !";
+	close;
 }
