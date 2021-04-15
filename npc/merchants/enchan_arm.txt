@@ -118,8 +118,7 @@ S_EnchantArmor:
 	Zeny -= 400000;
 	.@itemRefineLevel = F_GetItemRefineLevel(.@itemid);
 	delitem .@itemid,1;
-	// switch (rand(1,.@failrate)) {
-	switch (1) {
+	switch (rand(1,.@failrate)) {
 		case 1: .@addpart = 4702;break;
 		case 2: .@addpart = 4712;break;
 		case 3: .@addpart = 4722;break;
