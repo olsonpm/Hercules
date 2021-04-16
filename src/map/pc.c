@@ -6023,7 +6023,10 @@ static int pc_setpos(struct map_session_data *sd, unsigned short map_index, int 
 		do {
 			x = rnd() % (map->list[map_id].xs - 2) + 1;
 			y = rnd() % (map->list[map_id].ys - 2) + 1;
-		} while(map->getcell(map_id, &sd->bl, x, y, CELL_CHKNOPASS) != 0);
+		} while(
+			map->getcell(map_id, &sd->bl, x, y, CELL_CHKNOPASS) != 0
+			|| (!battle_config.teleport_on_portal && npc->check_areanpc(1,map_id,x,y,1))
+		);
 	}
 
 	if (sd->state.vending != 0 && map->getcell(map_id, &sd->bl, x, y, CELL_CHKNOVENDING) != 0) {
