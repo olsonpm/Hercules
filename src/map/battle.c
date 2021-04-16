@@ -7413,6 +7413,7 @@ static const struct battle_data {
 	{ "homunculus_S_max_level",             &battle_config.hom_S_max_level,                 150,    0,      MAX_LEVEL,      },
 	{ "mob_size_influence",                 &battle_config.mob_size_influence,              0,      0,      1,              },
 	{ "bowling_bash_area",                  &battle_config.bowling_bash_area,               0,      0,      20,             },
+	{ "teleport_on_portal",                 &battle_config.teleport_on_portal,              0,      0,      1,              },
 	/**
 	 * Hercules
 	 **/
