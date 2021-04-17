@@ -58,6 +58,12 @@ function	script	F_InsertComma	{
 	return .@str$;
 }
 
+//== Function F_InsertComma ================================
+// Returns a formatted zeny amount
+function	script	F_DisplayZeny	{
+	return "^FF0000" + F_InsertComma(getarg(0)) + "^000000 zeny";
+}
+
 //== Function F_ClearJobVar ================================
 // Clears job quest variables
 function	script	F_ClearJobVar	{

@@ -37,10 +37,6 @@
 //      Add menu option which explains profiles
 //============================================================
 
-function	script	displayZeny	{
-	return "^FF0000" + callfunc("F_InsertComma", getarg(0), 3, ",") + "z^000000";
-}
-
 prontera,172,196,4	script	Build Manager	2_M_SAGE_OLD,{
 	.@npc_name$ = "[" + strnpcinfo(3) + "]";
 
@@ -160,7 +156,7 @@ PROFILE_SKILLS_INFO:
 			mes .@npc_name$;
 			mes "Skills profile: ^FF0000" + getd(.@var_name$ + "_name$") + "^000000";
 
-			.@selected = select("Load - " + displayZeny(.load_skills_cost) + ":Delete:Back");
+			.@selected = select("Load - " + F_DisplayZeny(.load_skills_cost) + ":Delete:Back");
 
 			switch(.@selected)
 			{
@@ -177,7 +173,7 @@ PROFILE_SKILLS_INFO:
 					}
 
 					if (Zeny - .load_skills_cost < 0)
-						mes "You don't have " + displayZeny(.load_skills_cost) + " to load your skills profile.";
+						mes "You don't have " + F_DisplayZeny(.load_skills_cost) + " to load your skills profile.";
 
 					resetskill;
 
@@ -302,7 +298,7 @@ PROFILE_SKILLS_INFO:
 
 			if (Zeny - .create_skills_cost < 0)
 			{
-				mes "You don't have " + displayZeny(.create_skills_cost) + " to create your skills profile.";
+				mes "You don't have " + F_DisplayZeny(.create_skills_cost) + " to create your skills profile.";
 				next;
 				goto PROFILE_SKILLS_MAIN;
 			}
@@ -347,7 +343,7 @@ PROFILE_SKILLS_INFO:
 				mes "Your skills have been reset.";
 			}
 			else
-				mes "You don't have " + displayZeny(.reset_skills_cost) + " to reset your skills.";
+				mes "You don't have " + F_DisplayZeny(.reset_skills_cost) + " to reset your skills.";
 
 			next;
 			goto PROFILE_SKILLS_MAIN;
@@ -414,7 +410,7 @@ PROFILE_STATS_INFO:
 
 			mes " ";
 
-			.@selected = select("Load - " + displayZeny(.load_stats_cost) + ":Delete:Back");
+			.@selected = select("Load - " + F_DisplayZeny(.load_stats_cost) + ":Delete:Back");
 
 			switch(.@selected)
 			{
@@ -423,7 +419,7 @@ PROFILE_STATS_INFO:
 
 				case 1:
 					if (Zeny - .load_stats_cost < 0)
-						mes "You don't have " + displayZeny(.load_stats_cost) + " to load your stats profile.";
+						mes "You don't have " + F_DisplayZeny(.load_stats_cost) + " to load your stats profile.";
 
 					resetstatus;
 
@@ -494,7 +490,7 @@ PROFILE_STATS_INFO:
 			mes .@npc_name$;
 
 			if (Zeny - .create_stats_cost < 0) {
-				mes "You don't have " + displayZeny(.create_stats_cost) + " to create your stats profile.";
+				mes "You don't have " + F_DisplayZeny(.create_stats_cost) + " to create your stats profile.";
 				next;
 				goto PROFILE_STATS_MAIN;
 			}
@@ -573,7 +569,7 @@ PROFILE_STATS_INFO:
 				mes "Your stats have been reset.";
 			}
 			else
-				mes "You don't have " + displayZeny(.reset_stats_cost) + " to reset your stats.";
+				mes "You don't have " + F_DisplayZeny(.reset_stats_cost) + " to reset your stats.";
 
 			next;
 			goto PROFILE_STATS_MAIN;
@@ -607,11 +603,11 @@ PROFILE_STATS_INFO:
 		// false = Disabled
 		.check_max_lv = false;
 
-		.opt_stats_create$ = "Create a new stats profile - " + displayZeny(.create_stats_cost);
-		.opt_stats_reset$ = "Reset stats - " + displayZeny(.reset_stats_cost);
+		.opt_stats_create$ = "Create a new stats profile - " + F_DisplayZeny(.create_stats_cost);
+		.opt_stats_reset$ = "Reset stats - " + F_DisplayZeny(.reset_stats_cost);
 
-		.opt_skills_create$ = "Create a new skills profile - " + displayZeny(.create_skills_cost);
-		.opt_skills_reset$ = "Reset skills - " + displayZeny(.reset_skills_cost);
+		.opt_skills_create$ = "Create a new skills profile - " + F_DisplayZeny(.create_skills_cost);
+		.opt_skills_reset$ = "Reset skills - " + F_DisplayZeny(.reset_skills_cost);
 
 		// ONLY CHANGE IF YOU KNOW WHAT YOU'RE DOING !!
 		setarray .stats_name$[0], "Str", "Agi", "Vit", "Int", "Dex", "Luk";
