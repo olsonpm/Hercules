@@ -382,7 +382,7 @@ p_track01,67,45,5	script	Medal Distributor#single	4_F_RACING,{
 						mes "interesting items. Thank you~";
 						delitem Monster_Ticket,1;
 						monster_race_1 = 0;
-						getitem Marvelous_Medal,4;
+						getitem Marvelous_Medal,8;
 						close;
 					}
 					mes "[Medal Distributor]";
@@ -1663,7 +1663,7 @@ p_track02,67,45,5	script	Medal Distributor#medal	4_F_RACING,{
 			delitem Monster_Ticket,1;
 			monster_race_2_1 = 7;
 			monster_race_2_2 = 7;
-			getitem Marvelous_Medal,15;
+			getitem Marvelous_Medal,30;
 			close;
 		}
 		mes "[Medal Distributor]";
