@@ -58,7 +58,7 @@ function	script	F_InsertComma	{
 	return .@str$;
 }
 
-//== Function F_InsertComma ================================
+//== Function F_DisplayZeny ================================
 // Returns a formatted zeny amount
 function	script	F_DisplayZeny	{
 	return "^FF0000" + F_InsertComma(getarg(0)) + "^000000 zeny";

@@ -1,0 +1,95 @@
+prontera,143,207,4	script	Quiver Queen	1_F_01,{
+	mes("[Quiver Queen]");
+	mes("Hi there.  I can turn all your arrows into quivers for " + F_DisplayZeny(.costPerQuiver) + " each.");
+	mes("Would you like me to do that ?");
+	switch(select("Yes please:Not now"))
+	{
+		mesclear();
+		case 1:
+			.@cost = 0;
+			.@totalQuivers = 0;
+			.@arrowDel = 0;
+			.@quiverMake = 0;
+			.@quiverCt = 0;
+
+			for (.@i = 0; .@i < getarraysize(.arrows); .@i += 1) {
+				.@curArrow = .arrows[.@i];
+				.@arrowCt = countitem(.@curArrow);
+				.@tmpQuiverCt = .@arrowCt / 500;
+				if (.@tmpQuiverCt > 0) {
+					.@actionIdx = getarraysize(.@arrowDel);
+					.@quiverCt[.@actionIdx] = .@tmpQuiverCt;
+					.@arrowDel[.@actionIdx] = .@curArrow;
+					.@quiverMake[.@actionIdx] = .quivers[.@i];
+					.@cost += .@tmpQuiverCt * .costPerQuiver;
+					.@totalQuivers += .@tmpQuiverCt;
+				}
+			}
+
+			if (.@cost == 0) {
+				mes("[Quiver Queen]");
+				mes("It looks like you don't have enough arrows for me to make any quivers.  Come back when you do.");
+				close();
+			} else if (.@cost > Zeny) {
+				mes("[Quiver Queen]");
+				mes("You'll need " + F_DisplayZeny(.@cost) + " to make " + .@totalQuivers + " quivers.  Come back when you have enough.");
+				close();
+			}
+
+			Zeny -= .@cost;
+			for (.@i = 0; .@i < getarraysize(.@arrowDel); .@i += 1) {
+				.@curQuiverCt = .@quiverCt[.@i];
+				delitem(.@arrowDel[.@i], 500 * .@curQuiverCt);
+				getitem(.@quiverMake[.@i], .@curQuiverCt);
+			}
+
+			mes("[Quiver Queen]");
+			mes("That was " + .@totalQuivers + " quivers for " + F_DisplayZeny(.@cost));
+			mes("Hope to see you again soon !");
+			close();
+			break;
+		case 2:
+			mes("[Quiver Queen]");
+			mes("Okay then, hope to see you again soon.");
+			close();
+			break;
+	}
+
+OnInit:
+	.costPerQuiver = 1000;
+
+	setarray(
+		.arrows,
+		Arrow,
+		Iron_Arrow,
+		Steel_Arrow,
+		Oridecon_Arrow,
+		Fire_Arrow,
+		Silver_Arrow,
+		Arrow_Of_Wind,
+		Stone_Arrow,
+		Crystal_Arrow,
+		Arrow_Of_Shadow,
+		Immatrial_Arrow,
+		Rusty_Arrow,
+		Holy_Arrow
+	);
+
+	setarray(
+		.quivers,
+		Arrow_Container,
+		Iron_Arrow_Container,
+		Steel_Arrow_Container,
+		Ori_Arrow_Container,
+		Fire_Arrow_Container,
+		Silver_Arrow_Container,
+		Wind_Arrow_Container,
+		Stone_Arrow_Container,
+		Crystal_Arrow_Container,
+		Shadow_Arrow_Container,
+		Imma_Arrow_Container,
+		Rusty_Arrow_Container,
+		Holy_Arrow_Quiver
+	);
+	end;
+}
