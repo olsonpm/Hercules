@@ -1355,7 +1355,14 @@ static int npc_click(struct map_session_data *sd, struct npc_data *nd)
 			clif->cashshop_show(sd,nd);
 			break;
 		case SCRIPT:
-			if( nd->u.scr.shop && nd->u.scr.shop->items && nd->u.scr.trader ) {
+			if(
+				nd->u.scr.shop
+				&& (
+					nd->u.scr.shop->items
+					|| nd->u.scr.shop->type == NST_ZENY_BUY
+				)
+				&& nd->u.scr.trader
+			) {
 				if( !npc->trader_open(sd,nd) )
 					return 1;
 			} else
@@ -1450,8 +1457,18 @@ static int npc_buysellsel(struct map_session_data *sd, int id, int type)
 	if ((nd = npc->checknear(sd,map->id2bl(id))) == NULL)
 		return 1;
 
-	if ( nd->subtype != SHOP && !(nd->subtype == SCRIPT && nd->u.scr.shop && nd->u.scr.shop->items) ) {
-		if( nd->subtype == SCRIPT )
+	if (
+		nd->subtype != SHOP
+		&& !(
+			nd->subtype == SCRIPT
+			&& nd->u.scr.shop
+			&& (
+				nd->u.scr.shop->items
+				|| nd->u.scr.shop->type == NST_ZENY_BUY
+			)
+		)
+	) {
+		if (nd->subtype == SCRIPT)
 			ShowError("npc_buysellsel: trader '%s' has no shop list!\n",nd->exname);
 		else
 			ShowError("npc_buysellsel: no such shop npc %d (%s)\n",id,nd->exname);
@@ -1464,19 +1481,18 @@ static int npc_buysellsel(struct map_session_data *sd, int id, int type)
 	if (nd->option & OPTION_INVISIBLE) // can't buy if npc is not visible (hack?)
 		return 1;
 
-	if( nd->class_ < 0 && !sd->state.callshop ) {// not called through a script and is not a visible NPC so an invalid call
+	if (nd->class_ < 0 && !sd->state.callshop) // not called through a script and is not a visible NPC so an invalid call
 		return 1;
-	}
 
 	// reset the callshop state for future calls
 	sd->state.callshop = 0;
 	sd->npc_shopid = id;
 
-	if (type==0) {
+	if (type==0)
 		clif->buylist(sd,nd);
-	} else {
+	else
 		clif->selllist(sd);
-	}
+
 	return 0;
 }
 
@@ -1506,11 +1522,17 @@ static int npc_cashshop_buylist(struct map_session_data *sd, int points, struct 
 		return ERROR_TYPE_NPC;
 
 	if( nd->subtype != CASHSHOP ) {
-		if (nd->subtype == SCRIPT && nd->u.scr.shop &&
-		    nd->u.scr.shop->type != NST_ZENY &&
-		    nd->u.scr.shop->type != NST_MARKET &&
-		    nd->u.scr.shop->type != NST_BARTER &&
-		    nd->u.scr.shop->type != NST_EXPANDED_BARTER) {
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
+
+		if (
+			nd->subtype == SCRIPT
+			&& shopType != NST_ZENY
+			&& shopType != NST_MARKET
+			&& shopType != NST_BARTER
+			&& shopType != NST_EXPANDED_BARTER
+			&& shopType != NST_ZENY_BUY
+			&& shopType != NST_ZENY_SELL
+		) {
 			shop = nd->u.scr.shop->item;
 			shop_size = nd->u.scr.shop->items;
 		} else {
@@ -1988,14 +2010,22 @@ static bool npc_trader_open(struct map_session_data *sd, struct npc_data *nd)
 {
 	nullpo_retr(false, sd);
 	nullpo_retr(false, nd);
-	if( !nd->u.scr.shop || !nd->u.scr.shop->items )
+	if(!nd->u.scr.shop || (!nd->u.scr.shop->items && nd->u.scr.shop->type != NST_ZENY_BUY))
 		return false;
 
-	switch( nd->u.scr.shop->type ) {
+	switch (nd->u.scr.shop->type) {
 		case NST_ZENY:
 			sd->state.callshop = 1;
-			clif->npcbuysell(sd,nd->bl.id);
+			clif->npcbuysell(sd, nd->bl.id);
 			return true;/* we skip sd->npc_shopid, npc->buysell will set it then when the player selects */
+		case NST_ZENY_BUY:
+			sd->state.callshop = 1;
+			npc->buysellsel(sd, nd->bl.id, 1);
+			return true;
+		case NST_ZENY_SELL:
+			sd->state.callshop = 1;
+			npc->buysellsel(sd, nd->bl.id, 0);
+			return true;
 		case NST_MARKET: {
 				unsigned short i;
 
@@ -2144,12 +2174,18 @@ static int npc_cashshop_buy(struct map_session_data *sd, int nameid, int amount,
 	if( (item = itemdb->exists(nameid)) == NULL )
 		return ERROR_TYPE_ITEM_ID; // Invalid Item
 
-	if( nd->subtype != CASHSHOP ) {
-		if (nd->subtype == SCRIPT && nd->u.scr.shop &&
-		    nd->u.scr.shop->type != NST_ZENY &&
-		    nd->u.scr.shop->type != NST_MARKET &&
-		    nd->u.scr.shop->type != NST_BARTER &&
-		    nd->u.scr.shop->type != NST_EXPANDED_BARTER) {
+	if (nd->subtype != CASHSHOP) {
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
+
+		if (
+			nd->subtype == SCRIPT
+			&& shopType != NST_ZENY
+			&& shopType != NST_MARKET
+			&& shopType != NST_BARTER
+			&& shopType != NST_EXPANDED_BARTER
+			&& shopType != NST_ZENY_BUY
+			&& shopType != NST_ZENY_SELL
+		) {
 			shop = nd->u.scr.shop->item;
 			shop_size = nd->u.scr.shop->items;
 		} else {
@@ -2246,7 +2282,14 @@ static int npc_buylist(struct map_session_data *sd, struct itemlist *item_list)
 		return 3;
 
 	if( nd->subtype != SHOP ) {
-		if( nd->subtype == SCRIPT && nd->u.scr.shop && nd->u.scr.shop->type == NST_ZENY ) {
+		if(
+			nd->subtype == SCRIPT
+			&& nd->u.scr.shop
+			&& (
+				nd->u.scr.shop->type == NST_ZENY
+				|| nd->u.scr.shop->type == NST_ZENY_SELL
+			)
+		) {
 			shop = nd->u.scr.shop->item;
 			shop_size = nd->u.scr.shop->items;
 		} else
@@ -2851,8 +2894,19 @@ static int npc_selllist(struct map_session_data *sd, struct itemlist *item_list)
 		return 1;
 
 	if (nd->subtype != SHOP) {
-		if (nd->subtype != SCRIPT || nd->u.scr.shop == NULL || (nd->u.scr.shop->type != NST_ZENY && nd->u.scr.shop->type != NST_MARKET))
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
+
+		if (
+			nd->subtype != SCRIPT
+			|| nd->u.scr.shop == NULL
+			|| (
+				shopType != NST_ZENY
+				&& shopType != NST_MARKET
+				&& shopType != NST_ZENY_BUY
+			)
+		) {
 			return 1;
+		}
 	}
 
 	if (sd->status.zeny >= MAX_ZENY && nd->master_nd == NULL)

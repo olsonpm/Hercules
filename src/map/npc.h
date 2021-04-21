@@ -49,6 +49,10 @@ enum npc_shop_types {
 	NST_CUSTOM,
 	NST_BARTER, /* official npc barter type */
 	NST_EXPANDED_BARTER, /* official npc expanded barter type */
+
+	/* from the perspective of the shop */
+	NST_ZENY_BUY, /* this npc buys goods from the user */
+	NST_ZENY_SELL, /* this npc sells to the user */
 	/* */
 	NST_MAX,
 };

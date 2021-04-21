@@ -18113,7 +18113,7 @@ static void clif_bossmapinfo(int fd, struct mob_data *md, enum bossmap_info_type
 
 	switch (flag) {
 	case BOSS_INFO_NONE:
-		break; 
+		break;
 	case BOSS_INFO_ALIVE:
 	case BOSS_INFO_ALIVE_WITHMSG:
 		if (md != NULL) {
