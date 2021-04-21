@@ -32,6 +32,8 @@ OnTouch:
 	end;
 }
 
+int_land,88,110	warp	int_land_to_ship	1,1,iz_int,56,21
+
 iz_int,56,15,0	script	noviship	WARPNPC,2,2,{
 	end;
 
@@ -68,6 +70,7 @@ OnTouch:
 	if (strnpcinfo(NPC_NAME_HIDDEN) != "izlude")
 		.@map$ = .@map$ + strnpcinfo(NPC_NAME_HIDDEN);
 
+	savepoint(.@map$, 196, 209);
 	warp(.@map$, 196, 209);
 	end;
 }

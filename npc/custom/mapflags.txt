@@ -1,0 +1,2 @@
+iz_int	mapflag	nowarp
+int_land	mapflag	nowarp
