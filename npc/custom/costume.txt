@@ -128,7 +128,8 @@
 				close;
 			}
 			a = getequipid(.@Part);
-			delitem a,1;
+
+			delitem2(a, 1, 1, 0, 0, 254, 0, 16958, 15);
 			getitem a,1;
 
 			mes "[Clown]";
