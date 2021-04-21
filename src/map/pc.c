@@ -742,7 +742,8 @@ static int pc_equippoint(struct map_session_data *sd, int n)
 				return EQP_SHADOW_ARMS;
 		}
 	}
-	int cards[4] = sd->status.inventory[n].card;
+
+	int *cards = sd->status.inventory[n].card;
 
 	if (
 		battle_config.reserved_costume_id
@@ -10264,7 +10265,7 @@ static int pc_checkcombo(struct map_session_data *sd, struct item_data *data)
 				if( k == EQI_HEAD_MID &&  sd->equip_index[EQI_HEAD_LOW] == index ) continue;
 				if( k == EQI_HEAD_TOP && (sd->equip_index[EQI_HEAD_MID] == index || sd->equip_index[EQI_HEAD_LOW] == index) ) continue;
 
-				int cards[4] = sd->status.inventory[index].card;
+				int *cards = sd->status.inventory[index].card;
 
 				if ((int)MakeDWord(cards[2], cards[3]) == battle_config.reserved_costume_id)
 					continue;

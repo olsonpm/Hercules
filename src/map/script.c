@@ -26554,11 +26554,11 @@ BUILDIN(costume)
 	if(!(ep & anyHeadgear))
 		return 0;
 
-	logs->pick_pc(sd, LOG_TYPE_SCRIPT, -1, &sd->status.inventory[i], sd->inventory_data[i]);
+	struct item *invItem = &sd->status.inventory[i];
+
+	logs->pick_pc(sd, LOG_TYPE_SCRIPT, -1, invItem, sd->inventory_data[i]);
 	pc->unequipitem(sd,i,2);
 	clif->delitem(sd,i,1,3);
-
-	struct item *invItem = &sd->status.inventory[i];
 
 	invItem->refine = 0;
 	invItem->attribute = 0;
