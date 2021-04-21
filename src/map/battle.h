@@ -543,6 +543,9 @@ struct Battle_Config {
 
 	int fix_warp_hit_delay_abuse;
 
+	// Costume System
+	int reserved_costume_id;
+
 	// Refine Def/Atk
 	int costume_refine_def, shadow_refine_def;
 	int shadow_refine_atk;

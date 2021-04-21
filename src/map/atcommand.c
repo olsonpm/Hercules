@@ -1163,7 +1163,7 @@ ACMD(heal)
 ACMD(item)
 {
 	char item_name[100];
-	int number = 0, item_id, flag = 0, bound = 0;
+	int number = 0, item_id, flag = 0, bound = 0, costume = 0;
 	struct item item_tmp;
 	struct item_data *item_data;
 	int get_count, i;
@@ -1218,6 +1218,21 @@ ACMD(item)
 		}
 	}
 
+	if (!strcmpi(command+1,"costumeitem")) {
+  	if(!battle_config.reserved_costume_id) {
+  		clif->message(fd, "Costume conversion is disable. Set a value for reserved_cosutme_id on your battle.conf file.");
+  		return -1;
+  	}
+
+		int anyHeadgear = EQP_HEAD_LOW | EQP_HEAD_MID | EQP_HEAD_TOP;
+
+  	if (!(item_data->equip & anyHeadgear)) {
+  		clif->message(fd, "You can only turn headgears into costumes.");
+  		return -1;
+  	}
+  	costume = 1;
+  }
+
 	item_id = item_data->nameid;
 	get_count = number;
 	//Check if it's stackable.
@@ -1236,6 +1251,12 @@ ACMD(item)
 			item_tmp.nameid = item_id;
 			item_tmp.identify = 1;
 			item_tmp.bound = (unsigned char)bound;
+
+			if (costume) {
+				item_tmp.card[0] = CARD0_CREATE;
+				item_tmp.card[2] = GetWord(battle_config.reserved_costume_id, 0);
+				item_tmp.card[3] = GetWord(battle_config.reserved_costume_id, 1);
+			}
 
 			if ((flag = pc->additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
 				clif->additem(sd, 0, 0, flag);
@@ -10489,6 +10510,7 @@ static void atcommand_basecommands(void)
 		ACMD_DEF(setzone),
 		ACMD_DEF(camerainfo),
 		ACMD_DEF(refineryui),
+		ACMD_DEF2("costumeitem", item),
 	};
 	int i;
 

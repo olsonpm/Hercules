@@ -1924,6 +1924,11 @@ static void map_reqnickdb(struct map_session_data  *sd, int charid)
 
 	nullpo_retv(sd);
 
+	if (battle_config.reserved_costume_id && battle_config.reserved_costume_id == charid) {
+		clif->solved_charname(sd->fd, charid, "Costume");
+		return;
+	}
+
 	tsd = map->charid2sd(charid);
 	if( tsd ) {
 		clif->solved_charname(sd->fd, charid, tsd->status.name);

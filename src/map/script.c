@@ -26532,6 +26532,63 @@ static BUILDIN(_)
 	return true;
 }
 
+BUILDIN(costume)
+{
+	int i = -1, num, ep;
+	TBL_PC *sd;
+
+	num = script_getnum(st,2); // Equip Slot
+	sd = script->rid2sd(st);
+
+	if( sd == NULL )
+		return 0;
+	if( num > 0 && num <= ARRAYLENGTH(script->equip) )
+		i = pc->checkequip(sd, script->equip[num - 1]);
+	if( i < 0 )
+		return 0;
+
+	ep = sd->status.inventory[i].equip;
+
+	int anyHeadgear = EQP_HEAD_LOW | EQP_HEAD_MID | EQP_HEAD_TOP;
+
+	if(!(ep & anyHeadgear))
+		return 0;
+
+	struct item *invItem = &sd->status.inventory[i];
+
+	logs->pick_pc(sd, LOG_TYPE_SCRIPT, -1, invItem, sd->inventory_data[i]);
+	pc->unequipitem(sd,i,2);
+	clif->delitem(sd,i,1,3);
+
+	invItem->refine = 0;
+	invItem->attribute = 0;
+	invItem->card[0] = CARD0_CREATE;
+	invItem->card[1] = 0;
+	invItem->card[2] = GetWord(battle_config.reserved_costume_id, 0);
+	invItem->card[3] = GetWord(battle_config.reserved_costume_id, 1);
+
+	if (ep & EQP_HEAD_TOP) {
+		ep &= ~EQP_HEAD_TOP;
+		ep |= EQP_COSTUME_HEAD_TOP;
+	}
+	if (ep & EQP_HEAD_LOW) {
+		ep &= ~EQP_HEAD_LOW;
+		ep |= EQP_COSTUME_HEAD_LOW;
+	}
+	if (ep & EQP_HEAD_MID) {
+		ep &= ~EQP_HEAD_MID;
+		ep |= EQP_COSTUME_HEAD_MID;
+	}
+
+	logs->pick_pc(sd, LOG_TYPE_SCRIPT, 1, invItem, sd->inventory_data[i]);
+
+	clif->additem(sd, i, 1, 0);
+	pc->equipitem(sd, i, ep);
+	clif->misceffect(&sd->bl, 3);
+
+	return true;
+}
+
 // declarations that were supposed to be exported from npc_chat.c
 BUILDIN(defpattern);
 BUILDIN(activatepset);
@@ -28047,6 +28104,9 @@ static void script_parse_builtin(void)
 		BUILDIN_DEF(questactive, "i"),
 		BUILDIN_DEF(changequest, "ii"),
 		BUILDIN_DEF(showevent, "i?"),
+
+		// Costume Syustem
+		BUILDIN_DEF(costume, "i"),
 
 		/**
 		 * script_queue [Ind/Hercules]
