@@ -2877,7 +2877,7 @@ static int npc_selllist(struct map_session_data *sd, struct itemlist *item_list)
 		return 1;
 
 	if (nd->subtype != SHOP) {
-		char shopType = nd->u.scr.shop->type;
+		char shopType = nd->u.scr.shop && nd->u.scr.shop->type;
 
 		if (
 			nd->subtype != SCRIPT
