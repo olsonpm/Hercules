@@ -22,12 +22,23 @@
 //	or has card[Mhalicot]
 //	Note: You must apply the patch in order to use this script
 //============================================================
+
+function	script	checkZeny	{
+	if (Zeny < 50000) {
+		mes "[Coco Chanel]";
+		mes "Oh I'm sorry it looks like you don't have enough zeny.  Please come back when you have 50,000.";
+		close;
+	}
+	return;
+}
+
 -	script	Coco Chanel	-1,{
 	mes "[Coco Chanel]";
-	mes "I can convert your headgears into a costume or restore a costume its original form.";
+	mes "I can convert your headgears into a costume or restore a costume its original form for only 50,000 zeny";
 	switch(select("I want to convert.:I want to restore.:No thanks.")) {
 		case 1:
-			next;
+			mesclear();
+			checkZeny();
 			mes "[Coco Chanel]";
 			mes "What would you like to convert ?";
 			mes "Refined and carded equipments are unable to be converted.";
@@ -104,9 +115,11 @@
 			costume .@Part; // Convert the Headgear
 			mes "[Coco Chanel]";
 			mes "Done, enjoy your costume !";
+			Zeny -= 50000;
 			close;
 		case 2:
-			next;
+			mesclear();
+			checkZeny();
 			mes "Please, select what to restore.";
 			mes "Remember, I will only restore it back without refine and cards.";
 			next;
@@ -147,6 +160,7 @@
 
 			mes "[Coco Chanel]";
 			mes "Done, enjoy your restored headgear.";
+			Zeny -= 50000;
 			close;
 		case 3:
 			mes "[Coco Chanel]";
