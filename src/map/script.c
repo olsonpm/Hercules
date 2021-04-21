@@ -25784,7 +25784,6 @@ static BUILDIN(sellitem)
 	int value = 0;
 	int value2 = 0;
 	int qty = 0;
-	char shopType = nd->u.scr.shop->type;
 
 	if( !(nd = map->id2nd(st->oid)) ) {
 		ShowWarning("buildin_sellitem: trying to run without a proper NPC!\n");
@@ -25793,6 +25792,8 @@ static BUILDIN(sellitem)
 		ShowWarning("buildin_sellitem: unknown item id '%d'!\n",id);
 		return false;
 	}
+
+	char shopType = nd->u.scr.shop->type;
 
 	const bool have_shop = (nd->u.scr.shop != NULL);
 	if (!have_shop) {
