@@ -25784,6 +25784,7 @@ static BUILDIN(sellitem)
 	int value = 0;
 	int value2 = 0;
 	int qty = 0;
+	char shopType = nd->u.scr.shop->type;
 
 	if( !(nd = map->id2nd(st->oid)) ) {
 		ShowWarning("buildin_sellitem: trying to run without a proper NPC!\n");
@@ -25798,20 +25799,20 @@ static BUILDIN(sellitem)
 		npc->trader_update(nd->src_id ? nd->src_id : nd->bl.id);
 	}
 
-	if (nd->u.scr.shop->type != NST_BARTER) {
+	if (shopType != NST_BARTER) {
 		value = script_hasdata(st, 3) ? script_getnum(st, 3) : it->value_buy;
 		if (value == -1)
 			value = it->value_buy;
 	}
 
-	if (nd->u.scr.shop->type == NST_BARTER) {
+	if (shopType == NST_BARTER) {
 		if (!script_hasdata(st, 5)) {
 			ShowError("buildin_sellitem: invalid number of parameters for barter-type shop!\n");
 			return false;
 		}
 		value = script_getnum(st, 4);
 		value2 = script_getnum(st, 5);
-	} else if (nd->u.scr.shop->type == NST_EXPANDED_BARTER) {
+	} else if (shopType == NST_EXPANDED_BARTER) {
 		if (!script_hasdata(st, 4)) {
 			ShowError("buildin_sellitem: invalid number of parameters for expanded barter type shop!\n");
 			return false;
@@ -25823,14 +25824,14 @@ static BUILDIN(sellitem)
 	}
 
 	if (have_shop) {
-		if (nd->u.scr.shop->type == NST_BARTER) {
+		if (shopType == NST_BARTER) {
 			for (i = 0; i < nd->u.scr.shop->items; i++) {
 				const struct npc_item_list *const item = &nd->u.scr.shop->item[i];
 				if (item->nameid == id && item->value == value && item->value2 == value2) {
 					break;
 				}
 			}
-		} else if (nd->u.scr.shop->type == NST_EXPANDED_BARTER) {
+		} else if (shopType == NST_EXPANDED_BARTER) {
 			for (i = 0; i < nd->u.scr.shop->items; i++) {
 				const struct npc_item_list *const item = &nd->u.scr.shop->item[i];
 				if (item->nameid != id || item->value != value)
@@ -25861,19 +25862,19 @@ static BUILDIN(sellitem)
 		}
 	}
 
-	if( nd->u.scr.shop->type == NST_MARKET ) {
+	if( shopType == NST_MARKET ) {
 		if( !script_hasdata(st,4) || ( qty = script_getnum(st, 4) ) <= 0 ) {
 			ShowError("buildin_sellitem: invalid 'qty' for market-type shop!\n");
 			return false;
 		}
 	}
 
-	if( ( nd->u.scr.shop->type == NST_ZENY || nd->u.scr.shop->type == NST_MARKET )  && value*0.75 < it->value_sell*1.24 ) {
+	if( ( shopType == NST_ZENY || shopType == NST_ZENY_BUY || shopType == NST_MARKET )  && value*0.75 < it->value_sell*1.24 ) {
 		ShowWarning("buildin_sellitem: Item %s [%d] discounted buying price (%d->%d) is less than overcharged selling price (%d->%d) in NPC %s (%s)\n",
 					it->name, id, value, (int)(value*0.75), it->value_sell, (int)(it->value_sell*1.24), nd->exname, nd->path);
 	}
 
-	if (nd->u.scr.shop->type == NST_BARTER) {
+	if (shopType == NST_BARTER) {
 		qty = script_getnum(st, 3);
 		if (qty < -1 || value <= 0 || value2 <= 0) {
 			ShowError("buildin_sellitem: invalid parameters for barter-type shop!\n");
@@ -25885,9 +25886,9 @@ static BUILDIN(sellitem)
 	if (foundInShop) {
 		nd->u.scr.shop->item[i].value = value;
 		nd->u.scr.shop->item[i].qty   = qty;
-		if (nd->u.scr.shop->type == NST_MARKET) /* has been manually updated, make it reflect on sql */
+		if (shopType == NST_MARKET) /* has been manually updated, make it reflect on sql */
 			npc->market_tosql(nd, i);
-		else if (nd->u.scr.shop->type == NST_BARTER) /* has been manually updated, make it reflect on sql */
+		else if (shopType == NST_BARTER) /* has been manually updated, make it reflect on sql */
 			npc->barter_tosql(nd, i);
 	} else {
 		for (i = 0; i < nd->u.scr.shop->items; i++) {
@@ -25919,7 +25920,7 @@ static BUILDIN(sellitem)
 	}
 
 	if (foundInShop) {
-		if (nd->u.scr.shop->type == NST_EXPANDED_BARTER) {  /* has been manually updated, make it reflect on sql */
+		if (shopType == NST_EXPANDED_BARTER) {  /* has been manually updated, make it reflect on sql */
 			npc->expanded_barter_tosql(nd, i);
 		}
 	}
@@ -28753,6 +28754,8 @@ static void script_hardcoded_constants(void)
 	script->set_constant("NST_CUSTOM", NST_CUSTOM, false, false);
 	script->set_constant("NST_BARTER", NST_BARTER, false, false);
 	script->set_constant("NST_EXPANDED_BARTER", NST_EXPANDED_BARTER, false, false);
+	script->set_constant("NST_ZENY_BUY", NST_ZENY_BUY, false, false);
+	script->set_constant("NST_ZENY_SELL", NST_ZENY_SELL, false, false);
 
 	script->constdb_comment("script unit data types");
 	script->set_constant("UDT_TYPE", UDT_TYPE, false, false);
