@@ -143,4 +143,4 @@
 	}
 }
 
-prontera,169,200,3	duplicate(Coco Chanel)	Coco Chanel#1	4_F_SHALOSH
+prontera,174,194,3	duplicate(Coco Chanel)	Coco Chanel#1	4_F_SHALOSH
