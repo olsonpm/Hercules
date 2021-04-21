@@ -7431,6 +7431,7 @@ static const struct battle_data {
 	{ "features/banking",                   &battle_config.feature_banking,                 1,      0,      1,              },
 	{ "features/auction",                   &battle_config.feature_auction,                 0,      0,      2,              },
 	{ "idletime_criteria",                  &battle_config.idletime_criteria,            0x25,      1,      INT_MAX,        },
+	{ "reserved_costume_id",                &battle_config.reserved_costume_id,             999998, 0,      INT_MAX,        },
 	{ "mon_trans_disable_in_gvg",           &battle_config.mon_trans_disable_in_gvg,        0,      0,      1,              },
 	{ "case_sensitive_aegisnames",          &battle_config.case_sensitive_aegisnames,       1,      0,      1,              },
 	{ "search_freecell_map_margin",         &battle_config.search_freecell_map_margin,     15,      0,      INT_MAX,        },

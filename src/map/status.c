@@ -2180,6 +2180,10 @@ static int status_calc_pc_(struct map_session_data *sd, enum e_status_calc_opt o
 			continue;
 		if(i == EQI_COSTUME_TOP && (sd->equip_index[EQI_COSTUME_MID] == index || sd->equip_index[EQI_COSTUME_LOW] == index))
 			continue;
+
+		int cards[4] = sd->status.inventory[index].card;
+		if ((int)MakeDWord(cards[2], cards[3]) == battle_config.reserved_costume_id)
+			continue;
 		if(!sd->inventory_data[index])
 			continue;
 

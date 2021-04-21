@@ -742,6 +742,26 @@ static int pc_equippoint(struct map_session_data *sd, int n)
 				return EQP_SHADOW_ARMS;
 		}
 	}
+	int cards[4] = sd->status.inventory[n].card;
+
+	if (
+		battle_config.reserved_costume_id
+		&& cards[0] == CARD0_CREATE
+		&& (int)MakeDWord(cards[2], cards[3]) == battle_config.reserved_costume_id
+	) {
+		if (ep & EQP_HEAD_TOP) {
+			ep &= ~EQP_HEAD_TOP;
+			ep |= EQP_COSTUME_HEAD_TOP;
+		}
+		if (ep & EQP_HEAD_MID) {
+			ep &= ~EQP_HEAD_MID;
+			ep |= EQP_COSTUME_HEAD_MID;
+		}
+		if (ep & EQP_HEAD_LOW) {
+			ep &= ~EQP_HEAD_LOW;
+			ep |= EQP_COSTUME_HEAD_LOW;
+		}
+	}
 	return ep;
 }
 
@@ -10244,6 +10264,11 @@ static int pc_checkcombo(struct map_session_data *sd, struct item_data *data)
 				if( k == EQI_HEAD_MID &&  sd->equip_index[EQI_HEAD_LOW] == index ) continue;
 				if( k == EQI_HEAD_TOP && (sd->equip_index[EQI_HEAD_MID] == index || sd->equip_index[EQI_HEAD_LOW] == index) ) continue;
 
+				int cards[4] = sd->status.inventory[index].card;
+
+				if ((int)MakeDWord(cards[2], cards[3]) == battle_config.reserved_costume_id)
+					continue;
+
 				if(!sd->inventory_data[index])
 					continue;
 
@@ -10254,12 +10279,12 @@ static int pc_checkcombo(struct map_session_data *sd, struct item_data *data)
 					found = true;
 					break;
 				} else { //Cards
-					if ( sd->inventory_data[index]->slot == 0 || itemdb_isspecial(sd->status.inventory[index].card[0]) )
+					if ( sd->inventory_data[index]->slot == 0 || itemdb_isspecial(cards[0]) )
 						continue;
 
 					for (z = 0; z < sd->inventory_data[index]->slot; z++) {
 
-						if (sd->status.inventory[index].card[z] != id)
+						if (cards[z] != id)
 							continue;
 
 						// We have found a match
