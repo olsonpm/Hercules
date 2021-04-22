@@ -42,7 +42,7 @@ OnInit:
 	sellitem Silver_Arrow_Container;
 }
 
-prontera,136,199,6	trader	Hoarder::bro_prt_hoarder	4_M_HUMERCHANT,{
+prontera,136,199,6	trader	Rich the Hoarder	4_M_HUMERCHANT,{
 OnInit:
 	tradertype(NST_ZENY_BUY);
 }

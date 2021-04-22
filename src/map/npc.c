@@ -1355,7 +1355,14 @@ static int npc_click(struct map_session_data *sd, struct npc_data *nd)
 			clif->cashshop_show(sd,nd);
 			break;
 		case SCRIPT:
-			if( nd->u.scr.shop && nd->u.scr.shop->items && nd->u.scr.trader ) {
+			if(
+				nd->u.scr.shop
+				&& (
+					nd->u.scr.shop->items
+					|| nd->u.scr.shop->type == NST_ZENY_BUY
+				)
+				&& nd->u.scr.trader
+			) {
 				if( !npc->trader_open(sd,nd) )
 					return 1;
 			} else
@@ -1450,8 +1457,18 @@ static int npc_buysellsel(struct map_session_data *sd, int id, int type)
 	if ((nd = npc->checknear(sd,map->id2bl(id))) == NULL)
 		return 1;
 
-	if ( nd->subtype != SHOP && !(nd->subtype == SCRIPT && nd->u.scr.shop && nd->u.scr.shop->items) ) {
-		if( nd->subtype == SCRIPT )
+	if (
+		nd->subtype != SHOP
+		&& !(
+			nd->subtype == SCRIPT
+			&& nd->u.scr.shop
+			&& (
+				nd->u.scr.shop->items
+				|| nd->u.scr.shop->type == NST_ZENY_BUY
+			)
+		)
+	) {
+		if (nd->subtype == SCRIPT)
 			ShowError("npc_buysellsel: trader '%s' has no shop list!\n",nd->exname);
 		else
 			ShowError("npc_buysellsel: no such shop npc %d (%s)\n",id,nd->exname);
@@ -1464,19 +1481,18 @@ static int npc_buysellsel(struct map_session_data *sd, int id, int type)
 	if (nd->option & OPTION_INVISIBLE) // can't buy if npc is not visible (hack?)
 		return 1;
 
-	if( nd->class_ < 0 && !sd->state.callshop ) {// not called through a script and is not a visible NPC so an invalid call
+	if (nd->class_ < 0 && !sd->state.callshop) // not called through a script and is not a visible NPC so an invalid call
 		return 1;
-	}
 
 	// reset the callshop state for future calls
 	sd->state.callshop = 0;
 	sd->npc_shopid = id;
 
-	if (type==0) {
+	if (type==0)
 		clif->buylist(sd,nd);
-	} else {
+	else
 		clif->selllist(sd);
-	}
+
 	return 0;
 }
 
@@ -1993,7 +2009,7 @@ static bool npc_trader_open(struct map_session_data *sd, struct npc_data *nd)
 {
 	nullpo_retr(false, sd);
 	nullpo_retr(false, nd);
-	if( !nd->u.scr.shop || !nd->u.scr.shop->items )
+	if(!nd->u.scr.shop || (!nd->u.scr.shop->items && nd->u.scr.shop->type != NST_ZENY_BUY))
 		return false;
 
 	switch( nd->u.scr.shop->type ) {
