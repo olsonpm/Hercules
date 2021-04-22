@@ -2000,15 +2000,15 @@ static bool npc_trader_open(struct map_session_data *sd, struct npc_data *nd)
 		case NST_ZENY:
 			sd->state.callshop = 1;
 			clif->npcbuysell(sd, nd->bl.id);
-			return true;
+			return true;/* we skip sd->npc_shopid, npc->buysell will set it then when the player selects */
 		case NST_ZENY_BUY:
 			sd->state.callshop = 1;
-			npc->buysellsel(sd, nd->bl.id, 0);
-			return true;/* we skip sd->npc_shopid, npc->buysell will set it then when the player selects */
+			npc->buysellsel(sd, nd->bl.id, 1);
+			return true;
 		case NST_ZENY_SELL:
 			sd->state.callshop = 1;
-			npc->buysellsel(sd, nd->bl.id, 1);
-			return true;/* we skip sd->npc_shopid, npc->buysell will set it then when the player selects */
+			npc->buysellsel(sd, nd->bl.id, 0);
+			return true;
 		case NST_MARKET: {
 				unsigned short i;
 
@@ -2270,7 +2270,7 @@ static int npc_buylist(struct map_session_data *sd, struct itemlist *item_list)
 			&& nd->u.scr.shop
 			&& (
 				nd->u.scr.shop->type == NST_ZENY
-				|| nd->u.scr.shop->type == NST_ZENY_BUY
+				|| nd->u.scr.shop->type == NST_ZENY_SELL
 			)
 		) {
 			shop = nd->u.scr.shop->item;
@@ -2885,7 +2885,7 @@ static int npc_selllist(struct map_session_data *sd, struct itemlist *item_list)
 			|| (
 				shopType != NST_ZENY
 				&& shopType != NST_MARKET
-				&& shopType != NST_ZENY_SELL
+				&& shopType != NST_ZENY_BUY
 			)
 		) {
 			return 1;

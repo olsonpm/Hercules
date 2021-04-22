@@ -25870,7 +25870,7 @@ static BUILDIN(sellitem)
 		}
 	}
 
-	if( ( shopType == NST_ZENY || shopType == NST_ZENY_BUY || shopType == NST_MARKET )  && value*0.75 < it->value_sell*1.24 ) {
+	if( ( shopType == NST_ZENY || shopType == NST_ZENY_SELL || shopType == NST_MARKET )  && value*0.75 < it->value_sell*1.24 ) {
 		ShowWarning("buildin_sellitem: Item %s [%d] discounted buying price (%d->%d) is less than overcharged selling price (%d->%d) in NPC %s (%s)\n",
 					it->name, id, value, (int)(value*0.75), it->value_sell, (int)(it->value_sell*1.24), nd->exname, nd->path);
 	}

@@ -1,5 +1,6 @@
 prontera,134,202,5	trader	Pot Dealer::bro_prt_potdealer	4_M_HUBOY,{
 OnInit:
+	tradertype(NST_ZENY_SELL);
 	sellitem Red_Potion;
 	sellitem Orange_Potion;
 	sellitem Yellow_Potion;
@@ -14,6 +15,7 @@ OnInit:
 
 prontera,136,205,4	trader	Montgomery Flea Market::bro_prt_misctrader	4_M_DEWOLDMAN,{
 OnInit:
+	tradertype(NST_ZENY_SELL);
 	sellitem Grape;
 	sellitem Spectacles;
 	sellitem Wing_Of_Fly;
@@ -29,6 +31,7 @@ OnInit:
 
 prontera,140,205,3	trader	Arrow Zealot::bro_prt_arrowzealot	4_M_ARCHER,{
 OnInit:
+	tradertype(NST_ZENY_SELL);
 	sellitem Arrow;
 	sellitem Fire_Arrow;
 	sellitem Iron_Arrow;
@@ -37,4 +40,9 @@ OnInit:
 	sellitem Fire_Arrow_Container;
 	sellitem Iron_Arrow_Container;
 	sellitem Silver_Arrow_Container;
+}
+
+prontera,136,199,6	trader	Hoarder::bro_prt_hoarder	4_M_HUMERCHANT,{
+OnInit:
+	tradertype(NST_ZENY_BUY);
 }
