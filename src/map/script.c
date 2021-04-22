@@ -25793,7 +25793,7 @@ static BUILDIN(sellitem)
 		return false;
 	}
 
-	char shopType = nd->u.scr.shop && nd->u.scr.shop->type;
+	unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
 
 	const bool have_shop = (nd->u.scr.shop != NULL);
 	if (!have_shop) {

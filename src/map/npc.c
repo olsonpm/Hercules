@@ -1522,7 +1522,8 @@ static int npc_cashshop_buylist(struct map_session_data *sd, int points, struct 
 		return ERROR_TYPE_NPC;
 
 	if( nd->subtype != CASHSHOP ) {
-		char shopType = nd->u.scr.shop && nd->u.scr.shop->type;
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
+
 		if (
 			nd->subtype == SCRIPT
 			&& shopType != NST_ZENY
@@ -2012,7 +2013,7 @@ static bool npc_trader_open(struct map_session_data *sd, struct npc_data *nd)
 	if(!nd->u.scr.shop || (!nd->u.scr.shop->items && nd->u.scr.shop->type != NST_ZENY_BUY))
 		return false;
 
-	switch( nd->u.scr.shop->type ) {
+	switch (nd->u.scr.shop->type) {
 		case NST_ZENY:
 			sd->state.callshop = 1;
 			clif->npcbuysell(sd, nd->bl.id);
@@ -2173,8 +2174,8 @@ static int npc_cashshop_buy(struct map_session_data *sd, int nameid, int amount,
 	if( (item = itemdb->exists(nameid)) == NULL )
 		return ERROR_TYPE_ITEM_ID; // Invalid Item
 
-	if( nd->subtype != CASHSHOP ) {
-		char shopType = nd->u.scr.shop && nd->u.scr.shop->type;
+	if (nd->subtype != CASHSHOP) {
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
 
 		if (
 			nd->subtype == SCRIPT
@@ -2893,7 +2894,7 @@ static int npc_selllist(struct map_session_data *sd, struct itemlist *item_list)
 		return 1;
 
 	if (nd->subtype != SHOP) {
-		char shopType = nd->u.scr.shop && nd->u.scr.shop->type;
+		unsigned char shopType = nd->u.scr.shop ? nd->u.scr.shop->type : '\0';
 
 		if (
 			nd->subtype != SCRIPT
