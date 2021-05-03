@@ -3,42 +3,37 @@
 //------//
 
 prontera,169,194,5	script	Rose	4_F_SWORDMAN,{
-	mes("So you're interested in trying out the Test Arena ?");
+	mes("So you're interested in trying out the Test Arena?");
 
 L_Start:
-	switch (select("I'd like my own instance", "I'd like a party instance", "What is the Test Arena ?", "Cancel")) {
+	switch (select("Yes please warp me there", "What is the Test Arena?", "Cancel")) {
 		mesclear();
 
 		case 1:
-			callsub(L_Enter, "self");
+			goto(L_Enter);
 		case 2:
-			callsub(L_Enter, "party");
-		case 3:
 			mes("The Test Arena allows you to test your build against any monster you choose.  When you get there, talk to Newt - he'll handle the monsters.");
 			next();
-			mes("It is instance based, so you may choose to enter on your own or as part of your party separate from others..");
+			mes("It is instance based, so you'll need to be in a party to enter.");
 			next();
-			mes("Finally, you will not gain loot, exp nor will you lose 1% exp for dying.  Also when you kill the monster it will immediately respawn.  Pretty cool huh ?");
+			mes("You will not gain loot, exp nor will you lose 1% exp for dying.  And finally, when you kill the monster it will immediately respawn.  Pretty cool huh?");
 			close();
 		case 3:
 			close();
 	}
 
 L_Enter:
-	.@enterType$ = getarg(0);
 	.@party_id = getcharid(CHAR_ID_PARTY);
 
-	if (.@enterType$ == "party" && .@party_id == 0) {
+	if (.@party_id == 0) {
 		mes("Looks like you're not in a party.  Please make or join a party and try again.");
 		close();
 	}
 
-	if (has_instance("tarena") == "") {
-		.@instance = (.@enterType$ == "self")
-			? instance_create(.@md_name$, getcharid(CHAR_ID_ACCOUNT))
-			: instance_create(.@md_name$, .@party_id);
+	if (has_instance("1@tarena") == "") {
+		.@instance = instance_create(.@md_name$, .@party_id);
 
-		if (instance_attachmap("tarena", .@instance) == "") {
+		if (instance_attachmap("1@tarena", .@instance) == "") {
 			mes("Something went wrong - the instance couldn't be created.  Please mention this in the support discord channel");
 			instance_destroy(.@instance);
 			close();
@@ -47,13 +42,13 @@ L_Enter:
 		instance_init(.@instance);
 	}
 
-	goto(L_Warp);
+	warp("1@tarena", 100, 25);
 	end;
 }
 
-tarena,100,32,4	script	Newt#tarena_newt	4_M_02,{
+1@tarena,100,32,4	script	Newt#tarena_newt	4_M_02,{
 L_Start:
-	.@map$ = instance_mapname("tarena");
+	.@map$ = instance_mapname("1@tarena");
 
 	if ('mobId == 0) {
 		mes("Enter the numeric id of the monster you'd like to spawn.");
@@ -72,7 +67,7 @@ L_Start:
 		'mobId = .@mobIdInput;
 		goto(L_CreateMob);
 	} else {
-		mes("Would you like to remove the current monster ?");
+		mes("Would you like to remove the current monster?");
 
 		switch(select("Yes", "No")) {
 			mesclear();
@@ -103,29 +98,29 @@ OnInstanceInit:
 //-------//
 
 // top right
-tarena,105,103,0	warp	test_arena-1	3,2,tarena,100,205
-tarena,106,30,0	warp	test_arena-1	3,2,tarena,111,99
+1@tarena,105,103,0	warp	tarena_arena_tr	3,2,1@tarena,100,205
+1@tarena,106,30,0	warp	tarena_entry_tr	3,2,1@tarena,111,99
 
 // right
-tarena,121,88,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,109,25,0	warp	test_arena-1	3,2,tarena,114,88
+1@tarena,121,88,0	warp	tarena_arena_r	3,2,1@tarena,100,25
+1@tarena,109,25,0	warp	tarena_entry_r	3,2,1@tarena,114,88
 
 // bot right
-tarena,115,72,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,105,20,0	warp	test_arena-1	3,2,tarena,111,76
+1@tarena,115,72,0	warp	tarena_arena_br	3,2,1@tarena,100,25
+1@tarena,105,20,0	warp	tarena_entry_br	3,2,1@tarena,111,76
 
 // bot
-tarena,99,69,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,100,17,0	warp	test_arena-1	3,2,tarena,99,73
+1@tarena,99,69,0	warp	tarena_arena_b	3,2,1@tarena,100,25
+1@tarena,100,17,0	warp	tarena_entry_b	3,2,1@tarena,99,73
 
 // bot left
-tarena,84,72,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,94,20,0	warp	test_arena-1	3,2,tarena,88,76
+1@tarena,84,72,0	warp	tarena_arena_bl	3,2,1@tarena,100,25
+1@tarena,94,20,0	warp	tarena_entry_bl	3,2,1@tarena,88,76
 
 // left
-tarena,78,88,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,90,25,0	warp	test_arena-1	3,2,tarena,85,88
+1@tarena,78,88,0	warp	tarena_arena_l	3,2,1@tarena,100,25
+1@tarena,90,25,0	warp	tarena_entry_l	3,2,1@tarena,85,88
 
 // top left
-tarena,84,103,0	warp	test_arena-1	3,2,tarena,100,25
-tarena,93,30,0	warp	test_arena-1	3,2,tarena,88,99
+1@tarena,84,103,0	warp	tarena_arena_tl	3,2,1@tarena,100,25
+1@tarena,93,30,0	warp	tarena_entry_tl	3,2,1@tarena,88,99
