@@ -76,3 +76,7 @@ ecl_in01,45,60,4	duplicate(Healer)	Healer#ecl	4_M_DOGTRAVELER
 malangdo,132,114,6	duplicate(Healer)	Healer#mal	4_M_DOGTRAVELER
 malaya,205,205,6	duplicate(Healer)	Healer#ma	4_M_DOGTRAVELER
 mora,55,152,4	duplicate(Healer)	Healer#mora	4_M_DOGTRAVELER
+
+// Duplicates (Custom)
+//============================================================
+1@tarena,97,32,5	duplicate(Healer)	Healer#tarena	4_M_DOGTRAVELER

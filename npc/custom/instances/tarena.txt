@@ -39,13 +39,14 @@ L_Enter:
 		}
 
 		instance_init(.@instance);
+		instance_set_timeout(86400, 300);
 	}
 
 	warp("1@tarena", 100, 25);
 	end;
 }
 
-1@tarena,98,32,5	script	Warper#tarena_warper	1_M_INNKEEPER,{
+1@tarena,97,32,5	script	Warper#tarena_warper	1_M_INNKEEPER,{
 	mes("Would you like to go back to prontera?");
 
 	switch(select("Yes", "No")) {
@@ -60,7 +61,7 @@ L_Enter:
 	}
 }
 
-1@tarena,101,32,3	script	Newt#tarena_newt	4_M_02,{
+1@tarena,102,32,3	script	Newt#tarena_newt	4_M_02,{
 L_Start:
 	.@map$ = instance_mapname("1@tarena");
 
