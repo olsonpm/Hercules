@@ -65,7 +65,12 @@ L_Start:
 		}
 
 		'mobId = .@mobIdInput;
-		goto(L_CreateMob);
+		mesclear();
+		mes("Alright your monster is ready!");
+		close2();
+
+		.@onDeadLbl$ = instance_npcname("Newt#tarena_newt") + "::OnMyMobDead";
+		monster(.@map$, 99, 100, "--ja--", 'mobId, 1, .@onDeadLbl$);
 	} else {
 		mes("Would you like to remove the current monster?");
 
@@ -82,10 +87,11 @@ L_Start:
 
 	end;
 
-L_CreateMob:
-	.@onDeadLbl = instance_npcname("Newt#tarena_newt") + "::L_CreateMob";
+OnMyMobDead:
+	.@map$ = instance_mapname("1@tarena");
+	.@onDeadLbl$ = instance_npcname("Newt#tarena_newt") + "::OnMyMobDead";
 
-	monster(.@map$, 99, 100, "--ja--", 'mobId, 1, .@onDeadLbl);
+	monster(.@map$, 99, 100, "--ja--", 'mobId, 1, .@onDeadLbl$);
 	end;
 
 
@@ -98,7 +104,7 @@ OnInstanceInit:
 //-------//
 
 // top right
-1@tarena,105,103,0	warp	tarena_arena_tr	3,2,1@tarena,100,205
+1@tarena,115,103,0	warp	tarena_arena_tr	3,2,1@tarena,100,25
 1@tarena,106,30,0	warp	tarena_entry_tr	3,2,1@tarena,111,99
 
 // right
