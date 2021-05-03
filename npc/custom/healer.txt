@@ -79,4 +79,4 @@ mora,55,152,4	duplicate(Healer)	Healer#mora	4_M_DOGTRAVELER
 
 // Duplicates (Custom)
 //============================================================
-1@tarena,97,32,5	duplicate(Healer)	Healer#tarena	4_M_DOGTRAVELER
+1@tarena,99,32,5	duplicate(Healer)	Healer#tarena	4_M_DOGTRAVELER
