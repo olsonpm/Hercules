@@ -17,7 +17,6 @@ L_Start:
 			mes("It is instance based, so you'll need to be in a party to enter.");
 			next();
 			mes("You will not gain loot, exp nor will you lose 1% exp for dying.  And finally, when you kill the monster it will immediately respawn.  Pretty cool huh?");
-			close();
 		case 3:
 			close();
 	}
@@ -46,13 +45,29 @@ L_Enter:
 	end;
 }
 
-1@tarena,100,32,4	script	Newt#tarena_newt	4_M_02,{
+1@tarena,98,32,5	script	Warper#tarena_warper	1_M_INNKEEPER,{
+	mes("Would you like to go back to prontera?");
+
+	switch(select("Yes", "No")) {
+		mesclear();
+
+		case 1:
+			warp("prontera",155,183);
+			end;
+		case 2:
+			mes("Okay no problem");
+			close();
+	}
+}
+
+1@tarena,101,32,3	script	Newt#tarena_newt	4_M_02,{
 L_Start:
 	.@map$ = instance_mapname("1@tarena");
 
 	if ('mobId == 0) {
 		mes("Enter the numeric id of the monster you'd like to spawn.");
 		input(.@mobIdInput);
+		mesclear();
 
 		if ('mobId != 0) {
 			mes("It looks like someone already spawned a monster while you were typing.");
@@ -65,7 +80,6 @@ L_Start:
 		}
 
 		'mobId = .@mobIdInput;
-		mesclear();
 		mes("Alright your monster is ready!");
 		close2();
 
@@ -80,7 +94,12 @@ L_Start:
 			case 1:
 				killmonsterall(.@map$);
 				'mobId = 0;
+				mes("Alright he's gone");
+				break;
+			case 2:
+				mes("Okay no problem");
 		}
+		close();
 	}
 
 	end;
