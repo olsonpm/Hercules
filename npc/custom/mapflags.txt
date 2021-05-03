@@ -1,16 +1,16 @@
 iz_int	mapflag	nowarp
 int_land	mapflag	nowarp
 
-1@tarena mapflag nosave	SavePoint
-1@tarena mapflag monster_noteleport
-1@tarena mapflag nobranch
-1@tarena mapflag noexp
-1@tarena mapflag noloot
-1@tarena mapflag nomemo
-1@tarena mapflag nopenalty
-1@tarena mapflag notomb
-1@tarena mapflag novending
-1@tarena mapflag nowarpto
-1@tarena mapflag partylock
-1@tarena mapflag pvp	off
-1@tarena mapflag src4instance
+1@tarena	mapflag	nosave	SavePoint
+1@tarena	mapflag	monster_noteleport
+1@tarena	mapflag	nobranch
+1@tarena	mapflag	noexp
+1@tarena	mapflag	noloot
+1@tarena	mapflag	nomemo
+1@tarena	mapflag	nopenalty
+1@tarena	mapflag	notomb
+1@tarena	mapflag	novending
+1@tarena	mapflag	nowarpto
+1@tarena	mapflag	partylock
+1@tarena	mapflag	pvp	off
+1@tarena	mapflag	src4instance

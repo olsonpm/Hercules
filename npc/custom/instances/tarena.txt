@@ -81,8 +81,6 @@ L_Start:
 				killmonsterall(.@map$);
 				'mobId = 0;
 		}
-
-		close();
 	}
 
 	end;
