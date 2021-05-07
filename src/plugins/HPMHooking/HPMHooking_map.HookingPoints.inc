@@ -3015,6 +3015,7 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(skill->get_desc, HP_skill_get_desc) },
 	{ HP_POP(skill->get_casttype, HP_skill_get_casttype) },
 	{ HP_POP(skill->get_casttype2, HP_skill_get_casttype2) },
+	{ HP_POP(skill->get_sc_type, HP_skill_get_sc_type) },
 	{ HP_POP(skill->is_combo, HP_skill_is_combo) },
 	{ HP_POP(skill->name2id, HP_skill_name2id) },
 	{ HP_POP(skill->isammotype, HP_skill_isammotype) },
@@ -3193,6 +3194,7 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(skill->validate_unit_target_sub, HP_skill_validate_unit_target_sub) },
 	{ HP_POP(skill->validate_unit_target, HP_skill_validate_unit_target) },
 	{ HP_POP(skill->validate_unit, HP_skill_validate_unit) },
+	{ HP_POP(skill->validate_status_change, HP_skill_validate_status_change) },
 	{ HP_POP(skill->validate_additional_fields, HP_skill_validate_additional_fields) },
 	{ HP_POP(skill->read_skilldb, HP_skill_read_skilldb) },
 	{ HP_POP(skill->config_set_level, HP_skill_config_set_level) },
@@ -3324,7 +3326,6 @@ struct HookingPointData HookingPoints[] = {
 /* status_interface */
 	{ HP_POP(status->init, HP_status_init) },
 	{ HP_POP(status->final, HP_status_final) },
-	{ HP_POP(status->skill2sc, HP_status_skill2sc) },
 	{ HP_POP(status->sc2skill, HP_status_sc2skill) },
 	{ HP_POP(status->sc2scb_flag, HP_status_sc2scb_flag) },
 	{ HP_POP(status->get_sc_relevant_bl_types, HP_status_get_sc_relevant_bl_types) },
@@ -3452,14 +3453,16 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(status->read_scdb_libconfig, HP_status_read_scdb_libconfig) },
 	{ HP_POP(status->read_scdb_libconfig_sub, HP_status_read_scdb_libconfig_sub) },
 	{ HP_POP(status->read_scdb_libconfig_sub_flag, HP_status_read_scdb_libconfig_sub_flag) },
+	{ HP_POP(status->read_scdb_libconfig_sub_calcflag, HP_status_read_scdb_libconfig_sub_calcflag) },
 	{ HP_POP(status->read_scdb_libconfig_sub_flag_additional, HP_status_read_scdb_libconfig_sub_flag_additional) },
+	{ HP_POP(status->read_scdb_libconfig_sub_calcflag_additional, HP_status_read_scdb_libconfig_sub_calcflag_additional) },
 	{ HP_POP(status->read_scdb_libconfig_sub_skill, HP_status_read_scdb_libconfig_sub_skill) },
 	{ HP_POP(status->read_job_db, HP_status_read_job_db) },
 	{ HP_POP(status->read_job_db_sub, HP_status_read_job_db_sub) },
-	{ HP_POP(status->set_sc, HP_status_set_sc) },
 	{ HP_POP(status->copy, HP_status_copy) },
 	{ HP_POP(status->base_matk_min, HP_status_base_matk_min) },
 	{ HP_POP(status->base_matk_max, HP_status_base_matk_max) },
+	{ HP_POP(status->check_job_bonus, HP_status_check_job_bonus) },
 /* storage_interface */
 	{ HP_POP(storage->reconnect, HP_storage_reconnect) },
 	{ HP_POP(storage->delitem, HP_storage_delitem) },
@@ -3638,4 +3641,4 @@ struct HookingPointData HookingPoints[] = {
 	{ HP_POP(vending->searchall, HP_vending_searchall) },
 };
 
-int HookingPointsLenMax = 50;
+int HookingPointsLenMax = 51;

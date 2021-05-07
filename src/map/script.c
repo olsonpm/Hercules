@@ -230,6 +230,17 @@ static void script_reportsrc(struct script_state *st)
 				ShowDebug("Source (NPC): %s (invisible/not on a map)\n", nd->name);
 		}
 			break;
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_ELEM:
+		case BL_HOM:
+		case BL_MER:
+		case BL_SKILL:
+		case BL_CHAT:
+		case BL_PC:
+		case BL_MOB:
+		case BL_PET:
+		case BL_ALL:
 		default:
 			if( bl->m >= 0 )
 				ShowDebug("Source (Non-NPC type %u): name %s at %s (%d,%d)\n", bl->type, clif->get_bl_name(bl), map->list[bl->m].name, bl->x, bl->y);
@@ -244,6 +255,8 @@ static void script_reportdata(struct script_data *data)
 {
 	if( data == NULL )
 		return;
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch( data->type ) {
 		case C_NOP:// no value
 			ShowDebug("Data: nothing (nil)\n");
@@ -279,6 +292,7 @@ static void script_reportdata(struct script_data *data)
 			ShowDebug("Data: %s\n", script->op2name(data->type));
 			break;
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
 }
 
 /// Reports on the console information about the current built-in function.
@@ -685,6 +699,8 @@ static void add_scriptl(int l)
 {
 	int backpatch = script->str_data[l].backpatch;
 
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch(script->str_data[l].type) {
 		case C_POS:
 		case C_USERFUNC_POS:
@@ -714,6 +730,7 @@ static void add_scriptl(int l)
 			script->addb(l>>16);
 			break;
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
 }
 
 /*==========================================
@@ -1154,6 +1171,8 @@ static const char *parse_variable(const char *p)
 		return NULL;
 	}
 
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch( type ) {
 		case C_ADD_PRE: // pre ++
 		case C_SUB_PRE: // pre --
@@ -1173,6 +1192,7 @@ static const char *parse_variable(const char *p)
 		default: // everything else
 			p = script->skip_space( &p[2] );
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
 
 	if( p == NULL ) {
 		// end of line or invalid buffer
@@ -2500,8 +2520,11 @@ static void script_set_constant(const char *name, int value, bool is_parameter, 
 		script->str_data[n].type = is_parameter ? C_PARAM : C_INT;
 		script->str_data[n].val  = value;
 		script->str_data[n].deprecated = is_deprecated ? 1 : 0;
-	} else if( script->str_data[n].type == C_PARAM || script->str_data[n].type == C_INT ) {// existing parameter or constant
-		ShowError("script_set_constant: Attempted to overwrite existing %s '%s' (old value=%d, new value=%d).\n", ( script->str_data[n].type == C_PARAM ) ? "parameter" : "constant", name, script->str_data[n].val, value);
+	} else if (script->str_data[n].type == C_PARAM || script->str_data[n].type == C_INT) {  // existing parameter or constant
+		if (script->str_data[n].val != value)
+			ShowError("script_set_constant: Attempted to overwrite existing %s '%s' (old value=%d, new value=%d).\n", (script->str_data[n].type == C_PARAM) ? "parameter" : "constant", name, script->str_data[n].val, value);
+		else
+			ShowError("script_set_constant: Attempted to overwrite same existing %s '%s' (value=%d).\n", (script->str_data[n].type == C_PARAM) ? "parameter" : "constant", name, value);
 	} else {// existing name
 		ShowError("script_set_constant: Invalid name for %s '%s' (already defined as %s).\n", is_parameter ? "parameter" : "constant", name, script->op2name(script->str_data[n].type));
 	}
@@ -2522,7 +2545,10 @@ static void script_set_constant2(const char *name, int value, bool is_parameter,
 	}
 
 	if( script->str_data[n].type == C_INT && value && value != script->str_data[n].val ) { // existing constant
-		ShowWarning("script_set_constant2: Attempted to overwrite existing constant '%s' (old value=%d, new value=%d).\n", name, script->str_data[n].val, value);
+		if (script->str_data[n].val != value)
+			ShowWarning("script_set_constant2: Attempted to overwrite existing constant '%s' (old value=%d, new value=%d).\n", name, script->str_data[n].val, value);
+		else
+			ShowWarning("script_set_constant2: Attempted to overwrite same existing constant '%s' (value=%d).\n", name, value);
 		return;
 	}
 
@@ -2961,6 +2987,8 @@ static struct script_code *parse_script(const char *src, const char *file, int l
 
 		ShowMessage("%06x %s", i, script->op2name(op));
 
+		PRAGMA_GCC46(GCC diagnostic push)
+		PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 		switch (op) {
 		case C_INT:
 			ShowMessage(" %d", script->get_num(&script->buf, &i));
@@ -2980,6 +3008,7 @@ static struct script_code *parse_script(const char *src, const char *file, int l
 			i += j+1;
 			break;
 		}
+		PRAGMA_GCC46(GCC diagnostic pop)
 		ShowMessage(CL_CLL"\n");
 	}
 #endif
@@ -3005,7 +3034,7 @@ static struct map_session_data *script_rid2sd(struct script_state *st)
 {
 	struct map_session_data *sd;
 	nullpo_retr(NULL, st);
-	if( !( sd = map->id2sd(st->rid) ) ) {
+	if ((sd = map->id2sd(st->rid)) == NULL) {
 		ShowError("script_rid2sd: fatal error ! player not attached!\n");
 		script->reportfunc(st);
 		script->reportsrc(st);
@@ -3991,6 +4020,8 @@ static struct script_data *push_retinfo(struct script_stack *stack, struct scrip
 static struct script_data *push_copy(struct script_stack *stack, int pos)
 {
 	nullpo_retr(NULL, stack);
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch( stack->stack_data[pos].type ) {
 		case C_CONSTSTR:
 			return script->push_conststr(stack, stack->stack_data[pos].u.str);
@@ -4010,6 +4041,7 @@ static struct script_data *push_copy(struct script_stack *stack, int pos)
 			);
 			break;
 		}
+	PRAGMA_GCC46(GCC diagnostic pop)
 }
 
 /// Removes the values in indexes [start,end[ from the stack.
@@ -4162,13 +4194,13 @@ static void script_free_state(struct script_state *st)
 {
 	nullpo_retv(st);
 	if( idb_exists(script->st_db,st->id) ) {
-		struct map_session_data *sd = st->rid ? map->id2sd(st->rid) : NULL;
+		struct map_session_data *sd = st->rid != 0 ? map->id2sd(st->rid) : NULL;
 
 		if(st->bk_st) {// backup was not restored
 			ShowDebug("script_free_state: Previous script state lost (rid=%d, oid=%d, state=%u, bk_npcid=%d).\n", st->bk_st->rid, st->bk_st->oid, st->bk_st->state, st->bk_npcid);
 		}
 
-		if(sd && sd->st == st) { //Current script is aborted.
+		if (sd != NULL && sd->st == st) { //Current script is aborted.
 			if(sd->state.using_fake_npc){
 				clif->clearunit_single(sd->npc_id, CLR_OUTSIGHT, sd->fd);
 				sd->state.using_fake_npc = 0;
@@ -4305,6 +4337,8 @@ static void op_2str(struct script_state *st, int op, const char *s1, const char 
 {
 	int a = 0;
 
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch(op) {
 	case C_EQ: a = (strcmp(s1,s2) == 0); break;
 	case C_NE: a = (strcmp(s1,s2) != 0); break;
@@ -4392,6 +4426,7 @@ static void op_2str(struct script_state *st, int op, const char *s1, const char 
 		st->state = END;
 		return;
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
 
 	script_pushint(st,a);
 }
@@ -4403,6 +4438,8 @@ static void op_2num(struct script_state *st, int op, int i1, int i2)
 	int ret;
 	int64 ret64;
 
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch( op ) {
 	case C_AND:     ret = i1 & i2;    break;
 	case C_OR:      ret = i1 | i2;    break;
@@ -4454,6 +4491,8 @@ static void op_2num(struct script_state *st, int op, int i1, int i2)
 			ret = INT_MAX;
 		}
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
+
 	script_pushint(st, ret);
 }
 
@@ -4479,6 +4518,8 @@ static void op_2(struct script_state *st, int op)
 	script->get_val(st, left);
 	script->get_val(st, right);
 
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	// automatic conversions
 	switch( op )
 	{
@@ -4493,6 +4534,7 @@ static void op_2(struct script_state *st, int op)
 		}
 		break;
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
 
 	if( data_isstring(left) && data_isstring(right) )
 	{// ss => op_2str
@@ -4552,6 +4594,9 @@ static void op_1(struct script_state *st, int op)
 
 	i1 = (int)data->u.num;
 	script_removetop(st, -1, 0);
+
+	PRAGMA_GCC46(GCC diagnostic push)
+	PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 	switch( op ) {
 		case C_NEG: i1 = -i1; break;
 		case C_NOT: i1 = ~i1; break;
@@ -4563,6 +4608,8 @@ static void op_1(struct script_state *st, int op)
 			st->state = END;
 			return;
 	}
+	PRAGMA_GCC46(GCC diagnostic pop)
+
 	script_pushint(st, i1);
 }
 
@@ -4792,7 +4839,7 @@ static int run_script_timer(int tid, int64 tick, int id, intptr_t data)
 	if( st ) {
 		struct map_session_data *sd = map->id2sd(st->rid);
 
-		if((sd && sd->status.char_id != id) || (st->rid && !sd)) { //Character mismatch. Cancel execution.
+		if ((sd != NULL && sd->status.char_id != id) || (st->rid != 0 && sd == NULL)) { // Character mismatch. Cancel execution.
 			st->rid = 0;
 			st->state = END;
 		}
@@ -4813,7 +4860,7 @@ static void script_detach_state(struct script_state *st, bool dequeue_event)
 	struct map_session_data* sd;
 
 	nullpo_retv(st);
-	if(st->rid && (sd = map->id2sd(st->rid))!=NULL) {
+	if (st->rid != 0 && (sd = map->id2sd(st->rid)) != NULL) {
 		sd->st = st->bk_st;
 		sd->npc_id = st->bk_npcid;
 		if(st->bk_st) {
@@ -4848,12 +4895,10 @@ static void script_attach_state(struct script_state *st)
 	struct map_session_data* sd;
 
 	nullpo_retv(st);
-	if(st->rid && (sd = map->id2sd(st->rid))!=NULL)
-	{
-		if(st!=sd->st)
-		{
-			if(st->bk_st)
-			{// there is already a backup
+	if (st->rid != 0 && (sd = map->id2sd(st->rid)) != NULL) {
+		if (st != sd->st) {
+			if (st->bk_st != NULL) {
+				// there is already a backup
 				ShowDebug("script_free_state: Previous script state lost (rid=%d, oid=%d, state=%u, bk_npcid=%d).\n", st->bk_st->rid, st->bk_st->oid, st->bk_st->state, st->bk_npcid);
 			}
 			st->bk_st = sd->st;
@@ -4905,6 +4950,8 @@ static void run_script_main(struct script_state *st)
 
 	while( st->state == RUN ) {
 		enum c_op c = script->get_com(&st->script->script_buf, &st->pos);
+		PRAGMA_GCC46(GCC diagnostic push)
+		PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 		switch(c) {
 			case C_EOL:
 				if( stack->defsp > stack->sp )
@@ -4937,9 +4984,9 @@ static void run_script_main(struct script_state *st)
 				translations = *((uint8 *)(&VECTOR_INDEX(st->script->script_buf, st->pos)));
 				st->pos += sizeof(translations);
 
-				if( (!st->rid || !(lsd = map->id2sd(st->rid)) || !lsd->lang_id) && !map->default_lang_id )
+				if ((st->rid == 0 || (lsd = map->id2sd(st->rid)) == NULL || lsd->lang_id == 0) && map->default_lang_id == 0) {
 					script->push_conststr(stack, script->string_list+string_id);
-				else {
+				} else {
 					uint8 k, wlang_id = lsd ? lsd->lang_id : map->default_lang_id;
 					int offset = st->pos;
 
@@ -5017,6 +5064,7 @@ static void run_script_main(struct script_state *st)
 				st->state=END;
 				break;
 		}
+		PRAGMA_GCC46(GCC diagnostic pop)
 		if( !st->freeloop && cmdcount>0 && (--cmdcount)<=0 ) {
 			ShowError("run_script: too many opeartions being processed non-stop !\n");
 			script->reportsrc(st);
@@ -5032,7 +5080,7 @@ static void run_script_main(struct script_state *st)
 		st->sleep.charid = sd?sd->status.char_id:0;
 		st->sleep.timer  = timer->add(timer->gettick()+st->sleep.tick,
 			script->run_timer, st->sleep.charid, (intptr_t)st->id);
-	} else if(st->state != END && st->rid) {
+	} else if (st->state != END && st->rid != 0) {
 		//Resume later (st is already attached to player).
 		if(st->bk_st) {
 			ShowWarning("Unable to restore stack! Double continuation!\n");
@@ -5047,7 +5095,7 @@ static void run_script_main(struct script_state *st)
 		}
 	} else {
 		//Dispose of script.
-		if ((sd = map->id2sd(st->rid))!=NULL) { //Restore previous stack and save char.
+		if ((sd = map->id2sd(st->rid)) != NULL) { // Restore previous stack and save char.
 			if(sd->state.using_fake_npc) {
 				clif->clearunit_single(sd->npc_id, CLR_OUTSIGHT, sd->fd);
 				sd->state.using_fake_npc = 0;
@@ -7781,7 +7829,8 @@ static BUILDIN(getarraysize)
 		return false;// not a variable
 	}
 
-	script_pushint(st, script->array_highest_key(st,st->rid ? script->rid2sd(st) : NULL,reference_getname(data),reference_getref(data)));
+	struct map_session_data *sd = st->rid != 0 ? map->id2sd(st->rid) : NULL;
+	script_pushint(st, script->array_highest_key(st, sd, reference_getname(data), reference_getref(data)));
 	return true;
 }
 static int script_array_index_cmp(const void *a, const void *b)
@@ -9498,6 +9547,15 @@ static BUILDIN(getguildinfo)
 		case GUILDINFO_MASTER_NAME:
 			script_pushconststr(st, "");
 			break;
+		case GUILDINFO_LEVEL:
+		case GUILDINFO_ONLINE:
+		case GUILDINFO_AV_LEVEL:
+		case GUILDINFO_MAX_MEMBERS:
+		case GUILDINFO_EXP:
+		case GUILDINFO_NEXT_EXP:
+		case GUILDINFO_SKILL_POINTS:
+		case GUILDINFO_MASTER_CID:
+		case GUILDINFO_ID:
 		default:
 			script_pushint(st, -1);
 		}
@@ -11623,7 +11681,6 @@ static BUILDIN(monster)
 	unsigned int ai   = AI_NONE;
 	int mob_id;
 
-	struct map_session_data* sd;
 	int16 m;
 
 	if (script_hasdata(st, 8))
@@ -11657,11 +11714,10 @@ static BUILDIN(monster)
 		return false;
 	}
 
-	sd = map->id2sd(st->rid);
-
-	if (sd && strcmp(mapn, "this") == 0)
+	struct map_session_data *sd = map->id2sd(st->rid);
+	if (sd != NULL && strcmp(mapn, "this") == 0) {
 		m = sd->bl.m;
-	else {
+	} else {
 		if ( ( m = map->mapname2mapid(mapn) ) == -1 ) {
 			ShowWarning("buildin_monster: Attempted to spawn monster class %d on non-existing map '%s'\n",class_, mapn);
 			return false;
@@ -11732,7 +11788,6 @@ static BUILDIN(areamonster)
 	unsigned int ai   = AI_NONE;
 	int mob_id;
 
-	struct map_session_data* sd;
 	int16 m;
 
 	if (script_hasdata(st,10)) {
@@ -11756,11 +11811,10 @@ static BUILDIN(areamonster)
 		}
 	}
 
-	sd = map->id2sd(st->rid);
-
-	if (sd && strcmp(mapn, "this") == 0)
+	struct map_session_data *sd = map->id2sd(st->rid);
+	if (sd != NULL && strcmp(mapn, "this") == 0) {
 		m = sd->bl.m;
-	else {
+	} else {
 		if ( ( m = map->mapname2mapid(mapn) ) == -1 ) {
 			ShowWarning("buildin_areamonster: Attempted to spawn monster class %d on non-existing map '%s'\n",class_, mapn);
 			return false;
@@ -12289,6 +12343,15 @@ static BUILDIN(getunits)
 			map->foreachnpc(buildin_getunits_sub_npc,
 				st, sd, id, start, &count, limit, name, ref, type);
 			break;
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_ELEM:
+		case BL_HOM:
+		case BL_MER:
+		case BL_SKILL:
+		case BL_CHAT:
+		case BL_PET:
+		case BL_ALL:
 		default:
 			// fallback to global lookup (slowest option)
 			map->foreachiddb(buildin_getunits_sub,
@@ -12548,7 +12611,7 @@ static BUILDIN(detachnpctimer)
  *------------------------------------------*/
 static BUILDIN(playerattached)
 {
-	if(st->rid == 0 || map->id2sd(st->rid) == NULL)
+	if (st->rid == 0 || map->id2sd(st->rid) == NULL)
 		script_pushint(st,0);
 	else
 		script_pushint(st,st->rid);
@@ -13124,7 +13187,7 @@ static BUILDIN(sc_start)
 		val4 = 1;// Mark that this was a thrown sc_effect
 	}
 
-	if(!bl)
+	if (bl == NULL)
 		return true;
 
 	switch(start_type) {
@@ -13162,7 +13225,7 @@ static BUILDIN(sc_end)
 	if (script->potion_flag == 1 && script->potion_target) //##TODO how does this work [FlavioJS]
 		bl = map->id2bl(script->potion_target);
 
-	if (!bl)
+	if (bl == NULL)
 		return true;
 
 	if (type >= 0 && type < SC_MAX) {
@@ -13210,7 +13273,7 @@ static BUILDIN(getscrate)
 	else
 		bl = map->id2bl(st->rid);
 
-	if (bl)
+	if (bl != NULL)
 		rate = status->get_sc_def(bl, bl, (sc_type)type, 10000, 10000, SCFLAG_NONE);
 
 	script_pushint(st,rate);
@@ -13459,10 +13522,10 @@ static BUILDIN(roclass)
 		sex = script_getnum(st,3);
 	} else {
 		struct map_session_data *sd;
-		if (st->rid && (sd=script->rid2sd(st)) != NULL)
+		if (st->rid != 0 && (sd = map->id2sd(st->rid)) != NULL)
 			sex = sd->status.sex;
 		else
-			sex = 1; //Just use male when not found.
+			sex = SEX_MALE; //Just use male when not found.
 	}
 	script_pushint(st,pc->mapid2jobid(job, sex));
 	return true;
@@ -13983,7 +14046,7 @@ static BUILDIN(warpwaitingpc)
 /// @param st Script state to detach the character from.
 static void script_detach_rid(struct script_state *st)
 {
-	if(st->rid) {
+	if (st->rid != 0) {
 		script->detach_state(st, false);
 		st->rid = 0;
 	}
@@ -14079,7 +14142,7 @@ static BUILDIN(getmapinfo)
 
 		if (st->oid) {
 			bl = map->id2bl(st->oid);
-		} else if (st->rid) {
+		} else if (st->rid != 0) {
 			bl = map->id2bl(st->rid);
 		}
 
@@ -16381,12 +16444,11 @@ static int soundeffect_sub(struct block_list *bl, va_list ap)
  *------------------------------------------*/
 static BUILDIN(soundeffectall)
 {
-	struct block_list* bl;
 	const char* name;
 	int type;
 
-	bl = (st->rid) ? &(script->rid2sd(st)->bl) : map->id2bl(st->oid);
-	if (!bl)
+	struct block_list *bl = st->rid != 0 ? map->id2bl(st->rid) : map->id2bl(st->oid);
+	if (bl == NULL)
 		return true;
 
 	name = script_getstr(st,2);
@@ -16756,16 +16818,14 @@ static BUILDIN(nude)
  *------------------------------------------*/
 static BUILDIN(atcommand)
 {
-	struct map_session_data *sd, *dummy_sd = NULL;
+	struct map_session_data *sd = NULL;
+	struct map_session_data *dummy_sd = NULL;
 	int fd;
 	const char* cmd;
 
 	cmd = script_getstr(st,2);
 
-	if (st->rid) {
-		sd = script->rid2sd(st);
-		if (sd == NULL)
-			return true;
+	if (st->rid != 0 && (sd = map->id2sd(st->rid)) != NULL) {
 		fd = sd->fd;
 	} else { //Use a dummy character.
 		sd = dummy_sd = pc->get_dummy_sd();
@@ -16785,7 +16845,8 @@ static BUILDIN(atcommand)
 			aFree(dummy_sd);
 		return false;
 	}
-	if (dummy_sd) aFree(dummy_sd);
+	if (dummy_sd)
+		aFree(dummy_sd);
 	return true;
 }
 
@@ -19886,6 +19947,12 @@ static BUILDIN(rid2name)
 			case BL_PET: script_pushstrcopy(st, BL_UCCAST(BL_PET, bl)->pet.name); break;
 			case BL_HOM: script_pushstrcopy(st, BL_UCCAST(BL_HOM, bl)->homunculus.name); break;
 			case BL_MER: script_pushstrcopy(st, BL_UCCAST(BL_MER, bl)->db->name); break;
+			case BL_NUL:
+			case BL_ITEM:
+			case BL_ELEM:
+			case BL_SKILL:
+			case BL_CHAT:
+			case BL_ALL:
 			default:
 				ShowError("buildin_rid2name: BL type unknown.\n");
 				script_pushconststr(st,"");
@@ -20066,6 +20133,11 @@ static BUILDIN(getunittype)
 		case BL_HOM:  value = 4; break;
 		case BL_MER:  value = 5; break;
 		case BL_ELEM: value = 6; break;
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_CHAT:
+		case BL_ALL:
 		default:      value = -1; break;
 	}
 
@@ -21272,6 +21344,12 @@ static BUILDIN(setunitdata)
 
 		break;
 	}
+	case BL_NUL:
+	case BL_ITEM:
+	case BL_SKILL:
+	case BL_CHAT:
+	case BL_PC:
+	case BL_ALL:
 	default:
 		ShowError("buildin_setunitdata: Unknown object!\n");
 		script_pushint(st, 0);
@@ -21709,6 +21787,12 @@ static BUILDIN(getunitdata)
 		}
 	}
 		break;
+	case BL_NUL:
+	case BL_ITEM:
+	case BL_SKILL:
+	case BL_CHAT:
+	case BL_PC:
+	case BL_ALL:
 	default:
 		ShowError("buildin_getunitdata: Unknown object!\n");
 		script_pushint(st, -1);
@@ -21800,6 +21884,15 @@ static BUILDIN(setunitname)
 			safestrncpy(pd->pet.name, script_getstr(st, 3), NAME_LENGTH);
 		}
 			break;
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_CHAT:
+		case BL_MER:
+		case BL_ELEM:
+		case BL_PC:
+		case BL_NPC:
+		case BL_ALL:
 		default:
 			script_pushint(st, 0);
 			ShowWarning("buildin_setunitname: Unknown object type!\n");
@@ -22026,6 +22119,15 @@ static BUILDIN(unitattack)
 		case BL_PET:
 			BL_UCAST(BL_PET, unit_bl)->target_id = target_bl->id;
 			break;
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_CHAT:
+		case BL_MER:
+		case BL_ELEM:
+		case BL_HOM:
+		case BL_NPC:
+		case BL_ALL:
 		default:
 			ShowError("script:unitattack: unsupported source unit type %u\n", unit_bl->type);
 			script_pushint(st, 0);
@@ -22251,7 +22353,7 @@ static BUILDIN(sleep2)
 
 	if( ticks <= 0 ) {
 		// do nothing
-		script_pushint(st, (map->id2sd(st->rid)!=NULL));
+		script_pushint(st, (map->id2sd(st->rid) != NULL));
 	} else if( !st->sleep.tick ) {
 		// sleep for the target amount of time
 		st->state = RERUNLINE;
@@ -22260,7 +22362,7 @@ static BUILDIN(sleep2)
 		// sleep time is over
 		st->state = RUN;
 		st->sleep.tick = 0;
-		script_pushint(st, (map->id2sd(st->rid)!=NULL));
+		script_pushint(st, (map->id2sd(st->rid) != NULL));
 	}
 	return true;
 }
@@ -22283,12 +22385,11 @@ static BUILDIN(awake)
 
 	for( tst = dbi_first(iter); dbi_exists(iter); tst = dbi_next(iter) ) {
 		if( tst->oid == nd->bl.id ) {
-			struct map_session_data *sd = map->id2sd(tst->rid);
-
 			if( tst->sleep.timer == INVALID_TIMER ) {// already awake ???
 				continue;
 			}
-			if( (sd && sd->status.char_id != tst->sleep.charid) || (tst->rid && !sd)) {
+			struct map_session_data *sd = map->id2sd(tst->rid);
+			if ((sd != NULL && sd->status.char_id != tst->sleep.charid) || (tst->rid != 0 && sd == NULL)) {
 				// char not online anymore / another char of the same account is online - Cancel execution
 				tst->state = END;
 				tst->rid = 0;
@@ -24337,6 +24438,8 @@ static BUILDIN(is_function)
 		int n = script->search_str(str);
 
 		if (n >= 0) {
+			PRAGMA_GCC46(GCC diagnostic push)
+			PRAGMA_GCC46(GCC diagnostic ignored "-Wswitch-enum")
 			switch (script->str_data[n].type) {
 			case C_FUNC:
 				type = FUNCTION_IS_COMMAND;
@@ -24355,6 +24458,7 @@ static BUILDIN(is_function)
 					type = FUNCTION_IS_LOCAL;
 				}
 			}
+			PRAGMA_GCC46(GCC diagnostic pop)
 		}
 	}
 
@@ -24577,16 +24681,14 @@ static BUILDIN(unbindatcmd)
 
 static BUILDIN(useatcmd)
 {
-	struct map_session_data *sd, *dummy_sd = NULL;
+	struct map_session_data *sd = NULL;
+	struct map_session_data *dummy_sd = NULL;
 	int fd;
 	const char* cmd;
 
 	cmd = script_getstr(st,2);
 
-	if (st->rid) {
-		sd = script->rid2sd(st);
-		if (sd == NULL)
-			return true;
+	if (st->rid != 0 && (sd = map->id2sd(st->rid)) != NULL) {
 		fd = sd->fd;
 	} else {
 		// Use a dummy character.
@@ -24609,7 +24711,8 @@ static BUILDIN(useatcmd)
 	}
 
 	atcommand->exec(fd, sd, cmd, true);
-	if (dummy_sd) aFree(dummy_sd);
+	if (dummy_sd)
+		aFree(dummy_sd);
 	return true;
 }
 
@@ -24815,12 +24918,8 @@ static BUILDIN(montransform)
 {
 	int tick;
 	enum sc_type type;
-	struct block_list* bl;
 	int mob_id, val1, val2, val3, val4;
 	val1 = val2 = val3 = val4 = 0;
-
-	if( (bl = map->id2bl(st->rid)) == NULL )
-		return true;
 
 	if( script_isstringtype(st, 2) ) {
 		mob_id = mob->db_searchname(script_getstr(st, 2));
@@ -24863,10 +24962,9 @@ static BUILDIN(montransform)
 		val4 = script_getnum(st, 8);
 
 	if (tick != 0) {
-		struct map_session_data *sd = script->id2sd(st, bl->id);
-
+		struct map_session_data *sd = script->rid2sd(st);
 		if (sd == NULL)
-			return true;
+			return false;
 
 		if( battle_config.mon_trans_disable_in_gvg && map_flag_gvg2(sd->bl.m) ) {
 			clif->message(sd->fd, msg_sd(sd,1488)); // Transforming into monster is not allowed in Guild Wars.
@@ -24878,11 +24976,11 @@ static BUILDIN(montransform)
 			return true;
 		}
 
-		status_change_end(bl, SC_MONSTER_TRANSFORM, INVALID_TIMER); // Clear previous
-		sc_start2(NULL, bl, SC_MONSTER_TRANSFORM, 100, mob_id, type, tick);
+		status_change_end(&sd->bl, SC_MONSTER_TRANSFORM, INVALID_TIMER); // Clear previous
+		sc_start2(NULL, &sd->bl, SC_MONSTER_TRANSFORM, 100, mob_id, type, tick);
 
 		if (script_hasdata(st, 4))
-			sc_start4(NULL, bl, type, 100, val1, val2, val3, val4, tick);
+			sc_start4(NULL, &sd->bl, type, 100, val1, val2, val3, val4, tick);
 	}
 
 	return true;
@@ -26303,19 +26401,18 @@ static BUILDIN(removechannelhandler)
  */
 static BUILDIN(showscript)
 {
-	struct block_list *bl = NULL;
 	const char *msg = script_getstr(st, 2);
 	int id = 0, flag = AREA;
 
-	if (script_hasdata(st, 3)) {
+	if (script_hasdata(st, 3))
 		id = script_getnum(st, 3);
-		bl = map->id2bl(id);
-	}
-	else {
-		bl = st->rid ? map->id2bl(st->rid) : map->id2bl(st->oid);
-	}
+	else if (st->rid != 0)
+		id = st->rid;
+	else
+		id = st->oid;
 
-	if (!bl) {
+	struct block_list *bl = map->id2bl(id);
+	if (bl == NULL) {
 		ShowError("buildin_showscript: Script not attached. (id=%d, rid=%d, oid=%d)\n", id, st->rid, st->oid);
 		return false;
 	}
@@ -26916,7 +27013,7 @@ static BUILDIN(clan_join)
 	if (script_hasdata(st, 3))
 		sd = map->id2sd(script_getnum(st, 3));
 	else
-		sd = map->id2sd(st->rid);
+		sd = script->rid2sd(st);
 
 	if (sd == NULL) {
 		script_pushint(st, false);
@@ -26941,7 +27038,7 @@ static BUILDIN(clan_leave)
 	if (script_hasdata(st, 2))
 		sd = map->id2sd(script_getnum(st, 2));
 	else
-		sd = map->id2sd(st->rid);
+		sd = script->rid2sd(st);
 
 	if (sd == NULL) {
 		script_pushint(st, false);
@@ -26986,7 +27083,7 @@ static BUILDIN(clan_master)
 
 static BUILDIN(airship_respond)
 {
-	struct map_session_data *sd = map->id2sd(st->rid);
+	struct map_session_data *sd = script->rid2sd(st);
 	int32 flag = script_getnum(st, 2);
 
 	if (sd == NULL)
@@ -28924,6 +29021,156 @@ static void script_hardcoded_constants(void)
 	script->set_constant("MF_SRC4INSTANCE", MF_SRC4INSTANCE, false, false);
 	script->set_constant("MF_CVC", MF_CVC, false, false);
 
+	script->constdb_comment("Job masks / Job map_ids");
+
+	script->set_constant("EAJL_2_1", JOBL_2_1, false, false);
+	script->set_constant("EAJL_2_2", JOBL_2_2, false, false);
+	script->set_constant("EAJL_2", JOBL_2, false, false);
+	script->set_constant("EAJL_UPPER", JOBL_UPPER, false, false);
+	script->set_constant("EAJL_BABY", JOBL_BABY, false, false);
+	script->set_constant("EAJL_THIRD", JOBL_THIRD, false, false);
+
+	script->set_constant("EAJ_BASEMASK", MAPID_BASEMASK, false, false);
+	script->set_constant("EAJ_UPPERMASK", MAPID_UPPERMASK, false, false);
+	script->set_constant("EAJ_THIRDMASK", MAPID_THIRDMASK, false, false);
+
+	script->set_constant("EAJ_NOVICE", MAPID_NOVICE, false, false);
+	script->set_constant("EAJ_SWORDMAN", MAPID_SWORDMAN, false, false);
+	script->set_constant("EAJ_MAGE", MAPID_MAGE, false, false);
+	script->set_constant("EAJ_ARCHER", MAPID_ARCHER, false, false);
+	script->set_constant("EAJ_ACOLYTE", MAPID_ACOLYTE, false, false);
+	script->set_constant("EAJ_MERCHANT", MAPID_MERCHANT, false, false);
+	script->set_constant("EAJ_THIEF", MAPID_THIEF, false, false);
+	script->set_constant("EAJ_TAEKWON", MAPID_TAEKWON, false, false);
+	script->set_constant("EAJ_WEDDING", MAPID_WEDDING, false, false);
+	script->set_constant("EAJ_GUNSLINGER", MAPID_GUNSLINGER, false, false);
+	script->set_constant("EAJ_NINJA", MAPID_NINJA, false, false);
+	script->set_constant("EAJ_XMAS", MAPID_XMAS, false, false);
+	script->set_constant("EAJ_SUMMER", MAPID_SUMMER, false, false);
+	script->set_constant("EAJ_GANGSI", MAPID_GANGSI, false, false);
+	script->set_constant("EAJ_SUMMONER", MAPID_SUMMONER, false, false);
+
+	script->set_constant("EAJ_SUPER_NOVICE", MAPID_SUPER_NOVICE, false, false);
+	script->set_constant("EAJ_KNIGHT", MAPID_KNIGHT, false, false);
+	script->set_constant("EAJ_WIZARD", MAPID_WIZARD, false, false);
+	script->set_constant("EAJ_HUNTER", MAPID_HUNTER, false, false);
+	script->set_constant("EAJ_PRIEST", MAPID_PRIEST, false, false);
+	script->set_constant("EAJ_BLACKSMITH", MAPID_BLACKSMITH, false, false);
+	script->set_constant("EAJ_ASSASSIN", MAPID_ASSASSIN, false, false);
+	script->set_constant("EAJ_STAR_GLADIATOR", MAPID_STAR_GLADIATOR, false, false);
+	script->set_constant("EAJ_REBELLION", MAPID_REBELLION, false, false);
+	script->set_constant("EAJ_KAGEROUOBORO", MAPID_KAGEROUOBORO, false, false);
+	script->set_constant("EAJ_DEATH_KNIGHT", MAPID_DEATH_KNIGHT, false, false);
+
+	script->set_constant("EAJ_CRUSADER", MAPID_CRUSADER, false, false);
+	script->set_constant("EAJ_SAGE", MAPID_SAGE, false, false);
+	script->set_constant("EAJ_BARDDANCER", MAPID_BARDDANCER, false, false);
+	script->set_constant("EAJ_MONK", MAPID_MONK, false, false);
+	script->set_constant("EAJ_ALCHEMIST", MAPID_ALCHEMIST, false, false);
+	script->set_constant("EAJ_ROGUE", MAPID_ROGUE, false, false);
+	script->set_constant("EAJ_SOUL_LINKER", MAPID_SOUL_LINKER, false, false);
+	script->set_constant("EAJ_DARK_COLLECTOR", MAPID_DARK_COLLECTOR, false, false);
+
+	script->set_constant("EAJ_NOVICE_HIGH", MAPID_NOVICE_HIGH, false, false);
+	script->set_constant("EAJ_SWORDMAN_HIGH", MAPID_SWORDMAN_HIGH, false, false);
+	script->set_constant("EAJ_MAGE_HIGH", MAPID_MAGE_HIGH, false, false);
+	script->set_constant("EAJ_ARCHER_HIGH", MAPID_ARCHER_HIGH, false, false);
+	script->set_constant("EAJ_ACOLYTE_HIGH", MAPID_ACOLYTE_HIGH, false, false);
+	script->set_constant("EAJ_MERCHANT_HIGH", MAPID_MERCHANT_HIGH, false, false);
+	script->set_constant("EAJ_THIEF_HIGH", MAPID_THIEF_HIGH, false, false);
+
+	script->set_constant("EAJ_LORD_KNIGHT", MAPID_LORD_KNIGHT, false, false);
+	script->set_constant("EAJ_HIGH_WIZARD", MAPID_HIGH_WIZARD, false, false);
+	script->set_constant("EAJ_SNIPER", MAPID_SNIPER, false, false);
+	script->set_constant("EAJ_HIGH_PRIEST", MAPID_HIGH_PRIEST, false, false);
+	script->set_constant("EAJ_WHITESMITH", MAPID_WHITESMITH, false, false);
+	script->set_constant("EAJ_ASSASSIN_CROSS", MAPID_ASSASSIN_CROSS, false, false);
+
+	script->set_constant("EAJ_PALADIN", MAPID_PALADIN, false, false);
+	script->set_constant("EAJ_PROFESSOR", MAPID_PROFESSOR, false, false);
+	script->set_constant("EAJ_CLOWNGYPSY", MAPID_CLOWNGYPSY, false, false);
+	script->set_constant("EAJ_CHAMPION", MAPID_CHAMPION, false, false);
+	script->set_constant("EAJ_CREATOR", MAPID_CREATOR, false, false);
+	script->set_constant("EAJ_STALKER", MAPID_STALKER, false, false);
+
+	script->set_constant("EAJ_BABY", MAPID_BABY, false, false);
+	script->set_constant("EAJ_BABY_SWORDMAN", MAPID_BABY_SWORDMAN, false, false);
+	script->set_constant("EAJ_BABY_MAGE", MAPID_BABY_MAGE, false, false);
+	script->set_constant("EAJ_BABY_ARCHER", MAPID_BABY_ARCHER, false, false);
+	script->set_constant("EAJ_BABY_ACOLYTE", MAPID_BABY_ACOLYTE, false, false);
+	script->set_constant("EAJ_BABY_MERCHANT", MAPID_BABY_MERCHANT, false, false);
+	script->set_constant("EAJ_BABY_THIEF", MAPID_BABY_THIEF, false, false);
+	script->set_constant("EAJ_BABY_NINJA", MAPID_BABY_NINJA, false, false);
+	script->set_constant("EAJ_BABY_SUMMONER", MAPID_BABY_SUMMONER, false, false);
+	script->set_constant("EAJ_BABY_GUNSLINGER", MAPID_BABY_GUNSLINGER, false, false);
+
+	script->set_constant("EAJ_SUPER_BABY", MAPID_SUPER_BABY, false, false);
+	script->set_constant("EAJ_BABY_KNIGHT", MAPID_BABY_KNIGHT, false, false);
+	script->set_constant("EAJ_BABY_WIZARD", MAPID_BABY_WIZARD, false, false);
+	script->set_constant("EAJ_BABY_HUNTER", MAPID_BABY_HUNTER, false, false);
+	script->set_constant("EAJ_BABY_PRIEST", MAPID_BABY_PRIEST, false, false);
+	script->set_constant("EAJ_BABY_BLACKSMITH", MAPID_BABY_BLACKSMITH, false, false);
+	script->set_constant("EAJ_BABY_ASSASSIN", MAPID_BABY_ASSASSIN, false, false);
+	script->set_constant("EAJ_BABY_KAGEROUOBORO", MAPID_BABY_KAGEROUOBORO, false, false);
+	script->set_constant("EAJ_BABY_TAEKWON", MAPID_BABY_TAEKWON, false, false);
+	script->set_constant("EAJ_BABY_STAR_GLADIATOR", MAPID_BABY_STAR_GLADIATOR, false, false);
+	script->set_constant("EAJ_BABY_REBELLION", MAPID_BABY_REBELLION, false, false);
+
+	script->set_constant("EAJ_BABY_CRUSADER", MAPID_BABY_CRUSADER, false, false);
+	script->set_constant("EAJ_BABY_SAGE", MAPID_BABY_SAGE, false, false);
+	script->set_constant("EAJ_BABY_BARDDANCER", MAPID_BABY_BARDDANCER, false, false);
+	script->set_constant("EAJ_BABY_MONK", MAPID_BABY_MONK, false, false);
+	script->set_constant("EAJ_BABY_ALCHEMIST", MAPID_BABY_ALCHEMIST, false, false);
+	script->set_constant("EAJ_BABY_ROGUE", MAPID_BABY_ROGUE, false, false);
+	script->set_constant("EAJ_BABY_SOUL_LINKER", MAPID_BABY_SOUL_LINKER, false, false);
+	script->set_constant("EAJ_BABY_STAR_EMPEROR", MAPID_BABY_STAR_EMPEROR, false, false);
+	script->set_constant("EAJ_BABY_SOUL_REAPER", MAPID_BABY_SOUL_REAPER, false, false);
+
+	script->set_constant("EAJ_SUPER_NOVICE_E", MAPID_SUPER_NOVICE_E, false, false);
+	script->set_constant("EAJ_RUNE_KNIGHT", MAPID_RUNE_KNIGHT, false, false);
+	script->set_constant("EAJ_WARLOCK", MAPID_WARLOCK, false, false);
+	script->set_constant("EAJ_RANGER", MAPID_RANGER, false, false);
+	script->set_constant("EAJ_ARCH_BISHOP", MAPID_ARCH_BISHOP, false, false);
+	script->set_constant("EAJ_MECHANIC", MAPID_MECHANIC, false, false);
+	script->set_constant("EAJ_GUILLOTINE_CROSS", MAPID_GUILLOTINE_CROSS, false, false);
+	script->set_constant("EAJ_STAR_EMPEROR", MAPID_STAR_EMPEROR, false, false);
+
+	script->set_constant("EAJ_ROYAL_GUARD", MAPID_ROYAL_GUARD, false, false);
+	script->set_constant("EAJ_SORCERER", MAPID_SORCERER, false, false);
+	script->set_constant("EAJ_MINSTRELWANDERER", MAPID_MINSTRELWANDERER, false, false);
+	script->set_constant("EAJ_SURA", MAPID_SURA, false, false);
+	script->set_constant("EAJ_GENETIC", MAPID_GENETIC, false, false);
+	script->set_constant("EAJ_SHADOW_CHASER", MAPID_SHADOW_CHASER, false, false);
+	script->set_constant("EAJ_SOUL_REAPER", MAPID_SOUL_REAPER, false, false);
+
+	script->set_constant("EAJ_RUNE_KNIGHT_T", MAPID_RUNE_KNIGHT_T, false, false);
+	script->set_constant("EAJ_WARLOCK_T", MAPID_WARLOCK_T, false, false);
+	script->set_constant("EAJ_RANGER_T", MAPID_RANGER_T, false, false);
+	script->set_constant("EAJ_ARCH_BISHOP_T", MAPID_ARCH_BISHOP_T, false, false);
+	script->set_constant("EAJ_MECHANIC_T", MAPID_MECHANIC_T, false, false);
+	script->set_constant("EAJ_GUILLOTINE_CROSS_T", MAPID_GUILLOTINE_CROSS_T, false, false);
+
+	script->set_constant("EAJ_ROYAL_GUARD_T", MAPID_ROYAL_GUARD_T, false, false);
+	script->set_constant("EAJ_SORCERER_T", MAPID_SORCERER_T, false, false);
+	script->set_constant("EAJ_MINSTRELWANDERER_T", MAPID_MINSTRELWANDERER_T, false, false);
+	script->set_constant("EAJ_SURA_T", MAPID_SURA_T, false, false);
+	script->set_constant("EAJ_GENETIC_T", MAPID_GENETIC_T, false, false);
+	script->set_constant("EAJ_SHADOW_CHASER_T", MAPID_SHADOW_CHASER_T, false, false);
+
+	script->set_constant("EAJ_SUPER_BABY_E", MAPID_SUPER_BABY_E, false, false);
+	script->set_constant("EAJ_BABY_RUNE", MAPID_BABY_RUNE, false, false);
+	script->set_constant("EAJ_BABY_WARLOCK", MAPID_BABY_WARLOCK, false, false);
+	script->set_constant("EAJ_BABY_RANGER", MAPID_BABY_RANGER, false, false);
+	script->set_constant("EAJ_BABY_BISHOP", MAPID_BABY_BISHOP, false, false);
+	script->set_constant("EAJ_BABY_MECHANIC", MAPID_BABY_MECHANIC, false, false);
+	script->set_constant("EAJ_BABY_CROSS", MAPID_BABY_CROSS, false, false);
+
+	script->set_constant("EAJ_BABY_GUARD", MAPID_BABY_GUARD, false, false);
+	script->set_constant("EAJ_BABY_SORCERER", MAPID_BABY_SORCERER, false, false);
+	script->set_constant("EAJ_BABY_MINSTRELWANDERER", MAPID_BABY_MINSTRELWANDERER, false, false);
+	script->set_constant("EAJ_BABY_SURA", MAPID_BABY_SURA, false, false);
+	script->set_constant("EAJ_BABY_GENETIC", MAPID_BABY_GENETIC, false, false);
+	script->set_constant("EAJ_BABY_CHASER", MAPID_BABY_CHASER, false, false);
 
 	script->constdb_comment("Renewal");
 #ifdef RENEWAL

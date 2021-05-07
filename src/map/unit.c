@@ -98,6 +98,10 @@ static struct unit_data *unit_bl2ud(struct block_list *bl)
 		return &BL_UCAST(BL_ELEM, bl)->ud;
 	case BL_SKILL: // No assertion to not spam the server console when attacking a skill type unit such as Ice Wall.
 		return NULL;
+	case BL_NUL:
+	case BL_ITEM:
+	case BL_CHAT:
+	case BL_ALL:
 	default:
 		Assert_retr(NULL, false);
 	}
@@ -132,6 +136,10 @@ static const struct unit_data *unit_cbl2ud(const struct block_list *bl)
 		return &BL_UCCAST(BL_ELEM, bl)->ud;
 	case BL_SKILL: // No assertion to not spam the server console when attacking a skill type unit such as Ice Wall.
 		return NULL;
+	case BL_NUL:
+	case BL_ITEM:
+	case BL_CHAT:
+	case BL_ALL:
 	default:
 		Assert_retr(NULL, false);
 	}
@@ -1074,6 +1082,17 @@ static int unit_warp(struct block_list *bl, short m, short x, short y, enum clr_
 			if (map->list[bl->m].flag.noteleport)
 				return 1;
 			break;
+		case BL_NUL:
+		case BL_PET:
+		case BL_HOM:
+		case BL_MER:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_NPC:
+		case BL_CHAT:
+		case BL_ELEM:
+		case BL_ALL:
+			break;
 	}
 
 	if (x<0 || y<0) {
@@ -1309,10 +1328,10 @@ static int unit_resume_running(int tid, int64 tick, int id, intptr_t data)
 	nullpo_ret(ud);
 	if(sd && pc_isridingwug(sd))
 		clif->skill_nodamage(ud->bl,ud->bl,RA_WUGDASH,ud->skill_lv,
-		                     sc_start4(ud->bl,ud->bl,status->skill2sc(RA_WUGDASH),100,ud->skill_lv,unit->getdir(ud->bl),0,0,1));
+		                     sc_start4(ud->bl,ud->bl,skill->get_sc_type(RA_WUGDASH),100,ud->skill_lv,unit->getdir(ud->bl),0,0,1));
 	else
 		clif->skill_nodamage(ud->bl,ud->bl,TK_RUN,ud->skill_lv,
-		                     sc_start4(ud->bl,ud->bl,status->skill2sc(TK_RUN),100,ud->skill_lv,unit->getdir(ud->bl),0,0,0));
+		                     sc_start4(ud->bl,ud->bl,skill->get_sc_type(TK_RUN),100,ud->skill_lv,unit->getdir(ud->bl),0,0,0));
 
 	if (sd) clif->walkok(sd);
 
@@ -1763,6 +1782,13 @@ static int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill
 					md->state.aggressive = (tstatus->mode&MD_ANGRY)?1:0;
 					md->min_chase = md->db->range3;
 					break;
+				case MSS_ANY:
+				case MSS_DEAD:
+				case MSS_BERSERK:
+				case MSS_ANGRY:
+				case MSS_ANYTARGET:
+				case MSS_LOOT:
+					break;
 				}
 			}
 		}
@@ -1812,7 +1838,7 @@ static int unit_skilluse_pos(struct block_list *src, short skill_x, short skill_
 	int ret = unit->skilluse_pos2(src, skill_x, skill_y, skill_id, skill_lv, casttime, castcancel);
 	struct map_session_data *sd = BL_CAST(BL_PC, src);
 
-	if (sd != NULL)
+	if (sd != NULL && sd->auto_cast_current.skill_id != AL_WARP)
 		pc->autocast_remove(sd, sd->auto_cast_current.type, sd->auto_cast_current.skill_id,
 				    sd->auto_cast_current.skill_lv);
 
@@ -2797,6 +2823,12 @@ static int unit_remove_map(struct block_list *bl, enum clr_type clrtype, const c
 			}
 			break;
 		}
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_NPC:
+		case BL_CHAT:
+		case BL_ALL:
 		default: break;// do nothing
 	}
 	/**
@@ -3086,6 +3118,13 @@ static int unit_free(struct block_list *bl, enum clr_type clrtype)
 			elemental->summon_stop(ed);
 			break;
 		}
+		case BL_NUL:
+		case BL_ITEM:
+		case BL_SKILL:
+		case BL_NPC:
+		case BL_CHAT:
+		case BL_ALL:
+			break;
 	}
 
 	skill->clear_unitgroup(bl);

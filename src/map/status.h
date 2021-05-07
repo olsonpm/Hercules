@@ -1234,7 +1234,6 @@ BEGIN_ZEROED_BLOCK; /* Everything within this block will be memset to 0 when sta
 	int HP_table[CLASS_COUNT][MAX_LEVEL + 1];
 	int SP_table[CLASS_COUNT][MAX_LEVEL + 1];
 	int aspd_base[CLASS_COUNT][MAX_SINGLE_WEAPON_TYPE+1]; // +1 for RENEWAL_ASPD
-	sc_type Skill2SCTable[MAX_SKILL_DB];  // skill  -> status
 	struct {
 		int id;
 		int relevant_bl_types;
@@ -1272,7 +1271,6 @@ struct status_interface {
 	void (*final) (void);
 	/* funcs */
 	// for looking up associated data
-	sc_type (*skill2sc) (int skill_id);
 	int (*sc2skill) (sc_type sc);
 	unsigned int (*sc2scb_flag) (sc_type sc);
 	int (*get_sc_relevant_bl_types) (sc_type type);
@@ -1403,14 +1401,16 @@ struct status_interface {
 	bool (*read_scdb_libconfig) (void);
 	bool (*read_scdb_libconfig_sub) (struct config_setting_t *it, int idx, const char *source);
 	bool (*read_scdb_libconfig_sub_flag) (struct config_setting_t *it, int type, const char *source);
+	bool (*read_scdb_libconfig_sub_calcflag) (struct config_setting_t *it, int type, const char *source);
 	bool (*read_scdb_libconfig_sub_flag_additional) (struct config_setting_t *it, int type, const char *source);
+	bool (*read_scdb_libconfig_sub_calcflag_additional) (struct config_setting_t *it, int type, const char *source);
 	bool (*read_scdb_libconfig_sub_skill) (struct config_setting_t *it, int type, const char *source);
 	void (*read_job_db) (void);
 	void (*read_job_db_sub) (int idx, const char *name, struct config_setting_t *jdb);
-	void (*set_sc) (sc_type sc, unsigned int flag);
 	void (*copy) (struct status_data *a, const struct status_data *b);
 	int (*base_matk_min) (const struct status_data *st);
 	int (*base_matk_max) (const struct status_data *st);
+	void (*check_job_bonus) (int idx, const char *name, int class);
 };
 
 #ifdef HERCULES_CORE
