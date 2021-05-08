@@ -5781,8 +5781,8 @@ static int npc_reload(void)
 	itemdb->name_constants();
 	clan->set_constants();
 	npc_process_files(npc_new_min);
-	instance->reload();
 	map->zone_init();
+	instance->reload();
 	npc->motd = npc->name2id("HerculesMOTD"); /// [Ind/Hercules]
 	npc->read_event_script();
 

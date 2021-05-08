@@ -792,9 +792,14 @@ static void do_reload_instance(void)
 				break;
 		}
 
-		if( k != instance->list[i].num_map ) /* any (or all) of them were disabled, we destroy */
+		ShowInfo("map: %s\n", instance->list[i].name);
+
+		if( k != instance->list[i].num_map ) /* any (or all) of them were disabled, we destroy */ {
+			ShowInfo("destroyed");
 			instance->destroy(i);
-		else {
+		} else {
+			ShowInfo("reloaded");
+
 			/* populate the instance again */
 			instance->start(i);
 			/* restart timers */
