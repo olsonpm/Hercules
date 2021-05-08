@@ -1137,7 +1137,7 @@ static struct access_control_list access_allow;
 static struct access_control_list access_deny;
 static int access_order    = ACO_DENY_ALLOW;
 static int access_debug    = 0;
-static int ddos_count      = 10;
+static int ddos_count      = 50;
 static int ddos_interval   = 3*1000;
 static int ddos_autoreset  = 10*60*1000;
 static struct DBMap *connect_history = NULL;
