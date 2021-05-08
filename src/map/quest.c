@@ -308,7 +308,7 @@ static void quest_update_objective(struct map_session_data *sd, const struct mob
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
-	if (map->list[md->bl.m].flag.noquestkills == 0)
+	if (map->list[md->bl.m].flag.noquestkills != 0)
 		return;
 
 	for (i = 0; i < sd->avail_quests; i++) {
