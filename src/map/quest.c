@@ -308,6 +308,9 @@ static void quest_update_objective(struct map_session_data *sd, const struct mob
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
+	ShowInfo("noquestkills: %d\n", map->list[md->bl.m].flag.noquestkills);
+	ShowInfo("nobaseexp: %d\n", map->list[md->bl.m].flag.nobaseexp);
+
 	if (map->list[md->bl.m].flag.noquestkills != 0)
 		return;
 
