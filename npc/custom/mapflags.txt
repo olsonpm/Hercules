@@ -8,6 +8,7 @@ int_land	mapflag	nowarp
 1@tarena	mapflag	noloot
 1@tarena	mapflag	nomemo
 1@tarena	mapflag	nopenalty
+1@tarena	mapflag	noquestkills
 1@tarena	mapflag	notomb
 1@tarena	mapflag	novending
 1@tarena	mapflag	nowarpto

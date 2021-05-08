@@ -316,8 +316,12 @@ static void quest_update_objective(struct map_session_data *sd, const struct mob
 
 		qi = quest->db(sd->quest_log[i].quest_id);
 
+		showInfo("noquestkills: %d\n", map->list[md->bl.m].flag.noquestkills);
+
 		for (j = 0; j < qi->objectives_count; j++) {
-			if ((qi->objectives[j].mob == 0 || qi->objectives[j].mob == md->class_) &&
+			if (
+				map->list[md->bl.m].flag.noquestkills == 0 &&
+				(qi->objectives[j].mob == 0 || qi->objectives[j].mob == md->class_) &&
 				sd->quest_log[i].count[j] < qi->objectives[j].count &&
 				(qi->objectives[j].level.min == 0 || qi->objectives[j].level.min <= md->level) &&
 				(qi->objectives[j].level.max == 0 || qi->objectives[j].level.max >= md->level) &&
@@ -1005,7 +1009,7 @@ static bool quest_questinfo_validate_quests(struct map_session_data *sd, struct 
 
 	nullpo_retr(false, sd);
 	nullpo_retr(false, qi);
-	
+
 	for (i = 0; i < VECTOR_LENGTH(qi->quest_requirement); i++) {
 		struct questinfo_qreq *quest_requirement = &VECTOR_INDEX(qi->quest_requirement, i);
 		int quest_progress = quest->check(sd, quest_requirement->id, HAVEQUEST);
