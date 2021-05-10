@@ -5687,6 +5687,19 @@ static bool map_zone_mf_cache(int m, char *flag, char *params)
 				map_zone_mf_cache_add(m, rflag);
 			}
 		}
+	} else if (strcmpi(flag, "noquestkills") == 0) {
+		if (state == 0) {
+			if (map->list[m].flag.noquestkills != 0) {
+				sprintf(rflag, "noquestkills\t%d", map->list[m].flag.noquestkills);
+				map_zone_mf_cache_add(m, rflag);
+			}
+		}
+		if (sscanf(params, "%d", &state) == 1) {
+			if (state != map->list[m].flag.noquestkills) {
+				sprintf(rflag, "noquestkills\t%d", state);
+				map_zone_mf_cache_add(m, rflag);
+			}
+		}
 	}
 
 	return false;

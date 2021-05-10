@@ -5171,6 +5171,8 @@ static const char *npc_parse_mapflag(const char *w1, const char *w2, const char 
 		map->list[m].flag.nogstorage = (state != 0) ? cap_value(atoi(w4), 1, 3) : 0;
 	else if (strcmpi(w3, "nopet") == 0)
 		map->list[m].flag.nopet = (state != 0) ? 1 : 0;
+	else if (strcmpi(w3, "noquestkills") == 0)
+		map->list[m].flag.noquestkills = (state != 0) ? 1 : 0;
 	else if (strcmpi(w3, "nomapchannelautojoin") == 0)
 		map->list[m].flag.chsysnolocalaj = (state != 0) ? 1 : 0;
 	else if (strcmpi(w3, "noknockback") == 0)

@@ -308,6 +308,9 @@ static void quest_update_objective(struct map_session_data *sd, const struct mob
 	nullpo_retv(sd);
 	nullpo_retv(md);
 
+	if (map->list[md->bl.m].flag.noquestkills != 0)
+		return;
+
 	for (i = 0; i < sd->avail_quests; i++) {
 		struct quest_db *qi = NULL;
 
@@ -1005,7 +1008,7 @@ static bool quest_questinfo_validate_quests(struct map_session_data *sd, struct 
 
 	nullpo_retr(false, sd);
 	nullpo_retr(false, qi);
-	
+
 	for (i = 0; i < VECTOR_LENGTH(qi->quest_requirement); i++) {
 		struct questinfo_qreq *quest_requirement = &VECTOR_INDEX(qi->quest_requirement, i);
 		int quest_progress = quest->check(sd, quest_requirement->id, HAVEQUEST);
